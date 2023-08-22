@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.prelogin.login.loginFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.prelogin.login.LoginFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -15,30 +15,29 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:titleCentered="true"
-            app:title="Masuk"/>
+            app:title="Masuk"
+            app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_et_emai"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:helperText="test@gmail.com"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginRight="16dp"
-        android:hint="Email">
+        android:hint="Email"
+        app:helperText="test@gmail.com">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/et_email"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,18 +45,17 @@
         android:id="@+id/layout_et_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:helperText="Minimal 8 karakter"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginRight="16dp"
-        android:hint="Password">
+        android:hint="Password"
+        app:helperText="Minimal 8 karakter">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            />
+            android:inputType="textPassword" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,11 +63,10 @@
         android:id="@+id/btn_masuk"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Masuk"
-        android:layout_marginTop="24dp"
         android:layout_marginHorizontal="16dp"
-        />
-    
+        android:layout_marginTop="24dp"
+        android:text="Masuk" />
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -79,7 +76,7 @@
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="99dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/test"
@@ -91,29 +88,27 @@
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="99dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <Button
-        style="?attr/materialButtonOutlinedStyle"
         android:id="@+id/btn_daftar"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
+        style="?attr/materialButtonOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Daftar"
-        />
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Daftar" />
 
     <TextView
         android:id="@+id/syarat"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
         android:textAlignment="center"
-        android:layout_marginHorizontal="16dp"
-        tools:text="Dengan masuk disini, kamu menyetujui Syarat &amp; Ketentuan \nserta Kebijakan Privasi TokoPhincon."
-        />
+        tools:text="Dengan masuk disini, kamu menyetujui Syarat &amp; Ketentuan \nserta Kebijakan Privasi TokoPhincon." />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -1,6 +1,6 @@
 package com.example.ecommerce.model
 
-data class ProfileResponse (
+data class ProfileResponse(
     val code: Int,
     val message: String,
     val data: DataProfilResponse

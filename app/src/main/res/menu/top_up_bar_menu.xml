@@ -16,8 +16,8 @@
 
     <item
         android:id="@+id/more"
-        android:title="more"
         android:icon="@drawable/ic_menu"
+        android:title="more"
         app:showAsAction="ifRoom" />
 
 </menu>

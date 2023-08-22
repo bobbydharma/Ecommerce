@@ -2,37 +2,35 @@ package com.example.ecommerce.ui.main.profile
 
 import android.Manifest
 import android.content.ContentValues
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentProfileBinding
 import com.example.ecommerce.model.ProfileRequest
 import com.example.ecommerce.utils.Result
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.MultipartBody.Part.createFormData
-import java.io.File
-import java.io.InputStream
+import okhttp3.MultipartBody.Part.Companion.createFormData
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
+
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
@@ -52,10 +50,9 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,59 +62,53 @@ class ProfileFragment : Fragment() {
 
         binding.btnSelesai.setOnClickListener {
             val userName = createFormData("userName", binding.etNama.toString())
-            viewModel.imageUri.observe(viewLifecycleOwner){
-                tempImageUri = it
-            }
+            viewModel.imageUri = tempImageUri
             val imageName = viewModel.uriToFile(tempImageUri!!, requireContext())
             val part = createFormData("imageName", imageName.toString())
             val data = ProfileRequest(userName, part)
+            viewModel.postProfile(data)
+        }
 
-            viewModel.profileData.observe(viewLifecycleOwner){ result ->
-                when(result){
-                    is Result.Success -> {
-                        findNavController().navigate(R.id.mainFragment)
-                        Log.d("profile", result.data.toString())
-                    }
-                    is Result.Error -> {
-                        val error = result.exception
-                        Log.d("profile", error.toString())
-                    }
-                    is Result.Loading ->{
+        viewModel.profileData.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Success -> {
+                    findNavController().navigate(R.id.mainFragment)
+                }
 
-                    }
+                is Result.Error -> {
+                    Toast.makeText(
+                        requireContext(), result.exception.message, Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is Result.Loading -> {
+
                 }
             }
-            viewModel.postProfile(data)
-
         }
 
         binding.ivProfile.setOnClickListener {
             val item = arrayOf("Kamera", "Galeri")
-
-            context?.let { it1 ->
-                MaterialAlertDialogBuilder(it1)
-                    .setTitle("Pilih Gambar")
-                    .setItems(item) { dialog, which ->
-                        when (which) {
-                            0 -> {
-                                checkCameraPermissionAndTakePicture()
-                            }
-
-                            1 -> {
-                                imageGaleri.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            }
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Pilih Gambar")
+                .setItems(item) { _, which ->
+                    when (which) {
+                        0 -> {
+                            checkCameraPermissionAndTakePicture()
                         }
-                    }.show()
-            }
+
+                        1 -> {
+                            imageGaleri.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        }
+                    }
+                }.show()
         }
     }
 
     private fun displayCapturedPhoto() {
         if (tempImageUri != null) {
-            viewModel.imageUri.observe(viewLifecycleOwner){uri ->
-                binding.ivProfile.setImageURI(uri)
-                binding.imageView2.visibility = View.GONE
-            }
+            binding.ivProfile.setImageURI(viewModel.imageUri)
+            binding.imageView2.visibility = View.GONE
         } else {
             // Gagal mendapatkan gambar
         }
@@ -132,7 +123,7 @@ class ProfileFragment : Fragment() {
         ) {
             tempImageUri = createTempImageUri()
             takePictureLauncher.launch(tempImageUri)
-            viewModel.setImageUri(tempImageUri!!)
+            viewModel.imageUri = tempImageUri
         } else {
             // Jika izin belum diberikan, tampilkan permintaan izin
             requestPermissions(arrayOf(permission), CAMERA_PERMISSION_REQUEST)
@@ -155,7 +146,7 @@ class ProfileFragment : Fragment() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 tempImageUri = createTempImageUri()
                 takePictureLauncher.launch(tempImageUri)
-                viewModel.setImageUri(tempImageUri!!)
+                viewModel.imageUri = tempImageUri
             } else {
 
             }
@@ -170,33 +161,37 @@ class ProfileFragment : Fragment() {
         if (isTaken) {
             displayCapturedPhoto()
         } else {
+
         }
     }
 
-
     private fun useGaleri(uri: Uri) {
-        viewModel.setImageUri(uri)
-        if (uri != null) {
-            viewModel.imageUri.observe(viewLifecycleOwner){uri ->
-                binding.ivProfile.setImageURI(uri)
-                binding.imageView2.visibility = View.GONE
-            }
-        } else {
-            Log.d("PhotoPicker", "No media selected")
-        }
+        viewModel.imageUri = uri
+        binding.ivProfile.setImageURI(uri)
+        binding.imageView2.visibility = View.GONE
     }
 
     private fun spanText() {
         val spannable =
             SpannableString("Dengan daftar disini, kamu menyetujui Syarat & Ketentuan serta Kebijakan Privasi TokoPhincon.")
         spannable.setSpan(
-            ForegroundColorSpan(Color.BLUE),
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ),
             37, // start
             57, // end
             Spannable.SPAN_EXCLUSIVE_INCLUSIVE
         )
         spannable.setSpan(
-            ForegroundColorSpan(Color.BLUE),
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ),
             63, // start
             79, // end
             Spannable.SPAN_EXCLUSIVE_INCLUSIVE
@@ -208,6 +203,4 @@ class ProfileFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

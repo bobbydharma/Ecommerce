@@ -1,37 +1,37 @@
 package com.example.ecommerce.ui.prelogin.register
 
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentRegisterBinding
 import com.example.ecommerce.model.UserRequest
 import com.example.ecommerce.utils.Result
+import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class registerFragment : Fragment() {
+class RegisterFragment : Fragment() {
+
+    private var _binding: FragmentRegisterBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModels<RegisterViewModel>()
-    private var _binding: FragmentRegisterBinding? = null
 
-    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,40 +41,54 @@ class registerFragment : Fragment() {
 
         binding.btnDaftarDaftar.setOnClickListener {
             val data = UserRequest()
-            data.email = binding.etEmail.toString()
-            data.password =  binding.etPassword.toString()
-
-            viewModel.registerData.observe(viewLifecycleOwner){ result ->
-                when(result){
-                    is Result.Success -> {
-                        findNavController().navigate(R.id.action_registerFragment_to_profileFragment)
-                        Log.d("register", result.data.toString())
-                    }
-                    is Result.Error -> {
-                        val error = result.exception
-                        Log.d("register", error.toString())
-                    }
-                    is Result.Loading ->{
-
-                    }
-                }
-            }
+            data.email = binding.etEmail.editText?.text.toString()
+            data.password = binding.etPassword.editText?.text.toString()
             viewModel.postRegister(data)
         }
 
+        viewModel.registerData.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Success -> {
+                    findNavController().navigate(R.id.action_registerFragment_to_profileFragment)
+                }
+
+                is Result.Error -> {
+                    Toast.makeText(
+                        requireContext(),
+                        result.exception.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is Result.Loading -> {
+
+                }
+            }
+        }
     }
 
 
     private fun spanText() {
-        val spannable = SpannableString("Dengan daftar disini, kamu menyetujui Syarat & Ketentuan serta Kebijakan Privasi TokoPhincon.")
+        val spannable =
+            SpannableString("Dengan daftar disini, kamu menyetujui Syarat & Ketentuan serta Kebijakan Privasi TokoPhincon.")
         spannable.setSpan(
-            ForegroundColorSpan(Color.BLUE),
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ),
             37, // start
             57, // end
             Spannable.SPAN_EXCLUSIVE_INCLUSIVE
         )
         spannable.setSpan(
-            ForegroundColorSpan(Color.BLUE),
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ),
             63, // start
             79, // end
             Spannable.SPAN_EXCLUSIVE_INCLUSIVE
@@ -86,5 +100,4 @@ class registerFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }

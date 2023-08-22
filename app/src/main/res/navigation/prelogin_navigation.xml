@@ -6,7 +6,7 @@
     app:startDestination="@id/onBoardingFragment">
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.ecommerce.ui.prelogin.login.loginFragment"
+        android:name="com.example.ecommerce.ui.prelogin.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
         <action
@@ -20,22 +20,21 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.ecommerce.ui.prelogin.register.registerFragment"
+        android:name="com.example.ecommerce.ui.prelogin.register.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register">
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-             />
+            app:destination="@id/loginFragment" />
         <action
             android:id="@+id/action_registerFragment_to_profileFragment"
             app:destination="@id/profileFragment"
             app:popUpTo="@id/prelogin_navigation"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/onBoardingFragment"
-        android:name="com.example.ecommerce.ui.prelogin.OnBoarding.OnBoardingFragment"
+        android:name="com.example.ecommerce.ui.prelogin.onboarding.OnBoardingFragment"
         android:label="fragment_on_boarding"
         tools:layout="@layout/fragment_on_boarding">
         <action
