@@ -35,9 +35,23 @@ class PreloginRepository @Inject constructor (
         }
     }
 
-//    suspend fun postProfile(profileRequest: ProfileRequest): ProfileResponse{
-//        val response = APIService.postProfile(API_KEY,profileRequest)
-//        return ProfileResponse(response)
-//    }
+    suspend fun postProfile(profileRequest: ProfileRequest ): Result<ProfileResponse>{
+        return try{
+            val response = APIService.postProfile(sharedPreferencesManager.token!!,profileRequest.userName, profileRequest.userImage)
+            if (response.isSuccessful){
+                val profileResponse = response.body()
+                if (profileResponse != null){
+                    sharedPreferencesManager.nama = profileResponse.data.userName
+                    sharedPreferencesManager.image_url =  profileResponse.data.userImage
+                }
+                com.example.ecommerce.utils.Result.Success(response.body()!!)
+            }else{
+                Result.Error(Exception("API call failed"))
+            }
+        } catch (e: Exception){
+            com.example.ecommerce.utils.Result.Error(e)
+        }
+
+    }
 
 }

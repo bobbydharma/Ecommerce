@@ -2,6 +2,7 @@ package com.example.ecommerce.ui.main.profile
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
@@ -15,25 +16,28 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentProfileBinding
-import com.example.ecommerce.ui.prelogin.register.RegisterViewModel
+import com.example.ecommerce.model.ProfileRequest
+import com.example.ecommerce.utils.Result
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.MultipartBody.Part.createFormData
 import java.io.File
+import java.io.InputStream
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-
     private val viewModel by viewModels<ProfileViewModel>()
     private var tempImageUri: Uri? = null
-
 
     private val takePictureLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) {
@@ -58,6 +62,34 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         spanText()
+
+        binding.btnSelesai.setOnClickListener {
+            val userName = createFormData("userName", binding.etNama.toString())
+            viewModel.imageUri.observe(viewLifecycleOwner){
+                tempImageUri = it
+            }
+            val imageName = viewModel.uriToFile(tempImageUri!!, requireContext())
+            val part = createFormData("imageName", imageName.toString())
+            val data = ProfileRequest(userName, part)
+
+            viewModel.profileData.observe(viewLifecycleOwner){ result ->
+                when(result){
+                    is Result.Success -> {
+                        findNavController().navigate(R.id.mainFragment)
+                        Log.d("profile", result.data.toString())
+                    }
+                    is Result.Error -> {
+                        val error = result.exception
+                        Log.d("profile", error.toString())
+                    }
+                    is Result.Loading ->{
+
+                    }
+                }
+            }
+            viewModel.postProfile(data)
+
+        }
 
         binding.ivProfile.setOnClickListener {
             val item = arrayOf("Kamera", "Galeri")

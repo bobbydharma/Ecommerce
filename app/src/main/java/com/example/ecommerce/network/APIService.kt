@@ -1,8 +1,11 @@
 package com.example.ecommerce.network
 
 import com.example.ecommerce.model.ProfileRequest
+import com.example.ecommerce.model.ProfileResponse
 import com.example.ecommerce.model.UserRequest
 import com.example.ecommerce.model.UserResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -29,9 +32,9 @@ interface APIService {
     @POST("profile")
     fun postProfile(
         @Header("Authorization") authorization: String,
-        @Part("userName") userName: ProfileRequest,
-//        @Part userImage: ProfileRequest.Part
-    )
+        @Part userName: MultipartBody.Part,
+        @Part userImage: MultipartBody.Part
+    ): Response<ProfileResponse>
 
     @GET("login")
     suspend fun getLogin(
