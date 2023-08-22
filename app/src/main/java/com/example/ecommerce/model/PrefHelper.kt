@@ -1,38 +1,40 @@
 package com.example.ecommerce.model
 
 import android.content.Context
+import android.content.SharedPreferences
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PrefHelper (context: Context) {
+@Singleton
+class PrefHelper @Inject constructor (private val sharedPreferences: SharedPreferences) {
 
     companion object{
         const val SP_NAME = "profile_pref"
-        const val NAME = "nama"
-        const val IMAGE = "image url"
-        const val TOKEN = "token"
-        const val REFRESH_TOKEN = "refresh_token"
-        const val OB_CHECK = "onboarding_check"
+        const val KEY_NAMA = "nama"
+        const val KEY_IMAGE = "image_url"
+        const val KEY_TOKEN = "token"
+        const val KEY_REFRESH_TOKEN = "refresh_token"
+        const val KEY_OB_CHECK = "ob_check"
     }
 
-    val prefrence = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
+    var nama: String?
+        get() = sharedPreferences.getString(KEY_NAMA, null)
+        set(value) = sharedPreferences.edit().putString(KEY_NAMA, value).apply()
 
-    fun setProfile(profilePref: ProfilePref){
-        val prefEditor = prefrence.edit()
+    var image_url: String?
+        get() = sharedPreferences.getString(KEY_IMAGE, null)
+        set(value) = sharedPreferences.edit().putString(KEY_IMAGE, value).apply()
 
-        prefEditor.putString(NAME, profilePref.name)
-        prefEditor.putString(IMAGE, profilePref.image)
-        prefEditor.putString(TOKEN, profilePref.token)
-        prefEditor.putString(REFRESH_TOKEN, profilePref.refreshToken)
-        prefEditor.putBoolean(OB_CHECK, profilePref.obCheck)
-    }
+    var token: String?
+        get() = sharedPreferences.getString(KEY_TOKEN, null)
+        set(value) = sharedPreferences.edit().putString(KEY_TOKEN, value).apply()
 
-    fun getProfile(): ProfilePref{
-        val profile = ProfilePref()
-        profile.name = prefrence.getString(NAME, "").toString()
-        profile.image = prefrence.getString(IMAGE, "").toString()
-        profile.token = prefrence.getString(TOKEN, "").toString()
-        profile.refreshToken = prefrence.getString(REFRESH_TOKEN, "").toString()
-        profile.obCheck = prefrence.getBoolean(OB_CHECK, false)
+    var refreshToken: String?
+        get() = sharedPreferences.getString(KEY_REFRESH_TOKEN, null)
+        set(value) = sharedPreferences.edit().putString(KEY_REFRESH_TOKEN, value).apply()
 
-        return profile
-    }
+    var obCheck: Boolean
+        get() = sharedPreferences.getBoolean(KEY_OB_CHECK, false)
+        set(value) = sharedPreferences.edit().putBoolean(KEY_OB_CHECK, value).apply()
+
 }

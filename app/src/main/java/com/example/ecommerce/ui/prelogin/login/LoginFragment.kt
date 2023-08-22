@@ -17,11 +17,20 @@ import androidx.core.view.isNotEmpty
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentLoginBinding
+import com.example.ecommerce.model.PrefHelper
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import javax.inject.Singleton
 
-
+@Singleton
+@AndroidEntryPoint
 class loginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var sharedPreferencesManager: PrefHelper
+
     var validEmail : Boolean = false
     var validPassword : Boolean = false
 
@@ -31,6 +40,11 @@ class loginFragment : Fragment() {
     ): View? {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        if(sharedPreferencesManager.token != null){
+            findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+        }
+
         return view
     }
 
@@ -48,10 +62,7 @@ class loginFragment : Fragment() {
         binding.btnDaftar.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
-
-
     }
-
 
     private fun validationButton() {
         if (validEmail == true && validPassword == true){

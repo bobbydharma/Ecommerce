@@ -10,28 +10,38 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentOnBoardingBinding
+import com.example.ecommerce.model.PrefHelper
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class OnBoardingFragment : Fragment() {
 
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     private var _binding: FragmentOnBoardingBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var sharedPreferencesManager: PrefHelper
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentOnBoardingBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        if(sharedPreferencesManager.obCheck == true){
+            findNavController().navigate(R.id.action_onBoardingFragment_to_loginFragment)
+        }
+
         return view
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         setOnboardingItems()
 
@@ -41,10 +51,12 @@ class OnBoardingFragment : Fragment() {
 
         binding.obLewati.setOnClickListener {
             findNavController().navigate(R.id.action_onBoardingFragment_to_loginFragment)
+            sharedPreferencesManager.obCheck = true
         }
 
         binding.obGabung.setOnClickListener {
             findNavController().navigate(R.id.action_onBoardingFragment_to_registerFragment)
+            sharedPreferencesManager.obCheck = true
         }
 
     }

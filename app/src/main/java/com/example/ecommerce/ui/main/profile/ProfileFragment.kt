@@ -20,7 +20,9 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.viewModels
 import com.example.ecommerce.databinding.FragmentProfileBinding
+import com.example.ecommerce.ui.prelogin.register.RegisterViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
 
@@ -28,6 +30,8 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
+
+    private val viewModel by viewModels<ProfileViewModel>()
     private var tempImageUri: Uri? = null
 
 
@@ -71,16 +75,17 @@ class ProfileFragment : Fragment() {
                                 imageGaleri.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                             }
                         }
-                    }
-                    .show()
+                    }.show()
             }
         }
     }
 
     private fun displayCapturedPhoto() {
         if (tempImageUri != null) {
-            binding.ivProfile.setImageURI(tempImageUri)
-            binding.imageView2.visibility = View.GONE
+            viewModel.imageUri.observe(viewLifecycleOwner){uri ->
+                binding.ivProfile.setImageURI(uri)
+                binding.imageView2.visibility = View.GONE
+            }
         } else {
             // Gagal mendapatkan gambar
         }
@@ -95,6 +100,7 @@ class ProfileFragment : Fragment() {
         ) {
             tempImageUri = createTempImageUri()
             takePictureLauncher.launch(tempImageUri)
+            viewModel.setImageUri(tempImageUri!!)
         } else {
             // Jika izin belum diberikan, tampilkan permintaan izin
             requestPermissions(arrayOf(permission), CAMERA_PERMISSION_REQUEST)
@@ -117,6 +123,7 @@ class ProfileFragment : Fragment() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 tempImageUri = createTempImageUri()
                 takePictureLauncher.launch(tempImageUri)
+                viewModel.setImageUri(tempImageUri!!)
             } else {
 
             }
@@ -136,9 +143,12 @@ class ProfileFragment : Fragment() {
 
 
     private fun useGaleri(uri: Uri) {
+        viewModel.setImageUri(uri)
         if (uri != null) {
-            binding.ivProfile.setImageURI(uri)
-            binding.imageView2.visibility = View.GONE
+            viewModel.imageUri.observe(viewLifecycleOwner){uri ->
+                binding.ivProfile.setImageURI(uri)
+                binding.imageView2.visibility = View.GONE
+            }
         } else {
             Log.d("PhotoPicker", "No media selected")
         }

@@ -1,8 +1,9 @@
 package com.example.ecommerce.model
 
+import retrofit2.http.Part
 import java.io.File
 
 data class ProfileRequest (
-    var userName: String,
+    @Part var userName: String,
     var userImage: File
 )

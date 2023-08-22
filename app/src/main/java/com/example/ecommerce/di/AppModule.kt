@@ -2,6 +2,7 @@ package com.example.ecommerce.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.ecommerce.model.PrefHelper
 import com.example.ecommerce.network.APIService
 import dagger.Module
 import dagger.Provides
@@ -36,5 +37,11 @@ object AppModule {
     @Provides
     fun provideApi(retrofit: Retrofit): APIService{
         return retrofit.create(APIService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferencesManager(sharedPreferences: SharedPreferences): PrefHelper {
+        return PrefHelper(sharedPreferences)
     }
 }

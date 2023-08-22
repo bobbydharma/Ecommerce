@@ -2,6 +2,7 @@ package com.example.ecommerce.network
 
 import com.example.ecommerce.model.ProfileRequest
 import com.example.ecommerce.model.UserRequest
+import com.example.ecommerce.model.UserResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -22,20 +23,20 @@ interface APIService {
     suspend fun postRegister(
         @Header("API_KEY") API_KEY :String,
         @Body userRequest: UserRequest
-    ): Response<UserRequest>
+    ): Response<UserResponse>
 
     @Multipart
     @POST("profile")
     fun postProfile(
         @Header("Authorization") authorization: String,
         @Part("userName") userName: ProfileRequest,
-//        @Part userImage: ProfileRequest.imageUser
+//        @Part userImage: ProfileRequest.Part
     )
 
     @GET("login")
     suspend fun getLogin(
         @Header("API_KEY") API_KEY :String,
         @Body userRequest: UserRequest
-    ): Response<UserRequest>
+    ): Response<UserResponse>
 
 }
