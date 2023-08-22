@@ -1,4 +1,4 @@
-package com.example.ecommerce.main.transaction
+package com.example.ecommerce.ui.main.transaction
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

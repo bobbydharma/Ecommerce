@@ -1,16 +1,19 @@
-package com.example.ecommerce.prelogin.OnBoarding
+package com.example.ecommerce.ui.prelogin.OnBoarding
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
-import androidx.core.view.size
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentOnBoardingBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
 
 class OnBoardingFragment : Fragment() {
 
@@ -34,7 +37,6 @@ class OnBoardingFragment : Fragment() {
 
         binding.obSelanjutnya.setOnClickListener {
             binding.pager.currentItem += 1
-
         }
 
         binding.obLewati.setOnClickListener {
@@ -58,12 +60,22 @@ class OnBoardingFragment : Fragment() {
         viewPagerAdapter = ViewPagerAdapter(imageObList)
         binding.pager.adapter = viewPagerAdapter
 
+        binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                if (position == viewPagerAdapter.itemCount - 1) {
+                    binding.obSelanjutnya.visibility = View.GONE
+                } else {
+                    binding.obSelanjutnya.visibility = View.VISIBLE
+                }
+            }
+        })
+
         TabLayoutMediator(binding.intoTabLayout, binding.pager)
         { tab, position ->
-            if (position == binding.pager.size){
-                binding.obSelanjutnya.isVisible = false
+            if (position == 3){
+                binding.obSelanjutnya.visibility = View.GONE
             }else{
-                binding.obSelanjutnya.isVisible = true
+                binding.obSelanjutnya.visibility = View.VISIBLE
             }
         }.attach()
     }
@@ -74,3 +86,4 @@ class OnBoardingFragment : Fragment() {
         _binding = null
     }
 }
+

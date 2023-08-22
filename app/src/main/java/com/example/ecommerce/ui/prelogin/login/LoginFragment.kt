@@ -1,4 +1,4 @@
-package com.example.ecommerce.prelogin
+package com.example.ecommerce.ui.prelogin.login
 
 import android.graphics.Color
 import android.os.Bundle
@@ -7,7 +7,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,8 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isEmpty
 import androidx.core.view.isNotEmpty
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentLoginBinding
@@ -24,9 +21,9 @@ import com.example.ecommerce.databinding.FragmentLoginBinding
 
 class loginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+    var validEmail : Boolean = false
+    var validPassword : Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,8 +42,8 @@ class loginFragment : Fragment() {
         }
 
         checking()
-        spanText()
         validationButton()
+        spanText()
 
         binding.btnDaftar.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
@@ -55,10 +52,9 @@ class loginFragment : Fragment() {
 
     }
 
-    private fun validationButton() {
-        binding.btnMasuk.isEnabled = false
 
-        if (binding.layoutEtEmai.isErrorEnabled == false && binding.layoutEtEmai.isNotEmpty() && binding.layoutEtPassword.isErrorEnabled == false && binding.layoutEtPassword.isNotEmpty()){
+    private fun validationButton() {
+        if (validEmail == true && validPassword == true){
             binding.btnMasuk.isEnabled = true
         }else{
             binding.btnMasuk.isEnabled = false
@@ -66,7 +62,8 @@ class loginFragment : Fragment() {
     }
 
     private fun spanText() {
-        val spannable = SpannableString("Dengan daftar disini, kamu menyetujui Syarat & Ketentuan serta Kebijakan Privasi TokoPhincon.")
+        val spannable =
+            SpannableString("Dengan daftar disini, kamu menyetujui Syarat & Ketentuan serta Kebijakan Privasi TokoPhincon.")
         spannable.setSpan(
             ForegroundColorSpan(Color.BLUE),
             37, // start
@@ -84,8 +81,7 @@ class loginFragment : Fragment() {
 
     private fun checking() {
 
-
-        binding.etPassword.addTextChangedListener(object : TextWatcher{
+        binding.etPassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -93,32 +89,34 @@ class loginFragment : Fragment() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                if (p0!!.length < 8 && p0!!.isNotEmpty()){
+                if (p0!!.length < 8 && p0!!.isNotEmpty()) {
                     binding.layoutEtPassword.isErrorEnabled = true
                     binding.layoutEtPassword.error = "Password Tidak Valid"
-                }else{
+                } else {
                     binding.layoutEtPassword.isErrorEnabled = false
+                    validPassword = true
                 }
             }
 
         })
 
-        binding.etEmail.addTextChangedListener(object : TextWatcher{
+        binding.etEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                if (!Patterns.EMAIL_ADDRESS.matcher(p0).matches() && p0!!.isNotEmpty()){
+                if (!Patterns.EMAIL_ADDRESS.matcher(p0).matches() && p0!!.isNotEmpty()) {
                     binding.layoutEtEmai.isErrorEnabled = true
                     binding!!.layoutEtEmai.error = "Email tidak valid"
-                }else{
+
+                } else {
                     binding.layoutEtEmai.isErrorEnabled = false
+                    validEmail = true
                 }
-
             }
-
         })
+
     }
 
     override fun onDestroyView() {

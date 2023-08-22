@@ -1,5 +1,8 @@
-package com.example.ecommerce.main.profile
+package com.example.ecommerce.ui.main.profile
 
+import android.Manifest
+import android.content.ContentValues
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -12,9 +15,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.example.ecommerce.databinding.FragmentProfileBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,13 +28,17 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
+    private var tempImageUri: Uri? = null
+
+
+    private val takePictureLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) {
+            useKamera(it)
+        }
+
     private val imageGaleri =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let { useGaleri(it) }
-        }
-
-    private val imageCamera =
-        registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
         }
 
     override fun onCreateView(
@@ -56,10 +64,7 @@ class ProfileFragment : Fragment() {
                     .setItems(item) { dialog, which ->
                         when (which) {
                             0 -> {
-                                buildNewUri().let { uri ->
-                                        imageCamera.launch(uri)
-                                        binding.ivProfile.setImageURI(uri)
-                                }
+                                checkCameraPermissionAndTakePicture()
                             }
 
                             1 -> {
@@ -72,9 +77,68 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun displayCapturedPhoto() {
+        if (tempImageUri != null) {
+            binding.ivProfile.setImageURI(tempImageUri)
+            binding.imageView2.visibility = View.GONE
+        } else {
+            // Gagal mendapatkan gambar
+        }
+    }
+
+    private fun checkCameraPermissionAndTakePicture() {
+        val permission = Manifest.permission.CAMERA
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                permission
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            tempImageUri = createTempImageUri()
+            takePictureLauncher.launch(tempImageUri)
+        } else {
+            // Jika izin belum diberikan, tampilkan permintaan izin
+            requestPermissions(arrayOf(permission), CAMERA_PERMISSION_REQUEST)
+        }
+    }
+
+    private fun createTempImageUri(): Uri {
+        val contentResolver = requireContext().contentResolver
+        val contentValues = ContentValues()
+        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, "temp_image.jpg")
+        return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)!!
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == CAMERA_PERMISSION_REQUEST) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                tempImageUri = createTempImageUri()
+                takePictureLauncher.launch(tempImageUri)
+            } else {
+
+            }
+        }
+    }
+
+    companion object {
+        private const val CAMERA_PERMISSION_REQUEST = 123
+    }
+
+    private fun useKamera(isTaken: Boolean) {
+        if (isTaken) {
+            displayCapturedPhoto()
+        } else {
+        }
+    }
+
+
     private fun useGaleri(uri: Uri) {
         if (uri != null) {
             binding.ivProfile.setImageURI(uri)
+            binding.imageView2.visibility = View.GONE
         } else {
             Log.d("PhotoPicker", "No media selected")
         }
@@ -97,23 +161,6 @@ class ProfileFragment : Fragment() {
         )
         binding.tvSyarat.text = spannable
     }
-
-    fun buildNewUri(): Uri {
-        val photosDir = File(requireActivity().cacheDir, PHOTOS_DIR)
-        photosDir.mkdirs()
-        val photoFile = File(photosDir, generateFilename())
-        val authority = "${requireActivity().packageName}.$FILE_PROVIDER"
-        return FileProvider.getUriForFile(requireActivity(), authority, photoFile)
-    }
-
-
-    private fun generateFilename() = "selfie-${System.currentTimeMillis()}.jpg"
-
-    companion object {
-        private const val PHOTOS_DIR = "photos"
-        private const val FILE_PROVIDER = "fileprovider"
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

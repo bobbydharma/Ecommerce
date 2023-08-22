@@ -1,4 +1,4 @@
-package com.example.ecommerce.prelogin.OnBoarding
+package com.example.ecommerce.ui.prelogin.OnBoarding
 
 import android.view.LayoutInflater
 import android.view.View
