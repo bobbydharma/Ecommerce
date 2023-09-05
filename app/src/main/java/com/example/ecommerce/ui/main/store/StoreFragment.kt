@@ -1,21 +1,245 @@
 package com.example.ecommerce.ui.main.store
 
+import com.example.ecommerce.ui.main.store.adapter.ProductsAdapter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavAction
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.paging.LoadState
+import androidx.paging.PagingSource
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.ecommerce.MainActivity
 import com.example.ecommerce.R
+import com.example.ecommerce.databinding.FragmentStoreBinding
+import com.example.ecommerce.model.products.ProductsRequest
+import com.example.ecommerce.preference.PrefHelper
+import com.google.android.material.chip.Chip
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
+import java.text.NumberFormat
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class storeFragment : Fragment() {
 
+    private var _binding: FragmentStoreBinding? = null
+    private val binding get() = _binding!!
+
+    @Inject
+    lateinit var prefHelper: PrefHelper
+    private val viewModel by activityViewModels<StoreViewModel>()
+    private val pagingAdapter = ProductsAdapter(ProductsAdapter.ProductComparator){itemClicked ->
+        val bundle = bundleOf("id_product" to itemClicked)
+        val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
+        navController.navigate(R.id.main_to_detail_product, bundle)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_store, container, false)
+        _binding = FragmentStoreBinding.inflate(inflater, container, false)
+        return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().supportFragmentManager.setFragmentResultListener("search", viewLifecycleOwner) { requestKey, bundle ->
+            val search = bundle.getString("searchItem")
+            val newQuery = ProductsRequest()
+            newQuery.search = search
+            binding.etSearchStore.setText(search)
+            setChipFiltered()
+            viewModel.updateQuery(
+                search = search,
+                brand = viewModel.prooductQuery.value.brand,
+                sort = viewModel.prooductQuery.value.sort,
+                lowest = viewModel.prooductQuery.value.lowest,
+                highest = viewModel.prooductQuery.value.highest
+                )
+        }
+
+        binding.rvProduct.adapter = pagingAdapter.withLoadStateFooter(
+            footer = com.example.ecommerce.ui.main.store.adapter.LoadStateAdapter(pagingAdapter::retry)
+        )
+        binding.rvProduct.apply {
+            itemAnimator?.changeDuration = 0
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            pagingAdapter.refresh()
+            binding.swipeRefresh.isRefreshing = false
+        }
+
+        binding.btnResetError.setOnClickListener {
+            binding.errorData.isVisible = false
+            binding.containerFilter.isVisible = true
+            binding.rvProduct.isVisible = true
+            binding.etSearchStore.setText("")
+            viewModel.updateQuery(
+                search = null,
+                brand = null,
+                sort = null,
+                highest = null,
+                lowest = null
+            )
+        }
+
+        binding.btnRefreshConnection.setOnClickListener {
+            pagingAdapter.refresh()
+        }
+
+        binding.btnFilterStore.setOnClickListener {
+            val bottomSheetFragment = BottomSheetFragment()
+            bottomSheetFragment.show(
+                requireActivity().supportFragmentManager,
+                bottomSheetFragment.tag
+            )
+        }
+
+        binding.etSearchStore.setOnClickListener {
+            val searchFragment = SearchFragment()
+            searchFragment.show(requireActivity().supportFragmentManager, "MyDialogFragment")
+        }
+
+        binding.btnToggle.setOnCheckedChangeListener{ _ , isChecked ->
+
+            pagingAdapter.isGridMode = isChecked
+            setLayoutManager(isChecked)
+//            pagingAdapter.notifyDataSetChanged()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.querySearchResults.collectLatest {
+                pagingAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+                binding.chipFiltered.removeAllViews()
+                setChipFiltered()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            pagingAdapter.loadStateFlow.collectLatest {loadStates ->
+
+                val gridLayoutManager = binding.rvProduct.layoutManager as GridLayoutManager
+                val numberOfColumns = gridLayoutManager.spanCount
+                if(loadStates.refresh is LoadState.Loading){
+                    if (numberOfColumns == 1){
+                        binding.shimmerList.isVisible = true
+                        binding.rvProduct.isVisible = false
+                        binding.errorConnection.isVisible = false
+                        binding.containerFilter.isVisible = false
+                    }else{
+                        binding.shimmerGrid.isVisible = true
+                        binding.rvProduct.isVisible = false
+                        binding.errorConnection.isVisible = false
+                        binding.containerFilter.isVisible = false
+                    }
+                }
+
+                if (loadStates.refresh is LoadState.NotLoading){
+                    binding.shimmerList.isVisible = false
+                    binding.shimmerGrid.isVisible = false
+                    binding.errorConnection.isVisible = false
+                    binding.containerFilter.isVisible = true
+                    binding.rvProduct.isVisible = true
+                }
+
+                if (loadStates.refresh is LoadState.Error){
+                    when(val error = (loadStates.refresh as LoadState.Error).error){
+                        is HttpException -> {
+                            Log.d("1", error.code().toString())
+                        }
+
+                        is IOException -> {
+                            binding.shimmerGrid.isVisible = true
+                            binding.shimmerList.isVisible = false
+                            binding.containerFilter.isVisible = false
+                            binding.rvProduct.isVisible = false
+                            binding.errorConnection.isVisible = true
+                        }
+
+                        else -> {
+                            binding.shimmerGrid.isVisible = false
+                            binding.shimmerList.isVisible = false
+                            binding.containerFilter.isVisible = false
+                            binding.rvProduct.isVisible = false
+                            binding.errorConnection.isVisible = false
+                            binding.errorData.isVisible = true
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setLayoutManager(gridMode: Boolean) {
+        val firstVisibleItemPosition = (binding.rvProduct.layoutManager as? GridLayoutManager)?.findFirstVisibleItemPosition() ?: 0
+        if (gridMode){
+            val layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.rvProduct.layoutManager = layoutManager
+
+            val footerAdapter =
+                com.example.ecommerce.ui.main.store.adapter.LoadStateAdapter(pagingAdapter::retry)
+            binding.rvProduct.adapter = pagingAdapter.withLoadStateFooter(footer = footerAdapter)
+            layoutManager.spanSizeLookup =  object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (position == pagingAdapter.itemCount  && footerAdapter.itemCount > 0) {
+                        2
+                    } else {
+                        1
+                    }
+                }
+            }
+
+            binding.rvProduct.layoutManager?.scrollToPosition(firstVisibleItemPosition)
+
+        }else{
+            binding.rvProduct.layoutManager = GridLayoutManager(requireContext(), 1)
+            binding.rvProduct.layoutManager?.scrollToPosition(firstVisibleItemPosition)
+        }
+    }
+
+    private fun setChipFiltered() {
+        binding.chipFiltered.removeAllViews()
+        viewModel.prooductQuery.value.apply {
+            sort?.let { setChip(sort!!) }
+            brand?.let { setChip(brand!!) }
+            lowest?.let { setChip("> ${lowest!!.formatToIDR()}") }
+            highest?.let { setChip("< ${highest!!.formatToIDR()}") }
+        }
+    }
+
+    fun Int.formatToIDR(): String {
+        val localeID = java.util.Locale("in", "ID")
+        val currencyFormatter = NumberFormat.getCurrencyInstance(localeID)
+        return currencyFormatter.format(this).replace(",00","")
+    }
+
+    private fun setChip(string: String) {
+        val chip = Chip(requireContext())
+        chip.text = string
+        chip.isSelected = true
+        binding.chipFiltered.addView(chip)
+    }
+
 }

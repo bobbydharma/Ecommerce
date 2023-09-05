@@ -1,4 +1,4 @@
-package com.example.ecommerce.model
+package com.example.ecommerce.model.user
 
 data class UserRequest(
     var email: String = "",

@@ -1,9 +1,10 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.model.ProfileRequest
-import com.example.ecommerce.model.ProfileResponse
-import com.example.ecommerce.model.UserRequest
-import com.example.ecommerce.model.UserResponse
+import com.example.ecommerce.model.user.LoginResponse
+import com.example.ecommerce.model.user.ProfileRequest
+import com.example.ecommerce.model.user.ProfileResponse
+import com.example.ecommerce.model.user.UserRequest
+import com.example.ecommerce.model.user.UserResponse
 import com.example.ecommerce.network.APIService
 import com.example.ecommerce.preference.PrefHelper
 import com.example.ecommerce.utils.Result
@@ -27,7 +28,11 @@ class PreloginRepository @Inject constructor(
                 sharedPreferencesManager.refreshToken = userResponse?.data?.refreshToken
                 Result.Success(userResponse!!)
             } else {
-                Result.Error(Exception("API call failed"))
+                if (response.code() == 400){
+                    Result.Error(Exception("Email sudah digunakan"))
+                }else{
+                    Result.Error(Exception("Api key is not valid"))
+                }
             }
         } catch (e: Exception) {
             Result.Error(e)
@@ -37,7 +42,7 @@ class PreloginRepository @Inject constructor(
     suspend fun postProfile(profileRequest: ProfileRequest): Result<ProfileResponse> {
         return try {
             val response = APIService.postProfile(
-                sharedPreferencesManager.token!!,
+                "Bearer ${sharedPreferencesManager.token!!}",
                 profileRequest.userName,
                 profileRequest.userImage
             )
@@ -48,6 +53,30 @@ class PreloginRepository @Inject constructor(
                 Result.Success(response.body()!!)
             } else {
                 Result.Error(Exception("API call failed"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun postLogin(loginRequest: UserRequest): Result<LoginResponse> {
+        return try {
+            val response = APIService.postLogin(API_KEY, loginRequest)
+            if (response.isSuccessful && response.body() != null) {
+                val loginResponse = response.body()
+                sharedPreferencesManager.apply{
+                    nama = loginResponse?.data?.userName
+                    image_url = loginResponse?.data?.userImage
+                    token = loginResponse?.data?.accessToken
+                    refreshToken = loginResponse?.data?.refreshToken
+                }
+                Result.Success(response.body()!!)
+            } else {
+                if (response.code() == 400){
+                    Result.Error(Exception("Email or password is not valid"))
+                }else{
+                    Result.Error(Exception("Api key is not valid"))
+                }
             }
         } catch (e: Exception) {
             Result.Error(e)

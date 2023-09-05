@@ -25,7 +25,7 @@
         android:layout_height="wrap_content" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_et_emai"
+        android:id="@+id/layout_et_email_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -42,7 +42,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_et_password"
+        android:id="@+id/layout_et_password_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -67,7 +67,7 @@
         android:layout_marginTop="24dp"
         android:text="Masuk" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -83,6 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
+            android:layout_marginHorizontal="32dp"
             android:text="atau daftar dengan"
             android:textSize="12dp" />
 
@@ -90,7 +91,7 @@
             android:layout_width="99dp"
             android:layout_height="wrap_content" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_daftar"

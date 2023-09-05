@@ -1,4 +1,4 @@
-package com.example.ecommerce.model
+package com.example.ecommerce.model.user
 
 data class ProfileResponse(
     val code: Int,

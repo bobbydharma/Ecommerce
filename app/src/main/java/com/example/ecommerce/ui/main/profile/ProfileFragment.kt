@@ -2,6 +2,7 @@ package com.example.ecommerce.ui.main.profile
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -21,12 +22,18 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentProfileBinding
-import com.example.ecommerce.model.ProfileRequest
+import com.example.ecommerce.model.user.ProfileRequest
+import com.example.ecommerce.preference.PrefHelper
 import com.example.ecommerce.utils.Result
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.MultipartBody.Part.Companion.createFormData
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.io.InputStream
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
@@ -36,6 +43,9 @@ class ProfileFragment : Fragment() {
 
     private val viewModel by viewModels<ProfileViewModel>()
     private var tempImageUri: Uri? = null
+
+    @Inject
+    lateinit var sharedPreferencesManager: PrefHelper
 
     private val takePictureLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) {
@@ -61,18 +71,24 @@ class ProfileFragment : Fragment() {
         spanText()
 
         binding.btnSelesai.setOnClickListener {
-            val userName = createFormData("userName", binding.etNama.toString())
-            viewModel.imageUri = tempImageUri
-            val imageName = viewModel.uriToFile(tempImageUri!!, requireContext())
-            val part = createFormData("imageName", imageName.toString())
-            val data = ProfileRequest(userName, part)
-            viewModel.postProfile(data)
+            val userName = MultipartBody.Part.createFormData("userName", binding.etNama.editText?.text.toString())
+            if (tempImageUri != null){
+                val file = uriToFile(tempImageUri!!, requireContext())
+                val part = MultipartBody.Part.createFormData("userImage", file.name, file.asRequestBody(
+                    "image/*".toMediaType()
+                ))
+                val data = ProfileRequest(userName, part)
+                viewModel.postProfile(data)
+            }else{
+                Toast.makeText(context, "Gagal Upload Image", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         viewModel.profileData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
-                    findNavController().navigate(R.id.mainFragment)
+                    findNavController().navigate(R.id.prelogin_to_main)
                 }
 
                 is Result.Error -> {
@@ -123,7 +139,6 @@ class ProfileFragment : Fragment() {
         ) {
             tempImageUri = createTempImageUri()
             takePictureLauncher.launch(tempImageUri)
-            viewModel.imageUri = tempImageUri
         } else {
             // Jika izin belum diberikan, tampilkan permintaan izin
             requestPermissions(arrayOf(permission), CAMERA_PERMISSION_REQUEST)
@@ -146,11 +161,21 @@ class ProfileFragment : Fragment() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 tempImageUri = createTempImageUri()
                 takePictureLauncher.launch(tempImageUri)
-                viewModel.imageUri = tempImageUri
             } else {
 
             }
         }
+    }
+
+    fun uriToFile(uri: Uri, context: Context): File {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        val file = File(context.cacheDir, "temp_image.jpg")
+        inputStream?.use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        return file
     }
 
     companion object {
@@ -166,7 +191,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun useGaleri(uri: Uri) {
-        viewModel.imageUri = uri
+        tempImageUri = uri
         binding.ivProfile.setImageURI(uri)
         binding.imageView2.visibility = View.GONE
     }

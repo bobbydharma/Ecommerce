@@ -4,16 +4,18 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentRegisterBinding
-import com.example.ecommerce.model.UserRequest
+import com.example.ecommerce.model.user.UserRequest
 import com.example.ecommerce.utils.Result
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +27,9 @@ class RegisterFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<RegisterViewModel>()
+
+    private var validEmail: Boolean = false
+    private var validPassword: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,11 +43,13 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         spanText()
+        validationButton()
+        checking()
 
         binding.btnDaftarDaftar.setOnClickListener {
             val data = UserRequest()
-            data.email = binding.etEmail.editText?.text.toString()
-            data.password = binding.etPassword.editText?.text.toString()
+            data.email = binding.layoutEtEmail.editText?.text.toString()
+            data.password = binding.layoutEtPassword.editText?.text.toString()
             viewModel.postRegister(data)
         }
 
@@ -53,11 +60,11 @@ class RegisterFragment : Fragment() {
                 }
 
                 is Result.Error -> {
-                    Toast.makeText(
-                        requireContext(),
-                        result.exception.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    binding.etEmail.setText("")
+                    binding.etPassword.setText("")
+                    binding.layoutEtEmail.isErrorEnabled = true
+                    binding.layoutEtEmail.error = result.exception.message
+                    binding.layoutEtEmail.requestFocus()
                 }
 
                 is Result.Loading -> {
@@ -67,6 +74,38 @@ class RegisterFragment : Fragment() {
         }
     }
 
+    private fun validationButton() {
+        binding.btnDaftarDaftar.isEnabled = validEmail &&
+                validPassword &&
+                !binding.layoutEtEmail.editText?.text.isNullOrEmpty() &&
+                !binding.layoutEtPassword.editText?.text.isNullOrEmpty()
+    }
+
+    private fun checking() {
+        binding.etPassword.doOnTextChanged { text, _, _, _ ->
+            if ((text?.length ?: 0) < 8 && !text.isNullOrEmpty()) {
+                binding.layoutEtPassword.isErrorEnabled = true
+                binding.layoutEtPassword.error = "Password Tidak Valid"
+                validPassword = false
+            } else {
+                binding.layoutEtPassword.isErrorEnabled = false
+                validPassword = true
+            }
+            validationButton()
+        }
+
+        binding.etEmail.doOnTextChanged { text, _, _, _ ->
+            if (!Patterns.EMAIL_ADDRESS.matcher(text ?: "").matches() && !text.isNullOrEmpty()) {
+                binding.layoutEtEmail.isErrorEnabled = true
+                binding.layoutEtEmail.error = "Email tidak valid"
+                validEmail = false
+            } else {
+                binding.layoutEtEmail.isErrorEnabled = false
+                validEmail = true
+            }
+            validationButton()
+        }
+    }
 
     private fun spanText() {
         val spannable =

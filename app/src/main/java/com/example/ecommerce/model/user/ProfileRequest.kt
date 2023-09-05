@@ -1,4 +1,4 @@
-package com.example.ecommerce.model
+package com.example.ecommerce.model.user
 
 import okhttp3.MultipartBody
 

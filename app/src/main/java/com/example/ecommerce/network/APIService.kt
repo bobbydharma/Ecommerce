@@ -1,8 +1,14 @@
 package com.example.ecommerce.network
 
-import com.example.ecommerce.model.ProfileResponse
-import com.example.ecommerce.model.UserRequest
-import com.example.ecommerce.model.UserResponse
+import com.example.ecommerce.model.products.ProductDetailResponse
+import com.example.ecommerce.model.products.ProductsRequest
+import com.example.ecommerce.model.products.ProductsResponse
+import com.example.ecommerce.model.products.ReviewProduct
+import com.example.ecommerce.model.products.SearchResponse
+import com.example.ecommerce.model.user.LoginResponse
+import com.example.ecommerce.model.user.ProfileResponse
+import com.example.ecommerce.model.user.UserRequest
+import com.example.ecommerce.model.user.UserResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -11,11 +17,13 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface APIService {
 
     companion object {
-        const val BASE_URL = "http://192.168.153.125:5000/"
+        const val BASE_URL = "http://172.17.20.166:5000/"
         const val API_KEY = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
     }
 
@@ -29,13 +37,46 @@ interface APIService {
     @POST("profile")
     suspend fun postProfile(
         @Header("Authorization") authorization: String,
-        @Part userName: MultipartBody.Part,
-        @Part userImage: MultipartBody.Part
+        @Part userImage: MultipartBody.Part,
+        @Part userName: MultipartBody.Part
     ): Response<ProfileResponse>
 
-    @GET("login")
-    suspend fun getLogin(
+    @POST("login")
+    suspend fun postLogin(
         @Header("API_KEY") API_KEY: String,
         @Body userRequest: UserRequest
+    ): Response<LoginResponse>
+
+    @POST("products")
+    suspend fun postProducts(
+        @Query("search") search: String?,
+        @Query("brand") brand: String?,
+        @Query ("lowest") lowest: Int?,
+        @Query ("highest") highest: Int?,
+        @Query ("sort") sort: String?,
+        @Query ("limit") limit: Int?,
+        @Query ("page") page: Int?,
+    ): Response<ProductsResponse>
+
+    @POST("search")
+    suspend fun postSearch(
+        @Query("query") search: String?,
+    ): Response<SearchResponse>
+
+    @POST("refresh")
+    suspend fun postRefresh(
+        @Header("API_KEY") API_KEY: String,
+        @Body token: HashMap<String,String>
     ): Response<UserResponse>
+
+    @GET("products/{id}")
+    suspend fun getDetailProduct(
+        @Path ("id") id : String
+    ): Response<ProductDetailResponse>
+
+    @GET("review/{id}")
+    suspend fun getReviewProduct(
+        @Path ("id") id : String
+    ): Response<ReviewProduct>
+
 }

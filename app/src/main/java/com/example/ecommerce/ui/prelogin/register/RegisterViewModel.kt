@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ecommerce.model.UserRequest
-import com.example.ecommerce.model.UserResponse
+import com.example.ecommerce.model.user.UserRequest
+import com.example.ecommerce.model.user.UserResponse
 import com.example.ecommerce.repository.PreloginRepository
 import com.example.ecommerce.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel

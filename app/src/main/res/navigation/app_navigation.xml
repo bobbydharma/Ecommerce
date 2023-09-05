@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
     app:startDestination="@id/prelogin_navigation">
 
@@ -19,6 +20,54 @@
         app:destination="@id/prelogin_navigation"
         app:popUpTo="@id/app_navigation"
         app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/main_to_product"
+        app:destination="@id/product_navigation" />
+
+    <action
+        android:id="@+id/main_to_detail_product"
+        app:destination="@id/detailProductFragment3" />
+
+    <action
+        android:id="@+id/main_to_cart"
+        app:destination="@id/cartFragment" />
+
+    <include app:graph="@navigation/product_navigation" />
+
+    <action
+        android:id="@+id/product_to_main"
+        app:destination="@id/main_navigation" />
+    <fragment
+        android:id="@+id/detailProductFragment3"
+        android:name="com.example.ecommerce.ui.main.detail.DetailProductFragment"
+        android:label="fragment_detail_product"
+        tools:layout="@layout/fragment_detail_product" >
+        <argument
+            android:name="id_product"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_detailProductFragment3_to_ulasanPembeliFragment2"
+            app:destination="@id/ulasanPembeliFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/ulasanPembeliFragment2"
+        android:name="com.example.ecommerce.ui.main.detail.ReviewFragment"
+        android:label="fragment_ulasan_pembeli"
+        tools:layout="@layout/fragment_ulasan_pembeli">
+        <argument
+            android:name="id_product_review"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.ecommerce.ui.main.cart.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" />
 
 
 </navigation>

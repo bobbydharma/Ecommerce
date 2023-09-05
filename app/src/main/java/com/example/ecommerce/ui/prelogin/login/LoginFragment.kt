@@ -8,12 +8,16 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentLoginBinding
+import com.example.ecommerce.model.user.UserRequest
 import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.utils.Result
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -26,6 +30,7 @@ class LoginFragment : Fragment() {
 
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
+    private val viewModel by viewModels<LoginViewModel>()
 
     private var validEmail: Boolean = false
     private var validPassword: Boolean = false
@@ -34,8 +39,13 @@ class LoginFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (sharedPreferencesManager.token != null) {
-            findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+            if (sharedPreferencesManager.nama == null){
+                findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+            }else{
+                findNavController().navigate(R.id.prelogin_to_main)
+            }
         }
+
     }
 
     override fun onCreateView(
@@ -50,7 +60,10 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnMasuk.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+            val data = UserRequest()
+            data.email = binding.layoutEtEmailLogin.editText?.text.toString()
+            data.password = binding.layoutEtPasswordLogin.editText?.text.toString()
+            viewModel.postLogin(data)
         }
         binding.btnDaftar.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
@@ -59,23 +72,45 @@ class LoginFragment : Fragment() {
         spanText()
         validationButton()
         checking()
+
+        viewModel.loginData.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Success -> {
+                    findNavController().navigate(R.id.prelogin_to_main)
+                }
+                is Result.Error -> {
+
+                    binding.etEmail.setText("")
+                    binding.etPassword.setText("")
+                    binding.layoutEtEmailLogin.isErrorEnabled = true
+                    binding.layoutEtEmailLogin.error = result.exception.message
+                    binding.layoutEtEmailLogin.requestFocus()
+
+                }
+                is Result.Loading -> {
+                }
+
+                else -> {}
+            }
+        }
+
     }
 
     private fun validationButton() {
         binding.btnMasuk.isEnabled = validEmail &&
                 validPassword &&
-                !binding.layoutEtEmai.editText?.text.isNullOrEmpty() &&
-                !binding.layoutEtPassword.editText?.text.isNullOrEmpty()
+                !binding.layoutEtEmailLogin.editText?.text.isNullOrEmpty() &&
+                !binding.layoutEtPasswordLogin.editText?.text.isNullOrEmpty()
     }
 
     private fun checking() {
         binding.etPassword.doOnTextChanged { text, _, _, _ ->
             if ((text?.length ?: 0) < 8 && !text.isNullOrEmpty()) {
-                binding.layoutEtPassword.isErrorEnabled = true
-                binding.layoutEtPassword.error = "Password Tidak Valid"
+                binding.layoutEtPasswordLogin.isErrorEnabled = true
+                binding.layoutEtPasswordLogin.error = "Password Tidak Valid"
                 validPassword = false
             } else {
-                binding.layoutEtPassword.isErrorEnabled = false
+                binding.layoutEtPasswordLogin.isErrorEnabled = false
                 validPassword = true
             }
             validationButton()
@@ -83,11 +118,11 @@ class LoginFragment : Fragment() {
 
         binding.etEmail.doOnTextChanged { text, _, _, _ ->
             if (!Patterns.EMAIL_ADDRESS.matcher(text ?: "").matches() && !text.isNullOrEmpty()) {
-                binding.layoutEtEmai.isErrorEnabled = true
-                binding.layoutEtEmai.error = "Email tidak valid"
+                binding.layoutEtEmailLogin.isErrorEnabled = true
+                binding.layoutEtEmailLogin.error = "Email tidak valid"
                 validEmail = false
             } else {
-                binding.layoutEtEmai.isErrorEnabled = false
+                binding.layoutEtEmailLogin.isErrorEnabled = false
                 validEmail = true
             }
             validationButton()

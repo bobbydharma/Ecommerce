@@ -34,4 +34,19 @@ class PrefHelper @Inject constructor(
     var obCheck: Boolean
         get() = sharedPreferences.getBoolean(KEY_OB_CHECK, false)
         set(value) = sharedPreferences.edit().putBoolean(KEY_OB_CHECK, value).apply()
+
+    fun logout() {
+        val editor = sharedPreferences.edit()
+        editor.remove("nama")
+        editor.remove("image_url")
+        editor.remove("token")
+        editor.remove("refresh_token")
+        editor.apply()
+        editor.commit()
+    }
+
+    fun deleteToken() {
+        sharedPreferences.edit().remove("token").apply()
+    }
+
 }

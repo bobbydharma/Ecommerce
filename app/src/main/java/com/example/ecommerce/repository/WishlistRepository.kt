@@ -1,0 +1,30 @@
+package com.example.ecommerce.repository
+
+import com.example.ecommerce.room.dao.WishlistDAO
+import com.example.ecommerce.room.entity.WishlistEntity
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class WishlistRepository @Inject constructor(
+    private val wishlistDAO: WishlistDAO
+) {
+    fun getAll(): Flow<List<WishlistEntity>> {
+        return wishlistDAO.getAll()
+    }
+
+    suspend fun insertToWishlist(wishlistEntity: WishlistEntity){
+        wishlistDAO.insertWishlist(wishlistEntity)
+    }
+
+    suspend fun deleteWishlist(wishlistEntity: WishlistEntity){
+        wishlistDAO.deleteWishlist(wishlistEntity)
+    }
+
+    suspend fun cekItemWishlist(productId: String) : WishlistEntity? {
+        return wishlistDAO.cekItemWishlist(productId)
+    }
+
+    suspend fun deleteAllDataWishlist(){
+        wishlistDAO.deleteAllDataWishlist()
+    }
+}

@@ -27,7 +27,6 @@ class OnBoardingFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (sharedPreferencesManager.obCheck) {
             findNavController().navigate(R.id.action_onBoardingFragment_to_loginFragment)
         }
