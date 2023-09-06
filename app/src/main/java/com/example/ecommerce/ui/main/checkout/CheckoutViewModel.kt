@@ -16,5 +16,5 @@ class CheckoutViewModel @Inject constructor(
 ) :ViewModel() {
 
     private var _itemCheckoutList = MutableStateFlow(savedStateHandle.get<CheckoutList>("CheckoutList"))
-    val itemCheckoutList: MutableStateFlow<CheckoutList?> = _itemCheckoutList
+    val itemCheckoutList: StateFlow<CheckoutList?> = _itemCheckoutList
 }
