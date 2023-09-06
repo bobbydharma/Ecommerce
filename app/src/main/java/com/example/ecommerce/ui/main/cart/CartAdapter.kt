@@ -39,8 +39,8 @@ class CartAdapter(
                 .error(R.drawable.image_thumbnail)
                 .into(binding.ivCartList)
             binding.tvCartNameList.text = cartEntity.productName
-            binding.tvCartPrice.text = (cartEntity.productPrice + cartEntity.varianPrice).formatToIDR()
-            binding.tvCartVarianNameList.text = cartEntity.varianName
+            binding.tvCartPrice.text = (cartEntity.productPrice + cartEntity.variantPrice).formatToIDR()
+            binding.tvCartVarianNameList.text = cartEntity.variantName
             if (cartEntity.stock < 10){
                 binding.tvCartStokList.text = "Sisa ${cartEntity.stock}"
                 binding.tvCartStokList.setTextColor(Color.RED)

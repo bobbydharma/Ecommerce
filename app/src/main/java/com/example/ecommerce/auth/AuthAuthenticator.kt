@@ -33,7 +33,6 @@ class AuthAuthenticator @Inject constructor(
             prefHelper.refreshToken
         }
             return runBlocking {
-
                 val newToken = token?.let { getNewToken(it) }
 
                 newToken?.body()?.let {

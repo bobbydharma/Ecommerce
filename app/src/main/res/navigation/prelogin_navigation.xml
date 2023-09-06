@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/prelogin_navigation"
-    app:startDestination="@id/onBoardingFragment">
+    app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.ecommerce.ui.prelogin.login.LoginFragment"
@@ -22,6 +22,12 @@
             app:destination="@id/onBoardingFragment"
             app:popUpTo="@id/prelogin_navigation"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_loginFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_profileFragment3"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -36,6 +42,9 @@
             app:destination="@id/profileFragment"
             app:popUpTo="@id/prelogin_navigation"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_registerFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/onBoardingFragment"
@@ -52,10 +61,20 @@
             app:destination="@id/registerFragment"
             app:popUpTo="@id/prelogin_navigation"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_onBoardingFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.ecommerce.ui.main.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_onBoardingFragment"
+            app:destination="@id/onBoardingFragment" />
+    </fragment>
 </navigation>

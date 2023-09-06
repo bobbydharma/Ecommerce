@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -38,12 +39,20 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (sharedPreferencesManager.obCheck == false ){
+            findNavController().navigate(R.id.action_loginFragment_to_onBoardingFragment)
+        }
+
         if (sharedPreferencesManager.token != null) {
             if (sharedPreferencesManager.nama == null){
-                findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+                if (findNavController().currentDestination?.id != R.id.profileFragment){
+                    findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+                }
             }else{
                 findNavController().navigate(R.id.prelogin_to_main)
             }
+        }else{
+
         }
 
     }

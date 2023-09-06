@@ -68,12 +68,16 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (viewModel.imageUri != null){
+            displayCapturedPhoto()
+        }
+
         spanText()
 
         binding.btnSelesai.setOnClickListener {
             val userName = MultipartBody.Part.createFormData("userName", binding.etNama.editText?.text.toString())
-            if (tempImageUri != null){
-                val file = uriToFile(tempImageUri!!, requireContext())
+            if (viewModel.imageUri != null){
+                val file = uriToFile(viewModel.imageUri!!, requireContext())
                 val part = MultipartBody.Part.createFormData("userImage", file.name, file.asRequestBody(
                     "image/*".toMediaType()
                 ))
@@ -100,6 +104,8 @@ class ProfileFragment : Fragment() {
                 is Result.Loading -> {
 
                 }
+
+                else -> {}
             }
         }
 
@@ -122,11 +128,10 @@ class ProfileFragment : Fragment() {
     }
 
     private fun displayCapturedPhoto() {
-        if (tempImageUri != null) {
+        if (viewModel.imageUri != null) {
             binding.ivProfile.setImageURI(viewModel.imageUri)
             binding.imageView2.visibility = View.GONE
         } else {
-            // Gagal mendapatkan gambar
         }
     }
 
@@ -137,8 +142,10 @@ class ProfileFragment : Fragment() {
                 permission
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            tempImageUri = createTempImageUri()
-            takePictureLauncher.launch(tempImageUri)
+            viewModel.imageUri = createTempImageUri()
+//            viewModel.imageUri = tempImageUri
+            Toast.makeText(context, "${viewModel.imageUri}", Toast.LENGTH_SHORT).show()
+            takePictureLauncher.launch(viewModel.imageUri)
         } else {
             // Jika izin belum diberikan, tampilkan permintaan izin
             requestPermissions(arrayOf(permission), CAMERA_PERMISSION_REQUEST)
@@ -159,8 +166,8 @@ class ProfileFragment : Fragment() {
     ) {
         if (requestCode == CAMERA_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                tempImageUri = createTempImageUri()
-                takePictureLauncher.launch(tempImageUri)
+                viewModel.imageUri = createTempImageUri()
+                takePictureLauncher.launch(viewModel.imageUri)
             } else {
 
             }
@@ -186,13 +193,13 @@ class ProfileFragment : Fragment() {
         if (isTaken) {
             displayCapturedPhoto()
         } else {
-
+            Toast.makeText(context, "isTaken", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun useGaleri(uri: Uri) {
-        tempImageUri = uri
-        binding.ivProfile.setImageURI(uri)
+        viewModel.imageUri = uri
+        binding.ivProfile.setImageURI(viewModel.imageUri)
         binding.imageView2.visibility = View.GONE
     }
 

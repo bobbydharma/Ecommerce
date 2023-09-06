@@ -10,7 +10,6 @@
 
     <LinearLayout
         android:id="@+id/container_wishlist"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -28,11 +27,17 @@
                 android:layout_weight="1"
                 android:text="2 barang" />
 
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider_top_cart"
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
             <ToggleButton
                 android:id="@+id/btn_toggle"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/toggle_selector"
+                android:layout_marginLeft="8dp"
                 android:textOff=""
                 android:textOn=""
                 app:layout_constraintBottom_toBottomOf="parent"

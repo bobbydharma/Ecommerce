@@ -2,6 +2,7 @@ package com.example.ecommerce.model.products
 
 import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.ui.main.checkout.CheckoutItem
 
 data class ProductDetailResponse (
     val code: Int,
@@ -71,4 +72,25 @@ fun DataProductDetail.mappingWishlist(): WishlistEntity {
         productVariant[0].variantPrice
     )
     return wishlistEntity
+}
+
+fun DataProductDetail.convertToCheckoutItem(): CheckoutItem {
+    val checkoutItem = CheckoutItem(
+        productId,
+        productName,
+        productPrice,
+        image[0],
+        brand,
+        description,
+        store,
+        sale,
+        stock,
+        totalRating,
+        totalReview,
+        totalSatisfaction,
+        productRating,
+        productVariant[0].variantName,
+        productVariant[0].variantPrice
+    )
+    return checkoutItem
 }

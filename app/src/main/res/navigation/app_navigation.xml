@@ -67,7 +67,19 @@
         android:id="@+id/cartFragment"
         android:name="com.example.ecommerce.ui.main.cart.CartFragment"
         android:label="fragment_cart"
-        tools:layout="@layout/fragment_cart" />
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+        <argument
+            android:name="CheckoutList"
+            app:argType="com.example.ecommerce.ui.main.checkout.CheckoutList" />
+    </fragment>
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.example.ecommerce.ui.main.checkout.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" />
 
 
 </navigation>

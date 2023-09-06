@@ -24,10 +24,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun toProduct(){
-        navController.navigate(R.id.main_to_detail_product)
-    }
-
     fun logout(){
         navController.navigate(R.id.main_to_prelogin)
     }

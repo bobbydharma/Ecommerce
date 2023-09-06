@@ -5,12 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentCartBinding
 import com.example.ecommerce.room.entity.CartEntity
+import com.example.ecommerce.ui.main.checkout.toChekoutList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -63,6 +67,7 @@ class CartFragment : Fragment() {
                     setCheckAllItem(it)
                     deleteButton(it)
                     deleteAtOnce(it)
+                    buyCart(it)
                     listViewAdapter.submitList(it)
                 } else {
                     listViewAdapter.submitList(it)
@@ -70,6 +75,15 @@ class CartFragment : Fragment() {
                     binding.containerErorCart.isVisible = true
                 }
             }
+        }
+    }
+
+    private fun buyCart(it: List<CartEntity>) {
+        val item = it.filter { it.isSelected ==true }
+        val checkoutItem = item.toChekoutList()
+        binding.btnBuyCart.setOnClickListener {
+            val bundle = bundleOf("CheckoutList" to checkoutItem)
+            findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment, bundle)
         }
     }
 
@@ -142,7 +156,7 @@ class CartFragment : Fragment() {
         var totalPrice : Int = 0
         it.forEach {
             if (it.isSelected){
-                val productPrice = (it.productPrice + it.varianPrice) * it.quantity
+                val productPrice = (it.productPrice + it.variantPrice) * it.quantity
                 totalPrice = totalPrice + productPrice
             }
 
