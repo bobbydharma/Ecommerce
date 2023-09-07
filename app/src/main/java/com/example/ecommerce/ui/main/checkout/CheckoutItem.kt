@@ -29,7 +29,7 @@ data class CheckoutItem(
 
 @Parcelize
 data class CheckoutList(
-    var item: List<CheckoutItem>
+    var itemCheckout: List<CheckoutItem>
 ) : Parcelable
 
 fun List<CartEntity>.toChekoutList() : CheckoutList {
@@ -58,4 +58,18 @@ fun List<CartEntity>.toChekoutList() : CheckoutList {
         )
     }
     return CheckoutList(checkoutList)
+}
+
+fun List<CheckoutItem>.toFulfillmentItem() : List<ItemFullfillment> {
+    val fulfilmentItems = mutableListOf<ItemFullfillment>()
+    this.forEach {
+        fulfilmentItems.add(
+            ItemFullfillment(
+                it.productId,
+                it.varianName,
+                it.quantity
+            )
+        )
+    }
+    return fulfilmentItems
 }

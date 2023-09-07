@@ -30,14 +30,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/layout_top_app_bar_send_review" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/divider_top_cart_3"
+        app:layout_constraintBottom_toTopOf="@+id/divider_bot_send_review"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_top_send_review">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -76,13 +80,17 @@
                             android:textStyle="bold" />
 
                         <RatingBar
+                            android:id="@+id/rattingbar_send_review"
                             style="?android:attr/ratingBarStyleIndicator"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
+                            android:layout_gravity="center"
                             android:max="5"
                             android:numStars="5"
-                            android:rating="3" />
+                            android:rating="0"
+                            android:clickable="true"
+                            android:isIndicator="false"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -95,13 +103,14 @@
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/outlinedTextField"
+                            android:id="@+id/layout_et_review_send_review"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginBottom="16dp">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_review_send_review"
                                 android:layout_width="match_parent"
                                 android:layout_height="100dp" />
 
@@ -146,6 +155,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -214,16 +224,19 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_id_invoice_send_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:fontFamily="@font/poppins"
+                    android:maxLines="1"
                     android:text="abcd-efgh-ijkl-mnop"
                     android:textAlignment="textEnd"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_status_send_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
@@ -235,6 +248,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_date_send_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
@@ -245,6 +259,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_time_send_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
@@ -255,6 +270,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_payment_send_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
@@ -265,6 +281,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_total_send_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
@@ -278,6 +295,8 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    </ScrollView>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider_bot_send_review"

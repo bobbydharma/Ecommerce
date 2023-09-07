@@ -5,16 +5,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentPaymentBinding
+import com.example.ecommerce.utils.Result
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
+@AndroidEntryPoint
 class PaymentFragment : Fragment() {
 
     private var _binding : FragmentPaymentBinding? = null
     private val binding get() = _binding!!
+    private val viewModel by viewModels<PaymentViewModel>()
+    private lateinit var parentPaymentAdapter: ParentPaymentAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +39,36 @@ class PaymentFragment : Fragment() {
 
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
+        }
+
+        parentPaymentAdapter = ParentPaymentAdapter {
+            requireActivity().supportFragmentManager.setFragmentResult(
+                "itemPayment",
+                bundleOf("itemPayment" to it)
+            )
+            findNavController().navigateUp()
+        }
+        binding.rvPayment.adapter = parentPaymentAdapter
+
+        viewModel.postPayment()
+
+        viewModel.paymentItem.observe(viewLifecycleOwner){ result ->
+            when (result) {
+                is Result.Success -> {
+                    parentPaymentAdapter.submitList(result.data.data)
+                }
+
+                is Result.Error -> {
+                    Toast.makeText(
+                        requireContext(), result.exception.message, Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is Result.Loading -> {
+                }
+
+                else -> {}
+            }
         }
 
     }

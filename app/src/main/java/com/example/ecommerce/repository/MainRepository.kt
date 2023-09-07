@@ -11,7 +11,17 @@ import com.example.ecommerce.model.products.ReviewProduct
 import com.example.ecommerce.model.products.SearchResponse
 import com.example.ecommerce.network.APIService
 import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.ui.main.checkout.FulfillmentRequest
+import com.example.ecommerce.ui.main.checkout.FulfillmentResponse
+import com.example.ecommerce.ui.main.checkout.ItemFullfillment
+import com.example.ecommerce.ui.main.payment.PaymentResponse
+import com.example.ecommerce.ui.main.sendreview.RatingRequest
+import com.example.ecommerce.ui.main.sendreview.RatingResponse
+import com.example.ecommerce.ui.main.transaction.TransactionResponse
 import com.example.ecommerce.utils.Result
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(
@@ -61,5 +71,51 @@ class MainRepository @Inject constructor(
         }
 
     }
+
+    suspend fun postPayment() : Result<PaymentResponse>{
+        return try {
+            val response = APIService.postPayment()
+            if (response.isSuccessful && response.body() != null){
+                val paymentItem = response.body()
+                Result.Success(paymentItem!!)
+            }else{
+                Result.Error(Exception("API call failed"))
+            }
+        }catch (e: Exception){
+            Result.Error(e)
+        }
+    }
+
+    suspend fun postFulfillment(fulfillmentRequest: FulfillmentRequest) : Result<FulfillmentResponse>{
+        return try {
+            val response = APIService.postFulfillment(fulfillmentRequest)
+            if (response.isSuccessful && response.body() != null){
+                val fulfillmentItem = response.body()
+                Result.Success(fulfillmentItem!!)
+            }else{
+                Result.Error(Exception("API call failed"))
+            }
+        }catch (e: Exception){
+            Result.Error(e)
+        }
+    }
+
+    suspend fun postRating(ratingRequest: RatingRequest): Result<RatingResponse>{
+        return try{
+            val response = APIService.postRating(ratingRequest)
+            if (response.isSuccessful && response.body() != null){
+                val rating = response.body()
+                Result.Success(rating!!)
+            }else{
+                Result.Error(Exception("API call failed"))
+            }
+        }catch (e : Exception){
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getTransaction() = flow {
+        emit(APIService.getTransaction())
+    }.flowOn(Dispatchers.IO)
 
 }

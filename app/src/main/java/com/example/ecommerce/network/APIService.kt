@@ -1,7 +1,6 @@
 package com.example.ecommerce.network
 
 import com.example.ecommerce.model.products.ProductDetailResponse
-import com.example.ecommerce.model.products.ProductsRequest
 import com.example.ecommerce.model.products.ProductsResponse
 import com.example.ecommerce.model.products.ReviewProduct
 import com.example.ecommerce.model.products.SearchResponse
@@ -9,6 +8,12 @@ import com.example.ecommerce.model.user.LoginResponse
 import com.example.ecommerce.model.user.ProfileResponse
 import com.example.ecommerce.model.user.UserRequest
 import com.example.ecommerce.model.user.UserResponse
+import com.example.ecommerce.ui.main.checkout.FulfillmentRequest
+import com.example.ecommerce.ui.main.checkout.FulfillmentResponse
+import com.example.ecommerce.ui.main.payment.PaymentResponse
+import com.example.ecommerce.ui.main.sendreview.RatingRequest
+import com.example.ecommerce.ui.main.sendreview.RatingResponse
+import com.example.ecommerce.ui.main.transaction.TransactionResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -23,7 +28,7 @@ import retrofit2.http.Query
 interface APIService {
 
     companion object {
-        const val BASE_URL = "http://172.17.20.166:5000/"
+        const val BASE_URL = "http://192.168.153.125:5000/"
         const val API_KEY = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
     }
 
@@ -79,4 +84,19 @@ interface APIService {
         @Path ("id") id : String
     ): Response<ReviewProduct>
 
+    @GET("payment")
+    suspend fun postPayment(): Response<PaymentResponse>
+
+    @POST("fulfillment")
+    suspend fun postFulfillment(
+        @Body items: FulfillmentRequest
+    ) : Response<FulfillmentResponse>
+
+    @POST("rating")
+    suspend fun postRating(
+        @Body ratingRequest : RatingRequest
+    ) : Response<RatingResponse>
+
+    @GET("transaction")
+    suspend fun getTransaction() : TransactionResponse
 }

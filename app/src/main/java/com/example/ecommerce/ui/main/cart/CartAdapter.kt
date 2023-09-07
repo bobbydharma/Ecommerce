@@ -27,7 +27,6 @@ class CartAdapter(
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val currentItem = getItem(position)
         holder.bind(currentItem)
-
     }
 
     inner class CartViewHolder(private val binding: ItemListCartBinding) : RecyclerView.ViewHolder(binding.root) {

@@ -83,12 +83,37 @@
         <action
             android:id="@+id/action_checkoutFragment_to_paymentFragment"
             app:destination="@id/paymentFragment" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_sendReviewFragment"
+            app:destination="@id/sendReviewFragment" />
+        <argument
+            android:name="FulfillmentResponse"
+            app:argType="com.example.ecommerce.ui.main.checkout.FulfillmentResponse" />
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"
         android:name="com.example.ecommerce.ui.main.payment.PaymentFragment"
         android:label="fragment_payment"
-        tools:layout="@layout/fragment_payment" />
+        tools:layout="@layout/fragment_payment" >
+        <action
+            android:id="@+id/action_paymentFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+        <argument
+            android:name="itemPayment"
+            app:argType="com.example.ecommerce.ui.main.payment.Item" />
+    </fragment>
+    <fragment
+        android:id="@+id/sendReviewFragment"
+        android:name="com.example.ecommerce.ui.main.sendreview.SendReviewFragment"
+        android:label="fragment_send_review"
+        tools:layout="@layout/fragment_send_review" >
+        <action
+            android:id="@+id/action_sendReviewFragment_to_main_navigation"
+            app:destination="@id/main_navigation" />
+        <action
+            android:id="@+id/action_sendReviewFragment_to_main_navigation2"
+            app:destination="@id/main_navigation" />
+    </fragment>
 
 
 </navigation>
