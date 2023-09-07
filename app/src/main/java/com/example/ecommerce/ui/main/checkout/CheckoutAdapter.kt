@@ -33,7 +33,19 @@ class CheckoutAdapter(diffCallback: DiffUtil.ItemCallback<CheckoutItem>,
             binding.tvQuantityCheckout.text = chekoutItem.quantity.toString()
 
             binding.btnPlusCheckout.setOnClickListener {
+                if(chekoutItem.stock > chekoutItem.quantity){
+                    chekoutItem.quantity += 1
+                    binding.tvQuantityCheckout.text = chekoutItem.quantity.toString()
+                }
                 addItemClick(chekoutItem)
+            }
+
+            binding.btnMinCheckout.setOnClickListener {
+                if(chekoutItem.quantity > 1){
+                    chekoutItem.quantity -= 1
+                    binding.tvQuantityCheckout.text = chekoutItem.quantity.toString()
+                }
+                minItemClick(chekoutItem)
             }
         }
     }

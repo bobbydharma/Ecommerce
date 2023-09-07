@@ -79,6 +79,7 @@
                 android:textStyle="bold"/>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/carf_view_checkout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp">
@@ -151,7 +152,7 @@
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/tv_total_price_cart"
+                android:id="@+id/tv_total_price_checkout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rp0"

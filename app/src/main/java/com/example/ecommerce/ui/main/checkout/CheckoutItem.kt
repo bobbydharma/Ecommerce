@@ -29,7 +29,7 @@ data class CheckoutItem(
 
 @Parcelize
 data class CheckoutList(
-    val item: List<CheckoutItem>
+    var item: List<CheckoutItem>
 ) : Parcelable
 
 fun List<CartEntity>.toChekoutList() : CheckoutList {

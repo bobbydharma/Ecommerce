@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -16,6 +15,7 @@ import com.example.ecommerce.databinding.FragmentCartBinding
 import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.ui.main.checkout.toChekoutList
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -57,13 +57,14 @@ class CartFragment : Fragment() {
             itemAnimator?.changeDuration = 0
         }
 
+        checkAllItem()
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.cartItem.collectLatest {
                 if (it.isNotEmpty()) {
                     binding.containerCart.isVisible = true
                     binding.containerErorCart.isVisible = false
                     totalPrice(it)
-                    checkAllItem(it)
                     setCheckAllItem(it)
                     deleteButton(it)
                     deleteAtOnce(it)
@@ -128,10 +129,9 @@ class CartFragment : Fragment() {
 
     }
 
-    private fun checkAllItem(cartEntity: List<CartEntity>) {
+    private fun checkAllItem() {
         binding.checkboxAllItemCart.setOnClickListener {
             if (binding.checkboxAllItemCart.isChecked){
-
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.updateAllSelectedCart(binding.checkboxAllItemCart.isChecked)
                 }

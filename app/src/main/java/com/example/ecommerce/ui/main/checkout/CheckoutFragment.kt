@@ -5,15 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentCheckoutBinding
-import com.example.ecommerce.databinding.FragmentTransactionBinding
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.ui.main.cart.CartAdapter
-import com.example.ecommerce.ui.main.detail.ReviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -45,30 +41,35 @@ class CheckoutFragment : Fragment() {
 
         binding.rvProductCheckout.adapter = checkoutAdapter
 
+        binding.carfViewCheckout.setOnClickListener{
+            findNavController().navigate(R.id.action_checkoutFragment_to_paymentFragment)
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.itemCheckoutList.collectLatest {
                 checkoutAdapter.submitList(it?.item)
-                Toast.makeText(context, "test", Toast.LENGTH_SHORT).show()
+                setTotalPrice(it?.item)
             }
         }
 
 
 
+    }
+
+    private fun setTotalPrice(item: List<CheckoutItem>?) {
+        var totalPrice = 0
+        item?.forEachIndexed { index, checkoutItem ->
+            val priceProduct = (checkoutItem.productPrice + checkoutItem.varianPrice) * checkoutItem.quantity
+            totalPrice += priceProduct
+        }
+        binding.tvTotalPriceCheckout.text = totalPrice.toString()
     }
 
     private fun onAddItemClick(checkoutItem: CheckoutItem) {
-        if (checkoutItem.stock > checkoutItem.quantity){
-            viewModel.itemCheckoutList.value?.item?.forEachIndexed { index, item ->
-                if (checkoutItem.productId == item.productId){
-                    viewModel.itemCheckoutList.value?.item?.get(index)?.quantity = item.quantity+1
-                    Toast.makeText(context, "${viewModel.itemCheckoutList.value?.item?.get(index)?.quantity}", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+
     }
 
     private fun onMinItemClick(checkoutItem: CheckoutItem) {
-
     }
 
 }
