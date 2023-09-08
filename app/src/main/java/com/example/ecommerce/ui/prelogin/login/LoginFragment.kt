@@ -43,18 +43,6 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.action_loginFragment_to_onBoardingFragment)
         }
 
-        if (sharedPreferencesManager.token != null) {
-            if (sharedPreferencesManager.nama == null){
-                if (findNavController().currentDestination?.id != R.id.profileFragment){
-                    findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
-                }
-            }else{
-                findNavController().navigate(R.id.prelogin_to_main)
-            }
-        }else{
-
-        }
-
     }
 
     override fun onCreateView(

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@id/prelogin_navigation">
+    app:startDestination="@id/main_navigation">
 
     <include app:graph="@navigation/prelogin_navigation" />
 
@@ -18,6 +18,12 @@
     <action
         android:id="@+id/main_to_prelogin"
         app:destination="@id/prelogin_navigation"
+        app:popUpTo="@id/app_navigation"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/main_to_profile"
+        app:destination="@id/profileFragment"
         app:popUpTo="@id/app_navigation"
         app:popUpToInclusive="true" />
 
@@ -126,6 +132,11 @@
             android:id="@+id/action_sendReviewFragment_to_main_navigation2"
             app:destination="@id/main_navigation" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.ecommerce.ui.main.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 
 
 </navigation>

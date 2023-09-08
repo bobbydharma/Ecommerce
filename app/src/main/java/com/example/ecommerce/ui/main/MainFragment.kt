@@ -2,6 +2,7 @@ package com.example.ecommerce.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentMainBinding
@@ -37,6 +39,18 @@ class MainFragment : Fragment() {
     @Inject
     lateinit var prefHelper: PrefHelper
     private val viewModel by viewModels<MainViewModel>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (prefHelper.token == null){
+            findNavController().navigate(R.id.main_to_prelogin)
+        }else{
+            if (prefHelper.nama == null){
+                findNavController().navigate(R.id.main_to_profile)
+            }
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

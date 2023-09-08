@@ -56,7 +56,7 @@ class RegisterFragment : Fragment() {
         viewModel.registerData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
-                    findNavController().navigate(R.id.action_registerFragment_to_profileFragment)
+                    findNavController().navigate(R.id.prelogin_to_main)
                 }
 
                 is Result.Error -> {

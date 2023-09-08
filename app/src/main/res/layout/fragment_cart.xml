@@ -78,10 +78,10 @@
             android:id="@+id/divider_top_cart_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="18dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_delate_cart" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pilihsemua" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lv_cart"
