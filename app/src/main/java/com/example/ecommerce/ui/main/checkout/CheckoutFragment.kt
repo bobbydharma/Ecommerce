@@ -64,6 +64,9 @@ class CheckoutFragment : Fragment() {
         }
 
         binding.btnPayCheckout.isEnabled = false
+        binding.topAppBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
         checkoutAdapter = CheckoutAdapter(
             CheckoutAdapter.checkoutItemDiffCallback,
@@ -83,7 +86,7 @@ class CheckoutFragment : Fragment() {
         viewModel.fulfillment.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
-                    val bundle = bundleOf("FulfillmentResponse" to result.data)
+                    val bundle = bundleOf("FulfillmentResponse" to result.data.data)
                     findNavController().navigate(R.id.action_checkoutFragment_to_sendReviewFragment, bundle)
                 }
                 is Result.Error -> {
@@ -113,6 +116,16 @@ class CheckoutFragment : Fragment() {
 
     private fun onMinItemClick(checkoutItem: CheckoutItem) {
         setTotalPrice(viewModel.itemCheckoutList)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.fulfillment.removeObservers(viewLifecycleOwner)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.fulfillment.removeObservers(viewLifecycleOwner)
     }
 
 }

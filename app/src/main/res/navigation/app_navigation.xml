@@ -30,6 +30,10 @@
         app:destination="@id/detailProductFragment3" />
 
     <action
+        android:id="@+id/main_to_send_review"
+        app:destination="@id/sendReviewFragment" />
+
+    <action
         android:id="@+id/main_to_cart"
         app:destination="@id/cartFragment" />
 
@@ -51,6 +55,12 @@
         <action
             android:id="@+id/action_detailProductFragment3_to_ulasanPembeliFragment2"
             app:destination="@id/ulasanPembeliFragment2" />
+        <action
+            android:id="@+id/action_detailProductFragment3_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+        <argument
+            android:name="CheckoutList"
+            app:argType="com.example.ecommerce.ui.main.checkout.CheckoutList" />
     </fragment>
     <fragment
         android:id="@+id/ulasanPembeliFragment2"
@@ -85,10 +95,12 @@
             app:destination="@id/paymentFragment" />
         <action
             android:id="@+id/action_checkoutFragment_to_sendReviewFragment"
-            app:destination="@id/sendReviewFragment" />
+            app:destination="@id/sendReviewFragment"
+            app:popUpTo="@navigation/main_navigation"
+            />
         <argument
             android:name="FulfillmentResponse"
-            app:argType="com.example.ecommerce.ui.main.checkout.FulfillmentResponse" />
+            app:argType="com.example.ecommerce.ui.main.checkout.Data" />
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"

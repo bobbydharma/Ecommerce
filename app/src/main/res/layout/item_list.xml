@@ -40,7 +40,6 @@
                     android:id="@+id/tv_product_name_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
                     android:text="Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB Windows 11 QHD IPS"
                     android:textSize="12sp" />
 
@@ -48,10 +47,9 @@
                     android:id="@+id/tv_product_price_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
+                    android:fontFamily="@font/poppins_semibold"
                     android:text="Rp23.499.000"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textSize="14sp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -69,7 +67,7 @@
                         android:id="@+id/tv_store_list"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/poppins_regular"
                         android:text="ProStoreComputer"
                         android:textSize="10sp"
                         android:textStyle="bold" />

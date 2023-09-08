@@ -105,10 +105,10 @@ class CartFragment : Fragment() {
         val isSelected = it.any { it.isSelected == true }
 
         if (isSelected) {
-            binding.btnDelateCart.isEnabled = true
+            binding.btnDelateCart.isVisible = true
             binding.btnBuyCart.isEnabled = true
         }else{
-            binding.btnDelateCart.isEnabled = false
+            binding.btnDelateCart.isVisible = false
             binding.btnBuyCart.isEnabled = false
         }
     }

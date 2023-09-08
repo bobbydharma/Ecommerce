@@ -18,6 +18,7 @@ import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentDetailProductBinding
 import com.example.ecommerce.model.products.DataProductDetail
 import com.example.ecommerce.model.products.ProductDetailResponse
+import com.example.ecommerce.model.products.convertToCheckoutList
 import com.example.ecommerce.model.products.mappingCart
 import com.example.ecommerce.ui.prelogin.onboarding.ViewPagerImageAdapter
 import com.example.ecommerce.utils.Result
@@ -45,8 +46,6 @@ class DetailProductFragment : Fragment() {
     }
 
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -69,9 +68,8 @@ class DetailProductFragment : Fragment() {
                     setDisplay(result)
                     saveToCart(result.data.data)
                     saveToWishlist(result.data.data)
-
+                    buyNow(result.data.data)
                     setWIshlist(result.data.data.productId)
-
                 }
                 is Result.Error -> {
                     Toast.makeText(
@@ -88,6 +86,13 @@ class DetailProductFragment : Fragment() {
                 }
                 else -> {}
             }
+        }
+    }
+
+    private fun buyNow(data: DataProductDetail) {
+        binding.btnBuyDetailProduct.setOnClickListener {
+            val bundle = bundleOf("CheckoutList" to data.convertToCheckoutList(globalIndex))
+            findNavController().navigate(R.id.action_detailProductFragment3_to_checkoutFragment, bundle)
         }
     }
 

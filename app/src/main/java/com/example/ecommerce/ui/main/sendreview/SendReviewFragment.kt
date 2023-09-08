@@ -44,12 +44,12 @@ class SendReviewFragment : Fragment() {
         binding.btnDoneSendReview.setOnClickListener {
             if (viewModel.invoice != null){
                 if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty()){
-                    val ratingRequest = RatingRequest(viewModel.invoice!!.data.invoiceId, dataRating, "")
+                    val ratingRequest = RatingRequest(viewModel.invoice!!.invoiceId, dataRating, "")
                     viewLifecycleOwner.lifecycleScope.launch {
                         viewModel.postRating(ratingRequest)
                     }
                 }else{
-                    val ratingRequest = RatingRequest(viewModel.invoice!!.data.invoiceId, dataRating, binding.layoutEtReviewSendReview.editText?.text.toString())
+                    val ratingRequest = RatingRequest(viewModel.invoice!!.invoiceId, dataRating, binding.layoutEtReviewSendReview.editText?.text.toString())
                     viewLifecycleOwner.lifecycleScope.launch {
                         viewModel.postRating(ratingRequest)
                     }
@@ -76,7 +76,7 @@ class SendReviewFragment : Fragment() {
     }
 
     private fun setDisplay() {
-        viewModel.invoice?.data.apply {
+        viewModel.invoice?.apply {
             binding.tvIdInvoiceSendReview.text = this?.invoiceId
             if (this?.status == true){
                 binding.tvStatusSendReview.text = "Berhasil"

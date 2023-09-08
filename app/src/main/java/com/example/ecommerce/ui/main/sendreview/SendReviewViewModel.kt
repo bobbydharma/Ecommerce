@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerce.repository.MainRepository
+import com.example.ecommerce.ui.main.checkout.Data
 import com.example.ecommerce.ui.main.checkout.FulfillmentResponse
 import com.example.ecommerce.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,7 @@ class SendReviewViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val repository: MainRepository
 ):ViewModel() {
-    val invoice = savedStateHandle.get<FulfillmentResponse>("FulfillmentResponse")
+    val invoice = savedStateHandle.get<Data>("FulfillmentResponse")
 
     private val _ratingResponse = MutableLiveData<Result<RatingResponse>>()
     val ratingResponse: LiveData<Result<RatingResponse>> = _ratingResponse

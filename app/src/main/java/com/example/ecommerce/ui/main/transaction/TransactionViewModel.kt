@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.ecommerce.model.user.LoginResponse
 import com.example.ecommerce.repository.MainRepository
 import com.example.ecommerce.utils.Result
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class TransactionViewModel @Inject constructor(
     private val repository: MainRepository
 ) : ViewModel(){

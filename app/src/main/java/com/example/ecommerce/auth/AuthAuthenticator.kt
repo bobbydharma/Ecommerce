@@ -6,6 +6,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.ecommerce.model.user.UserResponse
 import com.example.ecommerce.network.APIService
 import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.utils.Result
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -24,7 +25,7 @@ class AuthAuthenticator @Inject constructor(
 ): Authenticator {
 
     companion object {
-        const val BASE_URL = "http://192.168.153.125:5000/"
+        const val BASE_URL = "http://172.17.20.166:5000/"
         const val API_KEY = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
     }
 
@@ -32,17 +33,17 @@ class AuthAuthenticator @Inject constructor(
         val token = runBlocking {
             prefHelper.refreshToken
         }
-            return runBlocking {
-                val newToken = token?.let { getNewToken(it) }
-
-                newToken?.body()?.let {
-                    prefHelper.token = it.data.accessToken
-                    response.request.newBuilder()
-                        .header("Authorization", "Bearer ${token}")
-                        .build()
-                }
+        return  runBlocking {
+            val newToken = token?.let { getNewToken(it) }
+            newToken?.body()?.let {
+                prefHelper.token = it.data.accessToken
+                response.request.newBuilder()
+                    .header("Authorization", "Bearer ${token}")
+                    .build()
             }
         }
+    }
+
 
     suspend fun getNewToken(token: String): retrofit2.Response<UserResponse>{
         val loggingInterceptor = HttpLoggingInterceptor()

@@ -3,6 +3,7 @@ package com.example.ecommerce.repository
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.ecommerce.R
 import com.example.ecommerce.model.products.Items
 import com.example.ecommerce.model.products.ProductDetailResponse
 import com.example.ecommerce.model.products.ProductsRequest
@@ -117,5 +118,4 @@ class MainRepository @Inject constructor(
     suspend fun getTransaction() = flow {
         emit(APIService.getTransaction())
     }.flowOn(Dispatchers.IO)
-
 }

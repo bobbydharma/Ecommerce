@@ -21,6 +21,8 @@ class ReviewAdapter(private val dataReview: List<DataReview>) :
         fun bind(dataReview: DataReview) {
             Glide.with(itemView.context)
                 .load(dataReview.userImage)
+                .placeholder(R.drawable.image_thumbnail_detail)
+                .error(R.drawable.image_thumbnail_detail)
                 .into(binding.ivUserImageReview)
             binding.tvUserNameReview.text = dataReview.userName
             binding.tvUserReviewReview.text = dataReview.userReview

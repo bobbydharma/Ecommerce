@@ -18,6 +18,7 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorSurfaceContainerLowest"
             app:menu="@menu/top_up_bar_menu"
             app:navigationIcon="@drawable/ic_account_circle"
             app:title="Nama" />
@@ -56,6 +57,7 @@
         android:id="@+id/bnv_child"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/colorSurfaceContainerLowest"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bnv_main" />
