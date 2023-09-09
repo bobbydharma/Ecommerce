@@ -11,6 +11,7 @@
         android:id="@+id/appBarLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -57,7 +58,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="18dp">
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/pager_image_product"
@@ -147,20 +149,36 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name_product" />
 
-            <TextView
-                android:id="@+id/tv_review_product"
+            <LinearLayout
+                android:id="@+id/container_tv_review_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="6dp"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="2dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/border_text"
-                android:drawableStart="@drawable/ic_star"
                 android:gravity="center"
-                tools:text="4.5 (2)"
+                android:orientation="horizontal"
                 app:layout_constraintStart_toEndOf="@+id/tv_sale_product"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name_product" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_name_product">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="4dp"
+                    android:src="@drawable/ic_star" />
+
+                <TextView
+                    android:id="@+id/tv_review_product"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="2dp"
+                    android:layout_marginRight="8dp"
+                    android:gravity="center_vertical"
+                    android:textSize="12sp"
+                    tools:text="4.5 (2)" />
+            </LinearLayout>
+
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider1"
@@ -170,7 +188,7 @@
                 android:layout_marginBottom="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_review_product" />
+                app:layout_constraintTop_toBottomOf="@+id/container_tv_review_product" />
 
             <TextView
                 android:id="@+id/textView11"
@@ -324,15 +342,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_persentase_review_product"
                 />
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="21dp"
-                android:layout_marginBottom="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_review_bottom_product" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

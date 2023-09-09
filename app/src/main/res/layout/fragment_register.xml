@@ -86,7 +86,7 @@
             android:layout_marginHorizontal="32dp"
             android:fontFamily="@font/poppins"
             android:textSize="12sp"
-            android:text="atau daftar dengan" />
+            android:text="atau masuk dengan" />
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="96dp"

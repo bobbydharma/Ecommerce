@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.example.ecommerce.R
 import com.example.ecommerce.databinding.ItemGridBinding
 import com.example.ecommerce.databinding.ItemListBinding
 import com.example.ecommerce.model.products.Items
@@ -27,6 +28,8 @@ class ProductsAdapter(diffCallback: DiffUtil.ItemCallback<Items>, private val on
 
                 Glide.with(itemView.context)
                     .load(items.image)
+                    .placeholder(R.drawable.image_thumbnail_detail)
+                    .error(R.drawable.image_thumbnail_detail)
                     .into(binding.ivProductGrid)
 
                 binding.tvProductNameGrid.text = items.productName
@@ -43,6 +46,8 @@ class ProductsAdapter(diffCallback: DiffUtil.ItemCallback<Items>, private val on
         fun bind(items: Items) {
             Glide.with(itemView.context)
                 .load(items.image)
+                .placeholder(R.drawable.image_thumbnail_detail)
+                .error(R.drawable.image_thumbnail_detail)
                 .into(binding.ivProductList)
 
             binding.tvProductNameList.text = items.productName

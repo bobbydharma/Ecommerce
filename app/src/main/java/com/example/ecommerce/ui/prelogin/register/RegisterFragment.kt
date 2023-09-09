@@ -53,6 +53,10 @@ class RegisterFragment : Fragment() {
             viewModel.postRegister(data)
         }
 
+        binding.btnMasukDaftar.setOnClickListener {
+            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        }
+
         viewModel.registerData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {

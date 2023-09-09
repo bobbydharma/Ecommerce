@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.chip.Chip
@@ -15,15 +16,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-
-
-
     <ToggleButton
         android:id="@+id/btn_toggle_shimmer"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:background="#DDD"
+        android:background="@drawable/background_shape_shimmer"
         android:textOff=""
         android:textOn=""
         app:layout_constraintBottom_toBottomOf="parent"

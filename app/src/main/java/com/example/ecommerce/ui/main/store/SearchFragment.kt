@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -71,18 +72,20 @@ class SearchFragment : DialogFragment() {
         viewModel.searchData.observe(viewLifecycleOwner){result ->
             when (result) {
                 is Result.Success -> {
+                    binding.progressBarSearch.isVisible = false
+                    binding.rvSearch.isVisible = true
                     setDisplayProducts(result.data.data)
                 }
 
                 is Result.Error -> {
-                    Toast.makeText(
-                        requireContext(),
-                        result.exception.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    binding.progressBarSearch.isVisible = false
                 }
 
                 is Result.Loading -> {
+
+                    binding.progressBarSearch.isVisible = true
+                    binding.rvSearch.isVisible = false
+
                 }
 
                 else -> {}

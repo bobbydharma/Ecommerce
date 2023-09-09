@@ -8,8 +8,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="4dp"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,6 +25,7 @@
                 android:id="@+id/iv_product_list"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
+                android:background="@drawable/background_image_rouded"
                 app:srcCompat="@drawable/image_thumbnail"
                 tools:layout_editor_absoluteX="63dp"
                 tools:layout_editor_absoluteY="129dp" />

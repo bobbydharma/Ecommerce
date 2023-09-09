@@ -26,6 +26,7 @@
             android:id="@+id/iv_cart_list"
             android:layout_width="80dp"
             android:layout_height="match_parent"
+            android:background="@drawable/background_image_rouded"
             app:srcCompat="@drawable/image_thumbnail"
             tools:layout_editor_absoluteX="63dp"
             tools:layout_editor_absoluteY="129dp" />
@@ -87,6 +88,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/border_button_cart"
                     android:gravity="center"
+                    android:layout_marginLeft="8dp"
                     android:orientation="horizontal">
 
                     <TextView

@@ -172,7 +172,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingHorizontal="16dp"
                 android:visibility="gone"
                 app:shimmer_auto_start="true">
 
@@ -254,8 +253,8 @@
                 android:id="@+id/rv_product"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingHorizontal="8dp"
-                android:visibility="gone"
+                android:paddingHorizontal="12dp"
+                android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:listitem="@layout/item_list" />
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@drawable/background_bottom_sheet"
     android:padding="16dp"
     tools:context=".ui.main.store.BottomSheetFragment">
 
@@ -35,6 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <com.google.android.material.chip.ChipGroup
+        style="@style/Widget.App.Chip"
         android:id="@+id/chip_group_urutkan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +47,9 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_ulasan"
+            style="@style/Widget.App.Chip"
             android:layout_width="wrap_content"
+            android:fontFamily="@font/poppins_medium"
             android:layout_height="wrap_content"
             android:checkable="true"
             android:text="Ulasan"
@@ -54,6 +57,8 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_penjualan"
+            style="@style/Widget.App.Chip"
+            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
@@ -62,6 +67,8 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_harga_terendah"
+            style="@style/Widget.App.Chip"
+            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
@@ -71,6 +78,8 @@
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_harga_tertinggi"
             android:layout_width="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            style="@style/Widget.App.Chip"
             android:layout_height="wrap_content"
             android:checkable="true"
             android:text="Harga Tertinggi"
@@ -100,6 +109,8 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_apple"
+            style="@style/Widget.App.Chip"
+            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
@@ -108,6 +119,8 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_asus"
+            style="@style/Widget.App.Chip"
+            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
@@ -116,6 +129,8 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_dell"
+            style="@style/Widget.App.Chip"
+            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
@@ -123,7 +138,9 @@
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
         <com.google.android.material.chip.Chip
+            android:fontFamily="@font/poppins_medium"
             android:id="@+id/chip_lenovo"
+            style="@style/Widget.App.Chip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"

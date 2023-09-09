@@ -25,7 +25,7 @@
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:background="#ddd"
+                android:background="@drawable/background_shape_shimmer"
                 tools:layout_editor_absoluteX="63dp"
                 tools:layout_editor_absoluteY="129dp" />
 
