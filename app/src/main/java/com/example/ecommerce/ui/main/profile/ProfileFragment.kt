@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -42,10 +45,10 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<ProfileViewModel>()
-    private var tempImageUri: Uri? = null
 
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
+    private var validName: Boolean = false
 
     private val takePictureLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) {
@@ -72,10 +75,12 @@ class ProfileFragment : Fragment() {
             displayCapturedPhoto()
         }
 
+        validationButton()
         spanText()
+        checking()
 
         binding.btnSelesai.setOnClickListener {
-            val userName = MultipartBody.Part.createFormData("userName", binding.etNama.editText?.text.toString())
+            val userName = MultipartBody.Part.createFormData("userName", binding.layoutEtName.editText?.text.toString())
             if (viewModel.imageUri != null){
                 val file = uriToFile(viewModel.imageUri!!, requireContext())
                 val part = MultipartBody.Part.createFormData("userImage", file.name, file.asRequestBody(
@@ -92,6 +97,7 @@ class ProfileFragment : Fragment() {
         viewModel.profileData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
+                    binding.progressBarProfile.isVisible = false
                     findNavController().navigate(R.id.prelogin_to_main)
                 }
 
@@ -99,10 +105,11 @@ class ProfileFragment : Fragment() {
                     Toast.makeText(
                         requireContext(), result.exception.message, Toast.LENGTH_SHORT
                     ).show()
+                    binding.progressBarProfile.isVisible = false
                 }
 
                 is Result.Loading -> {
-
+                    binding.progressBarProfile.isVisible = true
                 }
 
                 else -> {}
@@ -125,6 +132,19 @@ class ProfileFragment : Fragment() {
                     }
                 }.show()
         }
+    }
+
+    private fun checking() {
+        binding.etName.doOnTextChanged { text, _, _, _ ->
+            binding.layoutEtName.isErrorEnabled = false
+            validName = true
+            validationButton()
+        }
+    }
+
+    private fun validationButton() {
+        val uri = viewModel.imageUri.toString()
+        binding.btnSelesai.isEnabled = validName && !binding.layoutEtName.editText?.text.isNullOrEmpty() && !uri.isNullOrEmpty()
     }
 
     private fun displayCapturedPhoto() {

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -39,7 +40,7 @@ class TransactionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         transactionAdapter = TransactionAdapter {
-            val bundle = bundleOf("FulfillmentResponse" to it.convertToDataFulfillment())
+            val bundle = bundleOf("FulfillmentResponse" to it.convertToDataFulfillment(), "SourceFragment" to "Transaction")
             val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
             navController.navigate(R.id.main_to_send_review, bundle)
         }
@@ -56,11 +57,15 @@ class TransactionFragment : Fragment() {
             viewModel.transaction.collectLatest { result ->
                 when (result) {
                     is Result.Success -> {
+                        binding.containerTransaction.isVisible = true
+                        binding.containerErorTransaction.isVisible = false
                         transactionAdapter.submitList(result.data.data)
                         Log.d("success", result.toString())
                     }
                     is Result.Error -> {
                         Log.d("Error", result.toString())
+                        binding.containerTransaction.isVisible = false
+                        binding.containerErorTransaction.isVisible = true
                     }
                     is Result.Loading -> {
                     }
@@ -69,6 +74,11 @@ class TransactionFragment : Fragment() {
             }
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

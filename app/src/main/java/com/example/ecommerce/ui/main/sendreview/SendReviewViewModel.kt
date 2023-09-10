@@ -19,6 +19,7 @@ class SendReviewViewModel @Inject constructor(
     private val repository: MainRepository
 ):ViewModel() {
     val invoice = savedStateHandle.get<Data>("FulfillmentResponse")
+    val sourceFragment = savedStateHandle.get<String>("SourceFragment")
 
     private val _ratingResponse = MutableLiveData<Result<RatingResponse>>()
     val ratingResponse: LiveData<Result<RatingResponse>> = _ratingResponse

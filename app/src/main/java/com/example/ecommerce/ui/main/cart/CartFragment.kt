@@ -193,4 +193,9 @@ class CartFragment : Fragment() {
         val currencyFormatter = NumberFormat.getCurrencyInstance(localeID)
         return currencyFormatter.format(this).replace(",00","")
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

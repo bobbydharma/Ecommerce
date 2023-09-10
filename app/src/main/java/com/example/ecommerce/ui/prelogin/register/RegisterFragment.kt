@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -60,19 +61,21 @@ class RegisterFragment : Fragment() {
         viewModel.registerData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
+                    binding.progressBarRegister.isVisible = false
                     findNavController().navigate(R.id.prelogin_to_main)
                 }
 
                 is Result.Error -> {
                     binding.etEmail.setText("")
                     binding.etPassword.setText("")
+                    binding.progressBarRegister.isVisible = false
                     binding.layoutEtEmail.isErrorEnabled = true
                     binding.layoutEtEmail.error = result.exception.message
                     binding.layoutEtEmail.requestFocus()
                 }
 
                 is Result.Loading -> {
-
+                    binding.progressBarRegister.isVisible = true
                 }
             }
         }

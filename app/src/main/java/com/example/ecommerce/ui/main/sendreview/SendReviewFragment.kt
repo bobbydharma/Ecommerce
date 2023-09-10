@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,7 @@ class SendReviewFragment : Fragment() {
     private var _binding : FragmentSendReviewBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<SendReviewViewModel>()
+    private var sourceFragment : String? = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,11 +37,33 @@ class SendReviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.sourceFragment.apply {
+            sourceFragment = this
+        }
+
+        if (sourceFragment == "Checkout") {
+            val callback = object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.action_sendReviewFragment_to_main_navigation)
+                }
+            }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+        } else if (sourceFragment == "Transaction") {
+            val callback = object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigateUp()
+                }
+            }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+        }
+
         setDisplay()
         var dataRating = 0
         binding.rattingbarSendReview.setOnRatingBarChangeListener { _, rating, _ ->
             dataRating = rating.toInt()
         }
+
 
         binding.btnDoneSendReview.setOnClickListener {
             if (viewModel.invoice != null){
@@ -61,7 +85,7 @@ class SendReviewFragment : Fragment() {
         viewModel.ratingResponse.observe(viewLifecycleOwner){result ->
             when (result) {
                 is Result.Success -> {
-                    findNavController().navigate(R.id.action_sendReviewFragment_to_main_navigation)
+                    navigate()
                 }
                 is Result.Error -> {
                     Log.d("error", result.toString())
@@ -73,6 +97,14 @@ class SendReviewFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun navigate() {
+        if (sourceFragment == "Checkout"){
+            findNavController().navigate(R.id.action_sendReviewFragment_to_main_navigation)
+        }else if(sourceFragment == "Transaction"){
+            findNavController().navigateUp()
+        }
     }
 
     private fun setDisplay() {
@@ -89,6 +121,11 @@ class SendReviewFragment : Fragment() {
             binding.tvTotalSendReview.text = this?.total?.formatToIDR()
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

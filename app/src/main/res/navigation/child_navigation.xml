@@ -28,5 +28,8 @@
         <argument
             android:name="FulfillmentResponse"
             app:argType="com.example.ecommerce.ui.main.transaction.Datum" />
+        <argument
+            android:name="SourceFragment"
+            app:argType="string" />
     </fragment>
 </navigation>

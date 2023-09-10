@@ -86,7 +86,7 @@ class CheckoutFragment : Fragment() {
         viewModel.fulfillment.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
-                    val bundle = bundleOf("FulfillmentResponse" to result.data.data)
+                    val bundle = bundleOf("FulfillmentResponse" to result.data.data , "SourceFragment" to "Checkout")
                     findNavController().navigate(R.id.action_checkoutFragment_to_sendReviewFragment, bundle)
                 }
                 is Result.Error -> {

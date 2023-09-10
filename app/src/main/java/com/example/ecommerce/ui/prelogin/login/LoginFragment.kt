@@ -74,6 +74,7 @@ class LoginFragment : Fragment() {
         viewModel.loginData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
+                    binding.prgressBarLogin.isVisible = false
                     findNavController().navigate(R.id.prelogin_to_main)
                 }
                 is Result.Error -> {
@@ -81,6 +82,7 @@ class LoginFragment : Fragment() {
                     binding.etEmail.setText("")
                     binding.etPassword.setText("")
                     binding.layoutEtEmailLogin.isErrorEnabled = true
+                    binding.prgressBarLogin.isVisible = false
                     binding.layoutEtEmailLogin.error = result.exception.message
                     binding.layoutEtEmailLogin.requestFocus()
 

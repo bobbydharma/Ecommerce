@@ -107,6 +107,9 @@
         <argument
             android:name="FulfillmentResponse"
             app:argType="com.example.ecommerce.ui.main.checkout.Data" />
+        <argument
+            android:name="SourceFragment"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"
