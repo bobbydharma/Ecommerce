@@ -1,5 +1,7 @@
 package com.example.ecommerce.ui.main.detail
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -51,6 +53,20 @@ class DetailProductFragment : Fragment() {
 
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
+        }
+
+        binding.btnShareDetailProduct.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_TEXT, "http://com.example.ecommerce.ui.main.detail/${viewModel.id}")
+            val title = "Bagikan ke"
+            val chooser = Intent.createChooser(intent, title)
+            if (intent.resolveActivity(requireContext().packageManager) != null) {
+                startActivity(chooser)
+            } else {
+                // Tidak ada aplikasi yang bisa menangani berbagi
+                // Anda bisa menampilkan pesan kesalahan atau tindakan lainnya sesuai kebutuhan
+            }
         }
 
         binding.btnLihatUlasan.setOnClickListener {
