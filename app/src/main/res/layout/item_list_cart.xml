@@ -43,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 android:gravity="center_vertical"
+                android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB Windows 11 QHD IPS"
                 android:textSize="14sp" />

@@ -81,8 +81,8 @@ class DetailProductFragment : Fragment() {
                     binding.divider6.isVisible = true
                     binding.scrollView2.isVisible = true
                     binding.linearLayout2.isVisible = true
-                    setDisplay(result)
-                    saveToCart(result.data.data)
+//                    setDisplay(result)
+//                    saveToCart(result.data.data)
                     saveToWishlist(result.data.data)
                     buyNow(result.data.data)
                     setWIshlist(result.data.data.productId)
@@ -126,15 +126,14 @@ class DetailProductFragment : Fragment() {
 
     private fun setWIshlist(productId: String) {
         viewLifecycleOwner.lifecycleScope.launch{
-            val cekItemWishlist = viewModel.cekItemWishlist(productId)
+//            val cekItemWishlist = viewModel.cekItemWishlist(productId)
 
-            if (cekItemWishlist != null){
-                binding.btnToggleWishlist.isChecked = true
-            }else{
-                binding.btnToggleWishlist.isChecked = false
-            }
+//            if (cekItemWishlist != null){
+//                binding.btnToggleWishlist.isChecked = true
+//            }else{
+//                binding.btnToggleWishlist.isChecked = false
+//            }
         }
-
     }
 
     private fun saveToCart(data: DataProductDetail) {

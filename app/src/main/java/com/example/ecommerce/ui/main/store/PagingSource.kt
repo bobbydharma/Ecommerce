@@ -36,28 +36,34 @@ class PagingSource(
                 )
             }else {
                 if (response.code() == 404) {
-                    return LoadResult.Error(Exception(response.code().toString()))
+                    Log.d("404" , "${response.code()}")
+                    return LoadResult.Error(MyCustomError(response.code().toString()))
                 } else {
+                    Log.d("Else 404" , "error")
                     return LoadResult.Error(Exception("Api key is not valid"))
                 }
             }
         } catch (e: Exception) {
             return when(e){
                 is HttpException -> {
+                    Log.d("HttpException" , "${e.code()}")
                     LoadResult.Error(e)
                 }
 
                 is IOException -> {
+                    Log.d("IOException" , "${e.message}")
                     LoadResult.Error(e)
                 }
 
                 else -> {
-
+                    Log.d("Else" , "${e.message}")
                     LoadResult.Error(e)
                 }
             }
         }
     }
+
+    class MyCustomError(message: String) : Throwable(message)
 
     override fun getRefreshKey(state: PagingState<Int, Items>): Int? {
         return state.anchorPosition?.let { anchorPosition ->

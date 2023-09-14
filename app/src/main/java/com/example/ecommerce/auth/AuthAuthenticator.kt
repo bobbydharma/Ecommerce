@@ -1,6 +1,7 @@
 package com.example.ecommerce.auth
 
 import android.content.Context
+import android.util.Log
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.ecommerce.model.user.UserResponse
@@ -15,13 +16,15 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
 class AuthAuthenticator @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val prefHelper: PrefHelper
+    private val prefHelper: PrefHelper,
+    private val cekAuthorization: CekAuthorization
 ): Authenticator {
 
 //    192.168.153.125
@@ -31,18 +34,33 @@ class AuthAuthenticator @Inject constructor(
     }
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        val token = runBlocking {
-            prefHelper.refreshToken
-        }
-        return  runBlocking {
-            val newToken = token?.let { getNewToken(it) }
-            newToken?.body()?.let {
-                prefHelper.token = it.data.accessToken
-                response.request.newBuilder()
-                    .header("Authorization", "Bearer ${token}")
-                    .build()
+        synchronized(this){
+            return  runBlocking {
+                try {
+                    val token = prefHelper.refreshToken
+                    val newToken =  getNewToken(token ?: "")
+                    if (newToken.isSuccessful && newToken.body() != null) {
+                        newToken?.body()?.let {
+                            prefHelper.token = it.data.accessToken
+                            response.request.newBuilder()
+                                .header("Authorization", "Bearer ${token}")
+                                .build()
+                        }
+                    }else{
+                        if (newToken.code() == 401){
+                            Log.d("error authenticator", "401")
+                            cekAuthorization.setAutorization()
+                            null
+                        }else{
+                            null
+                        }
+                    }
+                }catch (e: HttpException){
+                    null
+                }
             }
         }
+
     }
 
 

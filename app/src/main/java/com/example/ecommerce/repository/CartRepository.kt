@@ -13,6 +13,8 @@ class CartRepository @Inject constructor(
         return cartDAO.getAll()
     }
 
+
+
     suspend fun insertOrUpdateItem(cart: CartEntity){
         val existingCartItem = cartDAO.cekItem(cart.productId)
         if (existingCartItem != null) {
@@ -28,6 +30,10 @@ class CartRepository @Inject constructor(
 
     suspend fun cekItem(productId: String): CartEntity? {
         return cartDAO.cekItem(productId)
+    }
+
+    fun getItem(productId: String): Flow<CartEntity?> {
+        return cartDAO.getItem(productId)
     }
 
     suspend fun deleteCart(vararg cartEntity: CartEntity){

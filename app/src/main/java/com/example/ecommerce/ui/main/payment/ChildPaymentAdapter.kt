@@ -27,6 +27,11 @@ class ChildPaymentAdapter constructor(
 
             binding.tvLabelPayment.text = item.label
 
+            if (item.status == false){
+                binding.itemPayment.isEnabled = false
+                binding.itemPayment.alpha = 0.5F
+            }
+
             binding.itemPayment.setOnClickListener {
                 itemOnClick(item)
             }

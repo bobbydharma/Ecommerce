@@ -1,0 +1,740 @@
+package com.example.ecommerce.ui.main.detail.compose
+
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
+import androidx.fragment.app.Fragment
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.ecommerce.R
+import com.example.ecommerce.model.products.DataProductDetail
+import com.example.ecommerce.model.products.ProductDetailResponse
+import com.example.ecommerce.model.products.ProductVariant
+import com.example.ecommerce.model.products.convertToCheckoutList
+import com.example.ecommerce.room.entity.CartEntity
+import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.ui.main.detail.DetailProductViewModel
+import com.example.ecommerce.utils.Result
+import com.example.ecommerce.utils.formatToIDR
+import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+
+@AndroidEntryPoint
+class DetailProductComposeFragment : Fragment() {
+
+    private val viewModel : DetailProductViewModel by viewModels()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                ThemeCompose(background = Color.White, surface =Color.White ) {
+                    DetailProductScreen(
+                        viewModel,
+                        onNavigateUp = {findNavController().navigateUp()},
+                        {dataProductDetail, index -> buyNow(dataProductDetail, index)},
+                        {dataProductDetail, index -> addToCart(dataProductDetail, index)},
+                        {idProduct -> onReviewClick(idProduct)},
+                        shareLink = { shareLink() }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun shareLink() {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, "http://com.example.ecommerce.ui.main.detail/${viewModel.id}")
+        val title = "Bagikan ke"
+        val chooser = Intent.createChooser(intent, title)
+        if (intent.resolveActivity(requireContext().packageManager) != null) {
+            startActivity(chooser)
+        } else {
+        }
+    }
+
+    private fun onReviewClick(idProduct: String) {
+        val bundle = bundleOf("id_product_review" to idProduct)
+        findNavController().navigate(R.id.action_detailProductFragment3_to_ulasanPembeliFragment2, bundle)
+    }
+
+    private fun addToCart(dataProductDetail: DataProductDetail, index: Int) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val cartItem = viewModel.cekItem(dataProductDetail.productId)
+            if (cartItem != null) {
+                if (cartItem.stock > cartItem.quantity) {
+                    viewModel.insertOrUpdateItem(dataProductDetail, index)
+                } else {
+                }
+            }else{
+                viewModel.insertOrUpdateItem(dataProductDetail, index)
+            }
+        }
+    }
+
+    private fun buyNow(dataProductDetail: DataProductDetail, index: Int) {
+        val bundle = bundleOf("CheckoutList" to dataProductDetail.convertToCheckoutList(index))
+        findNavController().navigate(R.id.action_detailProductFragment3_to_checkoutFragment, bundle)
+    }
+
+}
+
+@Composable
+fun DetailProductScreen(
+    viewModel: DetailProductViewModel,
+    onNavigateUp: () -> Unit,
+    onBuyNow: (DataProductDetail, Int) -> Unit,
+    addToCart: (DataProductDetail, Int) -> Unit,
+    onReviewClick: (String) -> Unit,
+    shareLink : () -> Unit
+) {
+    val detailProduct by viewModel.detailProduct.observeAsState()
+    val itemWishList by viewModel.wishlistItem.collectAsState()
+    val itemCart by viewModel.cartEntityFlow.collectAsState()
+    detailProduct?.let {
+        DetailProductScreen(
+            it,
+            onNavigateUp = { onNavigateUp() },
+            { dataProductDetail, index -> onBuyNow(dataProductDetail, index) },
+            { dataProductDetail, index -> addToCart(dataProductDetail, index) },
+            { onReviewClick -> onReviewClick(onReviewClick) },
+            { dataProductDetail -> viewModel.insertToWishlist(dataProductDetail) },
+            { dataProductDetail -> viewModel.deleteWishlist(dataProductDetail) },
+            itemWishList,
+            shareLink = { shareLink() },
+            itemCart,
+            { viewModel.id?.let { it1 -> viewModel.getDetailProduct(it1) } }
+            )
+    }
+}
+
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalLayoutApi::class
+)
+@Composable
+fun DetailProductScreen(
+    detailProduct: Result<ProductDetailResponse> = Result.Loading,
+    onNavigateUp : () -> Unit,
+    onBuyNow : (DataProductDetail, Int) -> Unit,
+    addToCart : (DataProductDetail, Int) -> Unit,
+    onReviewClick : (String) -> Unit,
+    addToWishList : (DataProductDetail) -> Unit,
+    deleteToWishList : (DataProductDetail) -> Unit,
+    itemWishList : WishlistEntity?,
+    shareLink : () -> Unit,
+    itemCart : CartEntity?,
+    refresh : () -> Unit
+) {
+    val poppins_regular = FontFamily(Font(R.font.poppins_regular))
+    val poppins_medium = FontFamily(Font(R.font.poppins_medium))
+    val poppins_semi_bold = FontFamily(Font(R.font.poppins_semibold))
+    val poppins_bold = FontFamily(Font(R.font.poppins_bold))
+    var globalIndex = rememberSaveable { mutableStateOf(0) }
+
+    when (detailProduct) {
+        is Result.Success -> {
+            val isWishlist = rememberUpdatedState(itemWishList != null)
+            val scope = rememberCoroutineScope()
+            val snackbarHostState = remember { SnackbarHostState() }
+            var quantitiyGlobal = remember { mutableStateOf(0) }
+            if (itemCart != null){
+                quantitiyGlobal.value = itemCart.quantity
+            }else{
+                quantitiyGlobal.value = 0
+            }
+
+            Scaffold(
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState){
+                        androidx.compose.material3.Snackbar (
+                            snackbarData = it,
+                            containerColor = if(it.visuals.message.contains("Stok",true)) Color.Red else SnackbarDefaults.color
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .background(Color.White),
+                topBar = {
+                    Column {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    "Detail Product",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontFamily = poppins_regular,
+                                )
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    onNavigateUp()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ArrowBack,
+                                        contentDescription = "Localized description"
+                                    )
+                                }
+                            },
+                        )
+                        Divider()
+                    }
+                },
+                bottomBar = {
+                    Column {
+                        Divider()
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp)
+                        ) {
+                            OutlinedButton(
+                                onClick = {
+                                      onBuyNow(detailProduct.data.data, globalIndex.value)
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "Beli Langsung",
+                                    fontFamily = poppins_regular
+                                    )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Button(
+                                onClick = {
+                                    if (itemCart != null) {
+                                        if (itemCart.stock > itemCart.quantity ){
+                                            addToCart(detailProduct.data.data, globalIndex.value)
+                                            Log.d("itemCart.stock > itemCart.quantity", "${globalIndex.value}")
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar("Item ditambahkan")
+                                            }
+                                        }else{
+                                            Log.d("else", "${globalIndex.value}")
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar("Stok Habis")
+                                            }
+                                        }
+                                    }else{
+                                        addToCart(detailProduct.data.data, globalIndex.value)
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Item ditambahkan ke-keranjang")
+                                        }
+                                    }
+                                          },
+                                modifier = Modifier
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text ="+ Keranjang",
+                                    fontFamily = poppins_regular
+                                )
+                            }
+                        }
+                    }
+                }
+            ) { innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Box {
+                        val pageCount = detailProduct.data.data.image.size
+                        val pagerState = rememberPagerState()
+                        HorizontalPager(
+                            pageCount = pageCount,
+                            state = pagerState,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) { page ->
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(detailProduct.data.data.image[page])
+                                    .crossfade(true)
+                                    .build(),
+                                placeholder = painterResource(R.drawable.image_thumbnail_detail),
+                                contentDescription = "test",
+                                modifier = Modifier
+                                    .height(300.dp)
+                            )
+
+                        }
+                        Column(
+                            Modifier.align(Alignment.BottomCenter)
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                repeat(pageCount) { iteration ->
+                                    val color =
+                                        if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(2.dp)
+                                            .clip(CircleShape)
+                                            .background(color)
+                                            .size(8.dp)
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+                    Divider()
+                    Row(
+                        Modifier
+                            .padding(start = 16.dp, end = 14.dp, top = 10.dp)
+                    ) {
+                        Text(
+                            text = (detailProduct.data.data.productPrice + detailProduct.data.data.productVariant[globalIndex.value].variantPrice).formatToIDR(),
+                            fontSize = 20.sp,
+                            maxLines = 2,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = poppins_regular,
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                        )
+                        IconButton(
+                            onClick = {
+                                shareLink()
+                            },
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "Share link"
+                            )
+                        }
+                        IconButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically),
+                            onClick = {
+                            if (isWishlist.value){
+                                deleteToWishList(detailProduct.data.data)
+                            }else{
+                                addToWishList(detailProduct.data.data)
+                            }
+
+                        }) {
+                            Icon(
+                                imageVector = if (isWishlist.value) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = "Wishlist"
+                                )
+                        }
+                    }
+                    Text(
+                        text = detailProduct.data.data.productName,
+                        fontFamily = poppins_regular,
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, top = 6.dp)
+                            .fillMaxWidth(),
+                        fontSize = 14.sp
+                    )
+                    Row {
+                        Text(
+                            text = "Terjual ${detailProduct.data.data.sale}",
+                            fontFamily = poppins_regular,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+                                .align(Alignment.CenterVertically)
+                        )
+                        Row(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .wrapContentHeight()
+                                .padding(top = 8.dp)
+                                .border(1.dp, Color.Black, shape = RoundedCornerShape(4.dp)),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_star),
+                                contentDescription = "Star Icon",
+                                tint = Color.Black,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .padding(start = 4.dp, end = 4.dp)
+                            )
+                            Text(
+                                text = "${detailProduct.data.data.productRating} (${detailProduct.data.data.totalRating})",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Normal,
+                                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp, end = 8.dp),
+                                color = Color.Black
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Divider()
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Pilih varian",
+                        fontSize = 16.sp,
+                        fontFamily = poppins_medium,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                    FlowRow(
+                        Modifier
+                            .fillMaxWidth(1f)
+                            .wrapContentHeight(align = Alignment.Top)
+                            .padding(start = 8.dp),
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+                        detailProduct.data.data.productVariant.forEachIndexed { index, productVariant ->
+                            InputChip(
+                                modifier = Modifier.padding(4.dp),
+                                label = { Text(productVariant.variantName) },
+                                selected = index == globalIndex.value,
+                                onClick = {
+                                    if (index == globalIndex.value) {
+                                        globalIndex.value = index
+                                    } else {
+                                        globalIndex.value = index
+                                    }
+                                }
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Divider()
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Deskripsi produk",
+                        fontSize = 16.sp,
+                        fontFamily = poppins_medium,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = detailProduct.data.data.description,
+                        fontSize = 14.sp,
+                        fontFamily = poppins_regular,
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Divider()
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Ulasan pembeli",
+                            fontSize = 16.sp,
+                            fontFamily = poppins_medium,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .weight(1f)
+                        )
+                        TextButton(onClick = {
+                            onReviewClick(detailProduct.data.data.productId)
+                        }) {
+                            Text(
+                                text = "Lihat Semua",
+                                fontFamily = poppins_regular,
+                                modifier = Modifier.padding(end = 16.dp)
+                            )
+                        }
+                    }
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "ratting",
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .size(24.dp)
+                                .align(Alignment.CenterVertically)
+                        )
+                        Text(
+                            text = detailProduct.data.data.productRating.toString(),
+                            fontFamily = poppins_semi_bold,
+                            fontSize = 20.sp,
+                            modifier = Modifier
+                                .align(Alignment.Bottom)
+                                .padding(start = 4.dp)
+                        )
+                        Text(
+                            text = "/5.0",
+                            fontFamily = poppins_regular,
+                            fontSize = 10.sp,
+                            modifier = Modifier
+                                .align(Alignment.Bottom)
+                                .padding(bottom = 6.dp)
+                        )
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 32.dp)
+                        ) {
+                            Text(
+                                text = "${detailProduct.data.data.totalSatisfaction}% pembeli merasa puas",
+                                fontFamily = poppins_semi_bold,
+                                fontSize = 12.sp
+                            )
+                            Text(
+                                text = "${detailProduct.data.data.totalRating} rating · ${detailProduct.data.data.totalReview} ulasan",
+                                fontFamily = poppins_regular,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+        }
+
+        is Result.Loading -> {
+            Scaffold(
+                modifier = Modifier
+                    .background(Color.White),
+                topBar = {
+                    Column {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    "Detail Product",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontFamily = poppins_regular,
+                                )
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    onNavigateUp()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ArrowBack,
+                                        contentDescription = "Localized description"
+                                    )
+                                }
+                            },
+                        )
+                        Divider()
+                    }
+                },
+            ){innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ){
+                    CircularProgressIndicator(
+                        strokeWidth = 4.dp
+                    )
+                }
+            }
+        }
+
+        is Result.Error -> {
+            Scaffold(
+                modifier = Modifier
+                    .background(Color.White),
+                topBar = {
+                    Column {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    "Detail Product",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontFamily = poppins_regular,
+                                )
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    onNavigateUp()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ArrowBack,
+                                        contentDescription = "Localized description"
+                                    )
+                                }
+                            },
+                        )
+                        Divider()
+                    }
+                },
+            ){innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ){
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(R.drawable.error_image)
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(R.drawable.error_image),
+                        contentDescription = "test",
+                        modifier = Modifier
+                            .height(128.dp)
+                    )
+                    Text(
+                        text = "Connection",
+                        fontFamily = poppins_medium,
+                        fontSize = 32.sp
+                    )
+                    Text(
+                        text = "Your connection is unavailable",
+                        fontFamily = poppins_regular,
+                        fontSize = 16.sp
+                    )
+
+                    Button(
+                        onClick = {
+                            refresh()
+                        },
+                    ) {
+                        Text("Refresh")
+                    }
+                }
+            }
+        }
+
+        else -> {}
+    }
+
+
+}
+
+@Preview
+@Composable
+fun GreetingPreview() {
+    val dummyProductVariant1 = ProductVariant("RAM 16GB", 100)
+    val dummyProductVariant2 = ProductVariant("RAM 32GB", 120)
+
+    val dummyDataProductDetail = DataProductDetail(
+        productId = "Rp23.499.000",
+        productName = "Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB Windows 11 QHD IPS",
+        productPrice = 23499000,
+        image = listOf("image_url_1", "image_url_2", "image_url_3"),
+        brand = "Lenovo",
+        description = "Product Description",
+        store = "Store Name",
+        sale = 20,
+        stock = 100,
+        totalRating = 4,
+        totalReview = 50,
+        totalSatisfaction = 85,
+        productRating = 4.5f,
+        productVariant = listOf(dummyProductVariant1, dummyProductVariant2)
+    )
+
+    val dummyProductDetailResponse = ProductDetailResponse(
+        code = 200,
+        message = "Product details retrieved successfully",
+        data = dummyDataProductDetail
+    )
+    DetailProductScreen(
+        detailProduct = Result.Error(exception = Exception("401")),
+        onNavigateUp = {},
+        onBuyNow = { dataProductDetail, index -> /*...*/ },
+        addToCart = { dataProductDetail, index -> /*...*/ },
+        onReviewClick = { idProduct -> /*...*/ },
+        addToWishList = { dataProductDetail -> /*...*/ },
+        deleteToWishList = { dataProductDetail -> /*...*/ },
+        itemWishList = null,
+        shareLink = { /*...*/ },
+        itemCart = null,
+        refresh = {}
+    )
+}

@@ -23,6 +23,7 @@ import com.example.ecommerce.utils.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(
@@ -50,9 +51,9 @@ class MainRepository @Inject constructor(
                 val detailProduct = response.body()
                 Result.Success(detailProduct!!)
             }else{
-                Result.Error(Exception("API call failed"))
+                Result.Error(Exception("Gagal terhubung ke API"))
             }
-        }catch (e: Exception){
+        }catch (e: HttpException){
             Result.Error(e)
         }
 

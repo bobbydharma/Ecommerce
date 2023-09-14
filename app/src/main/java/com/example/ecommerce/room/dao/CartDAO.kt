@@ -17,6 +17,9 @@ interface CartDAO {
     @Query("SELECT * FROM cart WHERE productId = :productId ")
     suspend fun cekItem(productId: String) : CartEntity?
 
+    @Query("SELECT * FROM cart WHERE productId = :productId ")
+    fun getItem(productId: String) : Flow<CartEntity?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCart(cartEntity: CartEntity)
 

@@ -16,6 +16,9 @@ import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.room.entity.WishlistEntity
 import com.example.ecommerce.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,8 +35,21 @@ class DetailProductViewModel @Inject constructor(
 
     val id = savedStateHandle.get<String>("id_product")
 
+    private val _wishlistItem = MutableStateFlow<WishlistEntity?>(null)
+    val wishlistItem: StateFlow<WishlistEntity?> = _wishlistItem
+
+    private val _cartItem = MutableStateFlow<CartEntity?>(null)
+    val cartItem: StateFlow<CartEntity?> = _cartItem
+
+    private val _cartEntityFlow = MutableStateFlow<CartEntity?>(null)
+    val cartEntityFlow: StateFlow<CartEntity?> = _cartEntityFlow
+
     init {
         getDetailProduct(id.toString())
+        if (id != null) {
+            fetchData(id)
+            getCart(id)
+        }
     }
     fun getDetailProduct( id : String) {
         _detailProduct.value = Result.Loading
@@ -54,21 +70,33 @@ class DetailProductViewModel @Inject constructor(
         }
     }
 
-    suspend fun insertToWishlist(product: DataProductDetail){
+    fun insertToWishlist(product: DataProductDetail){
         viewModelScope.launch {
             val wishlistItem = product.mappingWishlist()
             wishlistRepository.insertToWishlist(wishlistItem)
         }
     }
 
-    suspend fun deleteWishlist(product: DataProductDetail){
+    fun deleteWishlist(product: DataProductDetail){
         viewModelScope.launch {
             val wishlistItem = product.mappingWishlist()
             wishlistRepository.deleteWishlist(wishlistItem)
         }
     }
 
-    suspend fun cekItemWishlist(productId: String) : WishlistEntity? {
-        return wishlistRepository.cekItemWishlist(productId)
+    fun fetchData(productId: String) {
+        viewModelScope.launch {
+            wishlistRepository.cekItemWishlist(productId).collect { wishlistEntity ->
+                _wishlistItem.value = wishlistEntity
+            }
+        }
+    }
+
+    fun getCart(productId: String) {
+        viewModelScope.launch {
+            cartRepository.getItem(productId).collect { cartEntity ->
+                _cartEntityFlow.value = cartEntity
+            }
+        }
     }
 }

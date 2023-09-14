@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -55,16 +56,22 @@ class PaymentFragment : Fragment() {
         viewModel.paymentItem.observe(viewLifecycleOwner){ result ->
             when (result) {
                 is Result.Success -> {
+                    binding.rvPayment.isVisible = true
+                    binding.progressBarPayment.isVisible = false
+                    binding.errorConnection.isVisible = false
                     parentPaymentAdapter.submitList(result.data.data)
                 }
 
                 is Result.Error -> {
-                    Toast.makeText(
-                        requireContext(), result.exception.message, Toast.LENGTH_SHORT
-                    ).show()
+                    binding.rvPayment.isVisible = false
+                    binding.progressBarPayment.isVisible = false
+                    binding.errorConnection.isVisible = true
                 }
 
                 is Result.Loading -> {
+                    binding.rvPayment.isVisible = false
+                    binding.progressBarPayment.isVisible = true
+                    binding.errorConnection.isVisible = false
                 }
 
                 else -> {}

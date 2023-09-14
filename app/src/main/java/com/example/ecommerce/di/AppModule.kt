@@ -7,6 +7,7 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.ecommerce.auth.AuthAuthenticator
 import com.example.ecommerce.auth.AuthInterceptor
+import com.example.ecommerce.auth.CekAuthorization
 import com.example.ecommerce.network.APIService
 import com.example.ecommerce.preference.PrefHelper
 import com.example.ecommerce.room.AppDatabase
@@ -61,8 +62,9 @@ object AppModule {
     @Provides
     fun provideAuthenticator(
         @ApplicationContext context : Context,
-        prefHelper: PrefHelper): Authenticator {
-        return AuthAuthenticator(context, prefHelper)
+        prefHelper: PrefHelper,
+        cekAuthorization: CekAuthorization): Authenticator {
+        return AuthAuthenticator(context, prefHelper, cekAuthorization)
     }
 
     @Provides

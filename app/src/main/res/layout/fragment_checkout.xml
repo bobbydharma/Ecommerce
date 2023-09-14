@@ -30,12 +30,23 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/layout_top_app_bar_checkout" />
 
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+    <ProgressBar
+        android:id="@+id/progress_bar_chekout"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_top_checkout" />
+
+    <ScrollView
+        android:id="@+id/scrollView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_top_checkout">
 
         <LinearLayout
@@ -49,11 +60,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:fontFamily="@font/poppins"
                 android:text="Barang yang dibeli"
                 android:textSize="16sp"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="16dp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -72,52 +83,55 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pembayaran"
-                android:layout_marginTop="16dp"
                 android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
                 android:fontFamily="@font/poppins"
+                android:text="Pembayaran"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/carf_view_checkout"
+                style="?attr/materialCardViewElevatedStyle"
+                app:cardBackgroundColor="@color/white"
+                app:cardElevation="3dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                android:layout_margin="16dp">
-                
+                android:layout_margin="16dp"
+                app:cardCornerRadius="8dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:padding="16dp">
 
                     <ImageView
                         android:id="@+id/iv_item_payment_checkout"
                         android:layout_width="48dp"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_add_card"/>
+                        android:src="@drawable/ic_add_card" />
 
                     <TextView
                         android:id="@+id/tv_label_payment_checkout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pilih Pembayaran"
-                        android:layout_weight="1"
                         android:layout_marginHorizontal="16dp"
+                        android:layout_weight="1"
                         android:fontFamily="@font/poppins"
+                        android:text="Pilih Pembayaran"
                         android:textSize="14sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_arrow_forward_ios"/>
+                        android:src="@drawable/ic_arrow_forward_ios" />
 
                 </LinearLayout>
-                
-            </androidx.cardview.widget.CardView>
+
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 

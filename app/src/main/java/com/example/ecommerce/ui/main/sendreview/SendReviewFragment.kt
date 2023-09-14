@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -37,6 +38,8 @@ class SendReviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         viewModel.sourceFragment.apply {
             sourceFragment = this
@@ -85,12 +88,14 @@ class SendReviewFragment : Fragment() {
         viewModel.ratingResponse.observe(viewLifecycleOwner){result ->
             when (result) {
                 is Result.Success -> {
+                    binding.progressBarSendReview.isVisible = false
                     navigate()
                 }
                 is Result.Error -> {
-                    Log.d("error", result.toString())
+                    Toast.makeText(context, "Gagal mengirim review", Toast.LENGTH_SHORT).show()
                 }
                 is Result.Loading -> {
+                    binding.progressBarSendReview.isVisible = true
                 }
                 else -> {
                 }

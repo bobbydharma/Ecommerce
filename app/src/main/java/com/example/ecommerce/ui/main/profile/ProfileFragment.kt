@@ -36,6 +36,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,10 +51,18 @@ class ProfileFragment : Fragment() {
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
     private var validName: Boolean = false
+    val timestamp:String = SimpleDateFormat(
+        FILENAME_FORMAT,
+        Locale.US
+    ).format(System.currentTimeMillis())
 
     private val takePictureLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) {
-            useKamera(it)
+            if (it) {
+                displayCapturedPhoto()
+            } else {
+                Toast.makeText(context, "isTaken", Toast.LENGTH_SHORT).show()
+            }
         }
 
     private val imageGaleri =
@@ -156,42 +166,16 @@ class ProfileFragment : Fragment() {
     }
 
     private fun checkCameraPermissionAndTakePicture() {
-        val permission = Manifest.permission.CAMERA
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                permission
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
             viewModel.imageUri = createTempImageUri()
-//            viewModel.imageUri = tempImageUri
-            Toast.makeText(context, "${viewModel.imageUri}", Toast.LENGTH_SHORT).show()
             takePictureLauncher.launch(viewModel.imageUri)
-        } else {
-            // Jika izin belum diberikan, tampilkan permintaan izin
-            requestPermissions(arrayOf(permission), CAMERA_PERMISSION_REQUEST)
-        }
+
     }
 
     private fun createTempImageUri(): Uri {
         val contentResolver = requireContext().contentResolver
         val contentValues = ContentValues()
-        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, "temp_image.jpg")
+        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, "${timestamp}.jpg")
         return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)!!
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == CAMERA_PERMISSION_REQUEST) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                viewModel.imageUri = createTempImageUri()
-                takePictureLauncher.launch(viewModel.imageUri)
-            } else {
-
-            }
-        }
     }
 
     fun uriToFile(uri: Uri, context: Context): File {
@@ -203,18 +187,6 @@ class ProfileFragment : Fragment() {
             }
         }
         return file
-    }
-
-    companion object {
-        private const val CAMERA_PERMISSION_REQUEST = 123
-    }
-
-    private fun useKamera(isTaken: Boolean) {
-        if (isTaken) {
-            displayCapturedPhoto()
-        } else {
-            Toast.makeText(context, "isTaken", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun useGaleri(uri: Uri) {
@@ -254,5 +226,10 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
+
     }
 }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -86,13 +87,15 @@ class CheckoutFragment : Fragment() {
         viewModel.fulfillment.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
+                    binding.progressBarChekout.isVisible = false
                     val bundle = bundleOf("FulfillmentResponse" to result.data.data , "SourceFragment" to "Checkout")
                     findNavController().navigate(R.id.action_checkoutFragment_to_sendReviewFragment, bundle)
                 }
                 is Result.Error -> {
-                    Log.d("error", result.toString())
+                    Toast.makeText(context, "Gagal melakukan pembayaran", Toast.LENGTH_SHORT).show()
                 }
                 is Result.Loading -> {
+                    binding.progressBarChekout.isVisible = true
                 }
                 else -> {
                 }

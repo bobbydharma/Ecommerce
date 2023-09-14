@@ -178,13 +178,27 @@ class storeFragment : Fragment() {
                         }
 
                         else -> {
-                            binding.shimmerGrid.isVisible = false
-                            binding.shimmerList.isVisible = false
-                            binding.containerFilter.isVisible = false
-                            binding.rvProduct.isVisible = false
-                            binding.errorConnection.isVisible = false
-                            binding.errorData.isVisible = true
-
+                            val errorMessage = error.message
+                            val httpStatusCode = errorMessage?.split(":")?.lastOrNull()?.trim()
+                            if (httpStatusCode != null) {
+                                when (httpStatusCode) {
+                                    "404" -> {
+                                        binding.shimmerGrid.isVisible = false
+                                        binding.shimmerList.isVisible = false
+                                        binding.containerFilter.isVisible = false
+                                        binding.rvProduct.isVisible = false
+                                        binding.errorConnection.isVisible = false
+                                        binding.errorData.isVisible = true
+                                    }
+                                    "401" -> {
+                                        binding.shimmerGrid.isVisible = true
+                                        binding.shimmerList.isVisible = false
+                                        binding.containerFilter.isVisible = false
+                                        binding.rvProduct.isVisible = false
+                                        binding.errorConnection.isVisible = true
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -239,7 +253,9 @@ class storeFragment : Fragment() {
         val chip = Chip(requireContext())
         chip.text = string
         chip.isSelected = true
+        chip.setTextAppearance(R.style.TextAppearance_App_BodyMedium)
         binding.chipFiltered.addView(chip)
+
     }
 
 }

@@ -16,7 +16,7 @@ interface WishlistDAO {
     fun getAll(): Flow<List<WishlistEntity>>
 
     @Query("SELECT * FROM wishlist WHERE productId = :productId ")
-    suspend fun cekItemWishlist(productId: String) : WishlistEntity?
+    fun cekItemWishlist(productId: String) : Flow<WishlistEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWishlist(wishlistEntity: WishlistEntity)
