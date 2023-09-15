@@ -67,9 +67,11 @@ class ReviewComposeFragment : Fragment() {
     ): View? {
         return ComposeView(requireContext()).apply {
             setContent {
-                ReviewScreen(viewModel,
-                    onNavigateUp = { findNavController().navigateUp() }
-                )
+                ThemeCompose() {
+                    ReviewScreen(viewModel,
+                        onNavigateUp = { findNavController().navigateUp() }
+                    )
+                }
             }
         }
     }

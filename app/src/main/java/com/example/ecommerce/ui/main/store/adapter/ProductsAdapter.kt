@@ -1,7 +1,9 @@
 package com.example.ecommerce.ui.main.store.adapter
 
 import android.view.LayoutInflater
+import android.view.RoundedCorner
 import android.view.ViewGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -30,14 +32,15 @@ class ProductsAdapter(diffCallback: DiffUtil.ItemCallback<Items>, private val on
                     .load(items.image)
                     .placeholder(R.drawable.image_thumbnail_detail)
                     .error(R.drawable.image_thumbnail_detail)
+//                    .transform(RoundedCornerShape(8))
                     .into(binding.ivProductGrid)
 
                 binding.tvProductNameGrid.text = items.productName
                 val format = items.productPrice.formatToIDR()
                 binding.tvProductPriceGrid.text = format
                 binding.tvStoreGrid.text = items.store
-                binding.tvSaleGrid.text = "${items.productRating} | Terjual ${items.sale}"
-
+                binding.tvSaleGrid.text =
+                    binding.root.context.getString(R.string.terjual_baru, items.productRating.toString(), items.sale.toString())
             }
         }
 
@@ -54,7 +57,7 @@ class ProductsAdapter(diffCallback: DiffUtil.ItemCallback<Items>, private val on
             val format = items.productPrice.formatToIDR()
             binding.tvProductPriceList.text = format
             binding.tvStoreList.text = items.store
-            binding.tvSaleList.text = "${items.productRating} | Terjual ${items.sale}"
+            binding.tvSaleList.text = binding.root.context.getString(R.string.terjual_baru, items.productRating.toString(), items.sale.toString())
         }
     }
 

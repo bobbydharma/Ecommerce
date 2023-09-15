@@ -13,6 +13,7 @@ class PrefHelper @Inject constructor(
         const val KEY_TOKEN = "token"
         const val KEY_REFRESH_TOKEN = "refresh_token"
         const val KEY_OB_CHECK = "ob_check"
+        const val DARK_THEME = "dark_theme"
     }
 
     var nama: String?
@@ -35,6 +36,10 @@ class PrefHelper @Inject constructor(
         get() = sharedPreferences.getBoolean(KEY_OB_CHECK, false)
         set(value) = sharedPreferences.edit().putBoolean(KEY_OB_CHECK, value).apply()
 
+    var dark_theme: Boolean
+        get() = sharedPreferences.getBoolean(DARK_THEME, false)
+        set(value) = sharedPreferences.edit().putBoolean(DARK_THEME, value).apply()
+
     fun logout() {
         val editor = sharedPreferences.edit()
         editor.remove("nama")
@@ -43,10 +48,6 @@ class PrefHelper @Inject constructor(
         editor.remove("refresh_token")
         editor.apply()
         editor.commit()
-    }
-
-    fun deleteToken() {
-        sharedPreferences.edit().remove("token").apply()
     }
 
 }

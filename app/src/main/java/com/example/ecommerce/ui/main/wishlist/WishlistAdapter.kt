@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.example.ecommerce.R
 import com.example.ecommerce.databinding.ItemGridBinding
 import com.example.ecommerce.databinding.ItemGridWishlistBinding
 import com.example.ecommerce.databinding.ItemListBinding
@@ -40,7 +41,7 @@ class WishlistAdapter(
             binding.tvProductNameList.text = wishlistEntity.productName
             binding.tvProductPriceList.text = (wishlistEntity.productPrice + wishlistEntity.varianPrice).formatToIDR()
             binding.tvStoreList.text = wishlistEntity.store
-            binding.tvSaleList.text = "${wishlistEntity.productRating} | Terjual ${wishlistEntity.sale}"
+            binding.tvSaleList.text = "${wishlistEntity.productRating} ${R.string.terjual_item} ${wishlistEntity.sale}"
 
             binding.btnDeleteWishlist.setOnClickListener {
                 deleteItemClick(wishlistEntity)
@@ -64,7 +65,7 @@ class WishlistAdapter(
             binding.tvProductNameGrid.text = wishlistEntity.productName
             binding.tvProductPriceGrid.text = (wishlistEntity.productPrice + wishlistEntity.varianPrice).formatToIDR()
             binding.tvStoreGrid.text = wishlistEntity.store
-            binding.tvSaleGrid.text = "${wishlistEntity.productRating} | Terjual ${wishlistEntity.sale}"
+            binding.tvSaleGrid.text = "${wishlistEntity.productRating} ${R.string.terjual_item} ${wishlistEntity.sale}"
 
             binding.btnDeleteWishlist.setOnClickListener {
                 deleteItemClick(wishlistEntity)

@@ -10,7 +10,7 @@
         android:id="@+id/layout_top_app_bar_payment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="Pilih Pembayaran" />
+            app:title="@string/pilih_pembayaran" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

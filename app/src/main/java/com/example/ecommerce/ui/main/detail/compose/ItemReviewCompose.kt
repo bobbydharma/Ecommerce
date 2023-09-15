@@ -59,7 +59,6 @@ import com.example.ecommerce.model.products.DataReview
         val poppins_bold = FontFamily(Font(R.font.poppins_bold))
         Column(
             modifier = Modifier
-                .background(Color.White)
                 .padding(top = 16.dp)
         ) {
             Row (

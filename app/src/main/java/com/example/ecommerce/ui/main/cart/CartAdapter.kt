@@ -41,10 +41,10 @@ class CartAdapter(
             binding.tvCartPrice.text = (cartEntity.productPrice + cartEntity.variantPrice).formatToIDR()
             binding.tvCartVarianNameList.text = cartEntity.variantName
             if (cartEntity.stock < 10){
-                binding.tvCartStokList.text = "Sisa ${cartEntity.stock}"
+                binding.tvCartStokList.text = "${R.string.sisa} ${cartEntity.stock}"
                 binding.tvCartStokList.setTextColor(Color.RED)
             }else{
-                binding.tvCartStokList.text = "Stok ${cartEntity.stock}"
+                binding.tvCartStokList.text = "${ R.string.stok } ${cartEntity.stock}"
                 binding.tvCartStokList.setTextColor(Color.BLACK)
             }
             binding.tvOrderQuantity.text = cartEntity.quantity.toString()

@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.core.app.ActivityCompat.recreate
 import androidx.core.content.ContextCompat
+import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,6 +49,15 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (sharedPreferencesManager.dark_theme){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -58,6 +71,38 @@ class HomeFragment : Fragment() {
             (requireActivity() as MainActivity).logout()
         }
 
+        binding.switchLanguage.apply {
+            setOnCheckedChangeListener {_, isChecked ->
+                val check = if (isChecked) "in" else "en"
+                val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(check)
+                AppCompatDelegate.setApplicationLocales(appLocale)
+            }
+        }
+
+        binding.switchTheme.isChecked = sharedPreferencesManager.dark_theme
+
+        binding.switchTheme.apply {
+            setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    sharedPreferencesManager.dark_theme = true
+                }else{
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    sharedPreferencesManager.dark_theme = false
+                }
+            }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.switchLanguage.isChecked = AppCompatDelegate.getApplicationLocales().get(0)!!.language == "in"
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

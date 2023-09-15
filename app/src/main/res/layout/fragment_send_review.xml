@@ -11,7 +11,7 @@
         android:id="@+id/layout_top_app_bar_send_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -90,7 +90,7 @@
                                 android:layout_marginTop="48dp"
                                 android:fontFamily="@font/poppins"
                                 android:gravity="center"
-                                android:text="Pembayaran Berhasil"
+                                android:text="@string/pembayaran_berhasil"
                                 android:textColor="?attr/colorPrimary"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -114,7 +114,7 @@
                                 android:layout_margin="16dp"
                                 android:fontFamily="@font/poppins"
                                 android:gravity="left"
-                                android:text="Beri Ulasan"
+                                android:text="@string/beri_ulasan"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
 
@@ -167,7 +167,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="@font/poppins"
-                android:text="Detail Transaksi"
+                android:text="@string/detail_transaksi"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -190,7 +190,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:fontFamily="@font/poppins"
-                        android:text="ID Transaksi"
+                        android:text="@string/id_transaksi"
                         android:textSize="12sp" />
 
                     <TextView
@@ -198,7 +198,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:fontFamily="@font/poppins"
-                        android:text="Status"
+                        android:text="@string/status"
                         android:textSize="12sp" />
 
                     <TextView
@@ -206,7 +206,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:fontFamily="@font/poppins"
-                        android:text="Tanggal"
+                        android:text="@string/tanggal"
                         android:textSize="12sp" />
 
                     <TextView
@@ -214,7 +214,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:fontFamily="@font/poppins"
-                        android:text="Waktu"
+                        android:text="@string/waktu"
                         android:textSize="12sp" />
 
                     <TextView
@@ -222,14 +222,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:fontFamily="@font/poppins"
-                        android:text="Metode Pembayaranaa"
+                        android:text="@string/metode_pembayarana"
                         android:textSize="12sp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins"
-                        android:text="Total Pembayaran"
+                        android:text="@string/total_bayar"
                         android:textSize="12sp" />
 
                 </LinearLayout>
@@ -342,7 +342,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:text="Selesai" />
+            android:text="@string/selesai" />
 
     </LinearLayout>
 

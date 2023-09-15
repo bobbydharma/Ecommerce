@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="?attr/materialCardViewElevatedStyle"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="?colorSurfaceContainerLowest"
     app:cardElevation = "3dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

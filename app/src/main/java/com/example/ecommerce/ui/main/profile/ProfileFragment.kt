@@ -127,9 +127,9 @@ class ProfileFragment : Fragment() {
         }
 
         binding.ivProfile.setOnClickListener {
-            val item = arrayOf("Kamera", "Galeri")
+            val item = arrayOf(getString(R.string.kamera), getString(R.string.galeri))
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Pilih Gambar")
+                .setTitle(getString(R.string.pilih_gambar))
                 .setItems(item) { _, which ->
                     when (which) {
                         0 -> {
@@ -196,31 +196,22 @@ class ProfileFragment : Fragment() {
     }
 
     private fun spanText() {
-        val spannable =
-            SpannableString("Dengan daftar disini, kamu menyetujui Syarat & Ketentuan serta Kebijakan Privasi TokoPhincon.")
-        spannable.setSpan(
-            ForegroundColorSpan(
-                MaterialColors.getColor(
-                    requireView(),
-                    android.R.attr.colorPrimary
-                )
-            ),
-            37, // start
-            57, // end
-            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
-        )
-        spannable.setSpan(
-            ForegroundColorSpan(
-                MaterialColors.getColor(
-                    requireView(),
-                    android.R.attr.colorPrimary
-                )
-            ),
-            63, // start
-            79, // end
-            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
-        )
-        binding.tvSyarat.text = spannable
+        val textDaftarFirst = getString(R.string.spannable_text_daftar_first)
+        val textDaftar = getString(R.string.spannable_text_daftar)
+        val combinedText = "$textDaftarFirst$textDaftar"
+
+        val spannableString = SpannableString(combinedText)
+
+        val startIndex = combinedText.indexOf(getString(R.string.syarat_dan_ketentuan))
+        val endIndex = startIndex + getString(R.string.syarat_dan_ketentuan).length
+
+        val kebijakanStartIndex = combinedText.indexOf(getString(R.string.kebijakan_privasi))
+        val kebijakanEndIndex = kebijakanStartIndex + getString(R.string.kebijakan_privasi).length
+
+        spannableString.setSpan(ForegroundColorSpan(MaterialColors.getColor(requireView(), android.R.attr.colorPrimary)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spannableString.setSpan(ForegroundColorSpan(MaterialColors.getColor(requireView(), android.R.attr.colorPrimary)), kebijakanStartIndex, kebijakanEndIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+
+        binding.tvSyarat.text = spannableString
     }
 
     override fun onDestroyView() {

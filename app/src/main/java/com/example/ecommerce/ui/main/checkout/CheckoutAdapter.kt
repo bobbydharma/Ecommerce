@@ -29,7 +29,7 @@ class CheckoutAdapter(diffCallback: DiffUtil.ItemCallback<CheckoutItem>,
             binding.tvNameProductCheckout.text = chekoutItem.productName
             binding.tvVarianNameCheckout.text = chekoutItem.varianName
             binding.tvStokCheckout.text = "${chekoutItem.stock} Stok"
-            binding.tvPriceProductCheckout.text = chekoutItem.productPrice.formatToIDR()
+            binding.tvPriceProductCheckout.text = (chekoutItem.productPrice+chekoutItem.varianPrice).formatToIDR()
             binding.tvQuantityCheckout.text = chekoutItem.quantity.toString()
 
             binding.btnPlusCheckout.setOnClickListener {

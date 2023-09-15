@@ -8,7 +8,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/layout_top_app_bar_checkout"
-        android:background="@color/white"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,6 +35,7 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +64,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/poppins"
-                android:text="Barang yang dibeli"
+                android:text="@string/barang_yang_dibeli"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -86,14 +87,14 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/poppins"
-                android:text="Pembayaran"
+                android:text="@string/pembayaran"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/carf_view_checkout"
                 style="?attr/materialCardViewElevatedStyle"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
                 app:cardElevation="3dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,7 +121,7 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins"
-                        android:text="Pilih Pembayaran"
+                        android:text="@string/pilih_pembayaran"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -167,7 +168,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
-                android:text="Total Bayar"
+                android:text="@string/total_bayar"
                 android:textSize="12sp" />
 
             <TextView
@@ -186,7 +187,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="16dp"
-            android:text="Bayar" />
+            android:text="@string/bayar" />
 
     </LinearLayout>
 

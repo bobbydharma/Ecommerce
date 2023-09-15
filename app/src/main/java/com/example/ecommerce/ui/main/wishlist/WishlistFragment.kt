@@ -68,7 +68,7 @@ class WishlistFragment : Fragment() {
                     binding.containerErorWishlist.isVisible=false
                     binding.containerWishlist.isVisible = true
                     wishlistAdapter.submitList(it)
-                    binding.tvTotalWishlist.text = "${it.size} barang"
+                    binding.tvTotalWishlist.text = "${it.size} ${R.string.barang}"
                 }else{
                     binding.containerErorWishlist.isVisible = true
                     binding.containerWishlist.isVisible = false
@@ -85,23 +85,24 @@ class WishlistFragment : Fragment() {
             if (cartItem != null) {
                 if (cartItem.stock > cartItem.quantity) {
                     viewModel.insertOrUpdateItem(wishlistEntity.convertToDetail(), 0)
-                    val snackBar = Snackbar.make(requireView(), "Ditambahkan Kekeranjang", Snackbar.LENGTH_SHORT)
+                    val snackBar = Snackbar.make(requireView(),
+                        getString(R.string.ditambahkan_kekeranjang), Snackbar.LENGTH_SHORT)
                     snackBar.setAnchorView(R.id.bnv_child).show()
                 } else {
-                    val snackBar = Snackbar.make(requireView(), "Stok Habis", Snackbar.LENGTH_SHORT)
+                    val snackBar = Snackbar.make(requireView(),
+                        getString(R.string.stok_habis), Snackbar.LENGTH_SHORT)
                     snackBar.setAnchorView(R.id.bnv_child)
                     snackBar.setBackgroundTint(Color.RED).show()
                 }
             }else{
                 viewModel.insertOrUpdateItem(wishlistEntity.convertToDetail(), 0)
-                val snackBar = Snackbar.make(requireView(), "Ditambahkan Kekeranjang", Snackbar.LENGTH_SHORT)
+                val snackBar = Snackbar.make(requireView(), getString(R.string.ditambahkan_kekeranjang), Snackbar.LENGTH_SHORT)
                 snackBar.setAnchorView(R.id.bnv_child).show()
             }
         }
     }
 
     private fun deleteItemClick(wishlistEntity: WishlistEntity) {
-        Log.d("deleteItemClick", wishlistEntity.productId)
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.deleteWishlist(wishlistEntity)
         }

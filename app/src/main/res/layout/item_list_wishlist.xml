@@ -12,7 +12,7 @@
         android:layout_margin="4dp"
         app:cardElevation="3dp"
         app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +115,7 @@
                 android:orientation="horizontal"
                 android:paddingHorizontal="8dp">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/btn_delete_wishlist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="+ Keranjang"
+                    android:text="@string/btn_tambah_keranjang"
                     />
 
             </LinearLayout>

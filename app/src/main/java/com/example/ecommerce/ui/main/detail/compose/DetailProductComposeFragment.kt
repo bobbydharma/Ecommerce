@@ -76,6 +76,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -115,7 +116,7 @@ class DetailProductComposeFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                ThemeCompose(background = Color.White, surface =Color.White ) {
+                ThemeCompose() {
                     DetailProductScreen(
                         viewModel,
                         onNavigateUp = {findNavController().navigateUp()},
@@ -248,7 +249,7 @@ fun DetailProductScreen(
                         TopAppBar(
                             title = {
                                 Text(
-                                    "Detail Product",
+                                    stringResource(R.string.detail_product),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontFamily = poppins_regular,
@@ -307,7 +308,7 @@ fun DetailProductScreen(
                                     }else{
                                         addToCart(detailProduct.data.data, globalIndex.value)
                                         scope.launch {
-                                            snackbarHostState.showSnackbar("Item ditambahkan ke-keranjang")
+                                            snackbarHostState.showSnackbar("Item ditambahkan")
                                         }
                                     }
                                           },
@@ -426,7 +427,7 @@ fun DetailProductScreen(
                     )
                     Row {
                         Text(
-                            text = "Terjual ${detailProduct.data.data.sale}",
+                            text = stringResource(R.string.terjual, detailProduct.data.data.sale),
                             fontFamily = poppins_regular,
                             fontSize = 12.sp,
                             modifier = Modifier
@@ -438,13 +439,16 @@ fun DetailProductScreen(
                                 .wrapContentWidth()
                                 .wrapContentHeight()
                                 .padding(top = 8.dp)
-                                .border(1.dp, Color.Black, shape = RoundedCornerShape(4.dp)),
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.onSurface,
+                                    shape = RoundedCornerShape(4.dp)
+                                ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_star),
                                 contentDescription = "Star Icon",
-                                tint = Color.Black,
                                 modifier = Modifier
                                     .size(24.dp)
                                     .padding(start = 4.dp, end = 4.dp)
@@ -454,7 +458,6 @@ fun DetailProductScreen(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Normal,
                                 modifier = Modifier.padding(top = 2.dp, bottom = 2.dp, end = 8.dp),
-                                color = Color.Black
                             )
                         }
                     }
@@ -462,7 +465,7 @@ fun DetailProductScreen(
                     Divider()
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "Pilih varian",
+                        text = stringResource(R.string.pilih_varian),
                         fontSize = 16.sp,
                         fontFamily = poppins_medium,
                         modifier = Modifier.padding(start = 16.dp)
@@ -494,7 +497,7 @@ fun DetailProductScreen(
                     Divider()
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "Deskripsi produk",
+                        text = stringResource(R.string.deskripsi_produk),
                         fontSize = 16.sp,
                         fontFamily = poppins_medium,
                         modifier = Modifier.padding(start = 16.dp)
@@ -510,10 +513,11 @@ fun DetailProductScreen(
                     Divider()
                     Spacer(modifier = Modifier.height(10.dp))
                     Row(
+                        modifier = Modifier.padding(end = 16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Ulasan pembeli",
+                            text = stringResource(R.string.ulasan_pembeli),
                             fontSize = 16.sp,
                             fontFamily = poppins_medium,
                             modifier = Modifier
@@ -524,9 +528,8 @@ fun DetailProductScreen(
                             onReviewClick(detailProduct.data.data.productId)
                         }) {
                             Text(
-                                text = "Lihat Semua",
+                                text = stringResource(R.string.lihat_semua),
                                 fontFamily = poppins_regular,
-                                modifier = Modifier.padding(end = 16.dp)
                             )
                         }
                     }
@@ -561,12 +564,19 @@ fun DetailProductScreen(
                                 .padding(start = 32.dp)
                         ) {
                             Text(
-                                text = "${detailProduct.data.data.totalSatisfaction}% pembeli merasa puas",
+                                text = stringResource(
+                                    R.string.pembeli_merasa_puas,
+                                    detailProduct.data.data.totalSatisfaction
+                                ),
                                 fontFamily = poppins_semi_bold,
                                 fontSize = 12.sp
                             )
                             Text(
-                                text = "${detailProduct.data.data.totalRating} rating · ${detailProduct.data.data.totalReview} ulasan",
+                                text = stringResource(
+                                    R.string.rating_ulasan,
+                                    detailProduct.data.data.totalRating,
+                                    detailProduct.data.data.totalReview
+                                ),
                                 fontFamily = poppins_regular,
                                 fontSize = 12.sp
                             )
@@ -586,7 +596,7 @@ fun DetailProductScreen(
                         TopAppBar(
                             title = {
                                 Text(
-                                    "Detail Product",
+                                    stringResource(R.string.detail_product),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontFamily = poppins_regular,
@@ -623,14 +633,12 @@ fun DetailProductScreen(
 
         is Result.Error -> {
             Scaffold(
-                modifier = Modifier
-                    .background(Color.White),
                 topBar = {
                     Column {
                         TopAppBar(
                             title = {
                                 Text(
-                                    "Detail Product",
+                                    stringResource(R.string.detail_product),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontFamily = poppins_regular,
@@ -669,12 +677,12 @@ fun DetailProductScreen(
                             .height(128.dp)
                     )
                     Text(
-                        text = "Connection",
+                        text = stringResource(R.string.connection),
                         fontFamily = poppins_medium,
                         fontSize = 32.sp
                     )
                     Text(
-                        text = "Your connection is unavailable",
+                        text = stringResource(R.string.your_connection_is_unavailable),
                         fontFamily = poppins_regular,
                         fontSize = 16.sp
                     )
@@ -684,16 +692,81 @@ fun DetailProductScreen(
                             refresh()
                         },
                     ) {
-                        Text("Refresh")
+                        Text(stringResource(R.string.refresh))
                     }
                 }
             }
         }
 
-        else -> {}
+        else -> {
+
+            Scaffold(
+                topBar = {
+                    Column {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    stringResource(R.string.detail_product),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontFamily = poppins_regular,
+                                )
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    onNavigateUp()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ArrowBack,
+                                        contentDescription = "Localized description"
+                                    )
+                                }
+                            },
+                        )
+                        Divider()
+                    }
+                },
+            ){innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ){
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(R.drawable.error_image)
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(R.drawable.error_image),
+                        contentDescription = "test",
+                        modifier = Modifier
+                            .height(128.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.connection),
+                        fontFamily = poppins_medium,
+                        fontSize = 32.sp
+                    )
+                    Text(
+                        text = stringResource(R.string.your_connection_is_unavailable),
+                        fontFamily = poppins_regular,
+                        fontSize = 16.sp
+                    )
+
+                    Button(
+                        onClick = {
+                            refresh()
+                        },
+                    ) {
+                        Text(stringResource(R.string.refresh))
+                    }
+                }
+            }
+
+        }
     }
-
-
 }
 
 @Preview
@@ -725,13 +798,13 @@ fun GreetingPreview() {
         data = dummyDataProductDetail
     )
     DetailProductScreen(
-        detailProduct = Result.Error(exception = Exception("401")),
+        detailProduct = Result.Success(dummyProductDetailResponse),
         onNavigateUp = {},
-        onBuyNow = { dataProductDetail, index -> /*...*/ },
-        addToCart = { dataProductDetail, index -> /*...*/ },
-        onReviewClick = { idProduct -> /*...*/ },
-        addToWishList = { dataProductDetail -> /*...*/ },
-        deleteToWishList = { dataProductDetail -> /*...*/ },
+        onBuyNow = { dataProductDetail, index ->  },
+        addToCart = { dataProductDetail, index ->  },
+        onReviewClick = { idProduct ->  },
+        addToWishList = { dataProductDetail ->  },
+        deleteToWishList = { dataProductDetail ->  },
         itemWishList = null,
         shareLink = { /*...*/ },
         itemCart = null,

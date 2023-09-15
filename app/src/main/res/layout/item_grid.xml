@@ -4,7 +4,7 @@
     android:id="@+id/card"
     android:background="?attr/selectableItemBackground"
     style="?attr/materialCardViewElevatedStyle"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
     app:cardElevation = "3dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

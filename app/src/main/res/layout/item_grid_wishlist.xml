@@ -13,7 +13,7 @@
         android:layout_margin="4dp"
         app:cardElevation="3dp"
         app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +127,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_weight="1"
-                        android:text="+ Keranjang"
+                        android:text="@string/btn_tambah_keranjang"
                         android:textSize="10sp" />
                 </LinearLayout>
 
