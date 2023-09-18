@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -133,7 +134,8 @@ class ProfileFragment : Fragment() {
                 .setItems(item) { _, which ->
                     when (which) {
                         0 -> {
-                            checkCameraPermissionAndTakePicture()
+//                            checkCameraPermissionAndTakePicture()
+                            requestWriteExternalStoragePermission()
                         }
 
                         1 -> {
@@ -166,7 +168,8 @@ class ProfileFragment : Fragment() {
     }
 
     private fun checkCameraPermissionAndTakePicture() {
-            viewModel.imageUri = createTempImageUri()
+//            viewModel.imageUri = createTempImageUri()
+        requestWriteExternalStoragePermission()
             takePictureLauncher.launch(viewModel.imageUri)
 
     }
@@ -214,6 +217,19 @@ class ProfileFragment : Fragment() {
         binding.tvSyarat.text = spannableString
     }
 
+    private fun requestWriteExternalStoragePermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Jika izin belum diberikan, minta izin kepada pengguna
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_WRITE_EXTERNAL_STORAGE)
+        } else {
+            // Izin sudah diberikan, lanjutkan dengan operasi yang memerlukan izin tersebut
+            viewModel.imageUri = createTempImageUri()
+            takePictureLauncher.launch(viewModel.imageUri)
+            // Lakukan operasi pengambilan foto dengan menggunakan imageUri
+            // ...
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -221,6 +237,6 @@ class ProfileFragment : Fragment() {
 
     companion object {
         private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
-
+        private val REQUEST_WRITE_EXTERNAL_STORAGE = 1
     }
 }

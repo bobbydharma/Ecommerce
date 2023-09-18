@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentPaymentBinding
 import com.example.ecommerce.utils.Result
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -53,6 +54,7 @@ class PaymentFragment : Fragment() {
 
         viewModel.postPayment()
 
+
         viewModel.paymentItem.observe(viewLifecycleOwner){ result ->
             when (result) {
                 is Result.Success -> {
@@ -77,6 +79,28 @@ class PaymentFragment : Fragment() {
                 else -> {}
             }
         }
+
+//        viewModel.stringPayment.observe(viewLifecycleOwner){result ->
+//
+//            when(result){
+//                is Result.Success -> {
+//                    val gson = Gson()
+//                    val data = gson.fromJson(result.data, Datum::class.java)
+//                    parentPaymentAdapter.submitList(data)
+//                }
+//
+//                is Result.Error -> {
+//
+//                }
+//
+//                is Result.Loading -> {
+//
+//                }
+//
+//                else -> {}
+//            }
+//
+//        }
 
     }
 
