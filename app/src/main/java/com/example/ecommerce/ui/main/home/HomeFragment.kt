@@ -97,7 +97,9 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.switchLanguage.isChecked = AppCompatDelegate.getApplicationLocales().get(0)!!.language == "in"
+        if (AppCompatDelegate.getApplicationLocales().get(0)?.language != null){
+            binding.switchLanguage.isChecked = AppCompatDelegate.getApplicationLocales().get(0)!!.language == "in"
+        }
     }
 
     override fun onDestroy() {

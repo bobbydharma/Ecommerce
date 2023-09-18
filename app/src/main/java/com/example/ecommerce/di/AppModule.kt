@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.example.ecommerce.R
 import com.example.ecommerce.auth.AuthAuthenticator
 import com.example.ecommerce.auth.AuthInterceptor
 import com.example.ecommerce.auth.CekAuthorization
@@ -13,6 +14,10 @@ import com.example.ecommerce.preference.PrefHelper
 import com.example.ecommerce.room.AppDatabase
 import com.example.ecommerce.room.dao.CartDAO
 import com.example.ecommerce.room.dao.WishlistDAO
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -108,4 +113,17 @@ object AppModule {
     fun provideApi(retrofit: Retrofit): APIService {
         return retrofit.create(APIService::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun remoteConfig():FirebaseRemoteConfig{
+        val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+        return remoteConfig
+    }
+
 }
