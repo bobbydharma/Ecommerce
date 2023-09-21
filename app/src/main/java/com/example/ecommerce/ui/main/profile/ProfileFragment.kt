@@ -66,7 +66,6 @@ class ProfileFragment : Fragment() {
             if (it) {
                 displayCapturedPhoto()
             } else {
-                Toast.makeText(context, "isTaken", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -144,8 +143,8 @@ class ProfileFragment : Fragment() {
                 .setItems(item) { _, which ->
                     when (which) {
                         0 -> {
-//                            checkCameraPermissionAndTakePicture()
-                            requestWriteExternalStoragePermission()
+                            checkCameraPermissionAndTakePicture()
+//                            requestWriteExternalStoragePermission()
                         }
 
                         1 -> {
