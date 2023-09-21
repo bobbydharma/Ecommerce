@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/background_bottom_sheet"
+    android:orientation="vertical"
     android:padding="16dp"
     tools:context=".ui.main.store.BottomSheetFragment">
 
@@ -42,8 +42,8 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <com.google.android.material.chip.ChipGroup
-        style="@style/Widget.App.Chip"
         android:id="@+id/chip_group_urutkan"
+        style="@style/Widget.App.Chip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:chipSpacingVertical="-8dp"
@@ -56,39 +56,39 @@
             android:id="@+id/chip_ulasan"
             style="@style/Widget.App.Chip"
             android:layout_width="wrap_content"
-            android:fontFamily="@font/poppins_medium"
             android:layout_height="wrap_content"
             android:checkable="true"
+            android:fontFamily="@font/poppins_medium"
             android:text="@string/ulasan"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_penjualan"
             style="@style/Widget.App.Chip"
-            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
+            android:fontFamily="@font/poppins_medium"
             android:text="@string/penjualan"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_harga_terendah"
             style="@style/Widget.App.Chip"
-            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
+            android:fontFamily="@font/poppins_medium"
             android:text="@string/harga_terendah"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_harga_tertinggi"
-            android:layout_width="wrap_content"
-            android:fontFamily="@font/poppins_medium"
             style="@style/Widget.App.Chip"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
+            android:fontFamily="@font/poppins_medium"
             android:text="@string/harga_tertinggi"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
@@ -117,40 +117,40 @@
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_apple"
             style="@style/Widget.App.Chip"
-            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
+            android:fontFamily="@font/poppins_medium"
             android:text="Apple"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_asus"
             style="@style/Widget.App.Chip"
-            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
+            android:fontFamily="@font/poppins_medium"
             android:text="Asus"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_dell"
             style="@style/Widget.App.Chip"
-            android:fontFamily="@font/poppins_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
+            android:fontFamily="@font/poppins_medium"
             android:text="Dell"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
         <com.google.android.material.chip.Chip
-            android:fontFamily="@font/poppins_medium"
             android:id="@+id/chip_lenovo"
             style="@style/Widget.App.Chip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checkable="true"
+            android:fontFamily="@font/poppins_medium"
             android:text="Lenovo"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
