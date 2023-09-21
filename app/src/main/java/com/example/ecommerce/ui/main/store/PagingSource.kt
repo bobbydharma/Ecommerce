@@ -40,7 +40,7 @@ class PagingSource(
                     return LoadResult.Error(MyCustomError(response.code().toString()))
                 } else {
                     Log.d("Else 404" , "error")
-                    return LoadResult.Error(Exception("Api key is not valid"))
+                    return LoadResult.Error(HttpException(response))
                 }
             }
         } catch (e: Exception) {

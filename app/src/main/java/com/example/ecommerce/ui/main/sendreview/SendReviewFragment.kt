@@ -17,8 +17,11 @@ import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentSendReviewBinding
 import com.example.ecommerce.utils.Result
 import com.example.ecommerce.utils.formatToIDR
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SendReviewFragment : Fragment() {
@@ -27,6 +30,8 @@ class SendReviewFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModels<SendReviewViewModel>()
     private var sourceFragment : String? = ""
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,6 +74,9 @@ class SendReviewFragment : Fragment() {
 
 
         binding.btnDoneSendReview.setOnClickListener {
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Ratting_Done" )
+            }
             if (viewModel.invoice != null){
                 if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty() && dataRating == 0){
                     navigate()

@@ -196,12 +196,40 @@ class storeFragment : Fragment() {
                     binding.errorConnection.isVisible = false
                     binding.containerFilter.isVisible = true
                     binding.rvProduct.isVisible = true
+                    Log.d("LoadState.NotLoading", "NotLoading")
                 }
 
                 if (loadStates.refresh is LoadState.Error){
                     when(val error = (loadStates.refresh as LoadState.Error).error){
                         is HttpException -> {
-                            Log.d("1", error.code().toString())
+                            if (error.code() == 401){
+                                binding.shimmerGrid.isVisible = true
+                                binding.shimmerList.isVisible = false
+                                binding.containerFilter.isVisible = false
+                                binding.rvProduct.isVisible = false
+                                binding.internalServerError.isVisible = false
+                                binding.errorConnection.isVisible = true
+                                Log.d("LoadState.Error", "HttpException 401")
+                                pagingAdapter.retry()
+                            }else if (error.code() == 404){
+                                binding.shimmerGrid.isVisible = false
+                                binding.shimmerList.isVisible = false
+                                binding.containerFilter.isVisible = false
+                                binding.rvProduct.isVisible = false
+                                binding.errorConnection.isVisible = false
+                                binding.internalServerError.isVisible = false
+                                binding.errorData.isVisible = true
+                                Log.d("LoadState.Error", "HttpException 404")
+                            }else{
+                                binding.shimmerGrid.isVisible = false
+                                binding.shimmerList.isVisible = false
+                                binding.containerFilter.isVisible = false
+                                binding.rvProduct.isVisible = false
+                                binding.errorConnection.isVisible = false
+                                binding.internalServerError.isVisible = true
+                                binding.errorData.isVisible = false
+                                Log.d("LoadState.Error", "HttpException else")
+                            }
                         }
 
                         is IOException -> {
@@ -210,11 +238,14 @@ class storeFragment : Fragment() {
                             binding.containerFilter.isVisible = false
                             binding.rvProduct.isVisible = false
                             binding.errorConnection.isVisible = true
+                            Log.d("LoadState.Error", "IOException")
                         }
 
                         else -> {
+                            Log.d("LoadState.Error", "else")
                             val errorMessage = error.message
                             val httpStatusCode = errorMessage?.split(":")?.lastOrNull()?.trim()
+                            pagingAdapter.retry()
                             if (httpStatusCode != null) {
                                 when (httpStatusCode) {
                                     "404" -> {
@@ -224,6 +255,7 @@ class storeFragment : Fragment() {
                                         binding.rvProduct.isVisible = false
                                         binding.errorConnection.isVisible = false
                                         binding.errorData.isVisible = true
+                                        Log.d("LoadState.Error", "else 404")
                                     }
                                     "401" -> {
                                         binding.shimmerGrid.isVisible = true
@@ -231,6 +263,7 @@ class storeFragment : Fragment() {
                                         binding.containerFilter.isVisible = false
                                         binding.rvProduct.isVisible = false
                                         binding.errorConnection.isVisible = true
+                                        Log.d("LoadState.Error", "else 401")
                                     }
                                 }
                             }

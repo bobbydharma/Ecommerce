@@ -122,6 +122,9 @@ class CartFragment : Fragment() {
         val item = it.filter { it.isSelected ==true }
         val checkoutItem = item.toChekoutList()
         binding.btnBuyCart.setOnClickListener {
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Cart_Buy" )
+            }
             val bundle = bundleOf("CheckoutList" to checkoutItem)
             findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment, bundle)
         }
@@ -133,7 +136,9 @@ class CartFragment : Fragment() {
             val item = cartEntity.filter { item ->
                 item.isSelected
             }
-
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Cart_delete" )
+            }
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.deleteCart(*item.toTypedArray())
             }
@@ -170,6 +175,9 @@ class CartFragment : Fragment() {
 
     private fun checkAllItem() {
         binding.checkboxAllItemCart.setOnClickListener {
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Cart_Select_All" )
+            }
             if (binding.checkboxAllItemCart.isChecked){
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.updateAllSelectedCart(binding.checkboxAllItemCart.isChecked)
@@ -204,6 +212,9 @@ class CartFragment : Fragment() {
     }
 
     private fun onAddItemClick(cartEntity: CartEntity) {
+        firebaseAnalytics.logEvent("BUTTON_CLICK"){
+            param("BUTTON_NAME", "Cart_Add" )
+        }
         if (cartEntity.stock > cartEntity.quantity){
             viewLifecycleOwner.lifecycleScope.launch{
                 viewModel.updateQuantityCart(cartEntity.productId, cartEntity.quantity+1)
@@ -213,6 +224,10 @@ class CartFragment : Fragment() {
     }
 
     private fun onDeleteItemClick(cartEntity: CartEntity) {
+        firebaseAnalytics.logEvent("BUTTON_CLICK"){
+            param("BUTTON_NAME", "Cart_Delet" )
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.deleteCart(cartEntity)
         }
@@ -242,6 +257,9 @@ class CartFragment : Fragment() {
         if (cartEntity.quantity > 1){
             viewLifecycleOwner.lifecycleScope.launch{
                 viewModel.updateQuantityCart(cartEntity.productId, cartEntity.quantity-1)
+            }
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Cart_Min" )
             }
         }
 

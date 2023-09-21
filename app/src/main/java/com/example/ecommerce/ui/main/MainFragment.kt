@@ -20,6 +20,8 @@ import com.example.ecommerce.room.AppDatabase
 import com.example.ecommerce.ui.main.cart.CartViewModel
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -38,6 +40,8 @@ class MainFragment : Fragment() {
     }
     @Inject
     lateinit var prefHelper: PrefHelper
+    @Inject
+    lateinit var firebaseAnalytics:FirebaseAnalytics
     private val viewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,12 +77,18 @@ class MainFragment : Fragment() {
                 R.id.cart -> {
                     val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
                     navController.navigate(R.id.main_to_cart)
+                    firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                        param("BUTTON_NAME", "MainFragment_To_Cart" )
+                    }
                     true
                 }
 
                 R.id.notification -> {
                     val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
                     navController.navigate(R.id.main_to_notification)
+                    firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                        param("BUTTON_NAME", "MainFragment_To_Notification" )
+                    }
                     true
                 }
 
