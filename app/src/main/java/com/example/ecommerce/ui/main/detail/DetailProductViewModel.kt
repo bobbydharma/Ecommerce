@@ -33,7 +33,7 @@ class DetailProductViewModel @Inject constructor(
     private var _detailProduct = MutableLiveData<Result<ProductDetailResponse>>()
     val detailProduct : LiveData<Result<ProductDetailResponse>> = _detailProduct
 
-    val id = savedStateHandle.get<String>("id_product")
+    val id = savedStateHandle.get<String>("id_product") ?: ""
 
     private val _wishlistItem = MutableStateFlow<WishlistEntity?>(null)
     val wishlistItem: StateFlow<WishlistEntity?> = _wishlistItem
@@ -45,7 +45,7 @@ class DetailProductViewModel @Inject constructor(
     val cartEntityFlow: StateFlow<CartEntity?> = _cartEntityFlow
 
     init {
-        getDetailProduct(id.toString())
+        getDetailProduct(id)
         if (id != null) {
             fetchData(id)
             getCart(id)

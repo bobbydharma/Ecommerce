@@ -41,7 +41,7 @@
     <string name="pilih_pembayaran">Pilih Pembayaran</string>
     <string name="bayar">Bayar</string>
     <string name="sisa">Sisa</string>
-    <string name="stok">Stock</string>
+    <string name="stok">Stock %1$s</string>
     <string name="barang_yang_dibeli">Barang yang dibeli</string>
     <string name="pembayaran_berhasil">Pembayaran Berhasil</string>
     <string name="beri_ulasan">Beri Ulasan</string>
@@ -70,4 +70,6 @@
     <string name="refresh">Segarkan</string>
     <string name="terjual">Terjual %1$s</string>
     <string name="terjual_baru">%1$s | Terjual %2$s</string>
+    <string name="total_barang">%1$s Barang</string>
+    <string name="terjuall">%1$s | Terjual %2$s</string>
 </resources>

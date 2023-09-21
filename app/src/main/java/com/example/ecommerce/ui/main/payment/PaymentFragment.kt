@@ -52,16 +52,44 @@ class PaymentFragment : Fragment() {
         }
         binding.rvPayment.adapter = parentPaymentAdapter
 
-        viewModel.postPayment()
+//        viewModel.postPayment()
 
 
-        viewModel.paymentItem.observe(viewLifecycleOwner){ result ->
-            when (result) {
+//        viewModel.paymentItem.observe(viewLifecycleOwner){ result ->
+//            when (result) {
+//                is Result.Success -> {
+//                    binding.rvPayment.isVisible = true
+//                    binding.progressBarPayment.isVisible = false
+//                    binding.errorConnection.isVisible = false
+//                    parentPaymentAdapter.submitList(result.data.data)
+//                }
+//
+//                is Result.Error -> {
+//                    binding.rvPayment.isVisible = false
+//                    binding.progressBarPayment.isVisible = false
+//                    binding.errorConnection.isVisible = true
+//                }
+//
+//                is Result.Loading -> {
+//                    binding.rvPayment.isVisible = false
+//                    binding.progressBarPayment.isVisible = true
+//                    binding.errorConnection.isVisible = false
+//                }
+//
+//                else -> {}
+//            }
+//        }
+
+        viewModel.stringPayment.observe(viewLifecycleOwner){result ->
+
+            when(result){
                 is Result.Success -> {
                     binding.rvPayment.isVisible = true
                     binding.progressBarPayment.isVisible = false
                     binding.errorConnection.isVisible = false
-                    parentPaymentAdapter.submitList(result.data.data)
+                    val gson = Gson()
+                    val data = gson.fromJson(result.data, PaymentResponse::class.java)
+                    parentPaymentAdapter.submitList(data.data)
                 }
 
                 is Result.Error -> {
@@ -78,30 +106,14 @@ class PaymentFragment : Fragment() {
 
                 else -> {}
             }
+
         }
 
-//        viewModel.stringPayment.observe(viewLifecycleOwner){result ->
-//
-//            when(result){
-//                is Result.Success -> {
-//                    val gson = Gson()
-//                    val data = gson.fromJson(result.data, Datum::class.java)
-//                    parentPaymentAdapter.submitList(data)
-//                }
-//
-//                is Result.Error -> {
-//
-//                }
-//
-//                is Result.Loading -> {
-//
-//                }
-//
-//                else -> {}
-//            }
-//
-//        }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

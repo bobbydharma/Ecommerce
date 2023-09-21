@@ -57,13 +57,16 @@ class TransactionFragment : Fragment() {
             viewModel.transaction.collectLatest { result ->
                 when (result) {
                     is Result.Success -> {
-                        binding.containerTransaction.isVisible = true
-                        binding.containerErorTransaction.isVisible = false
-                        transactionAdapter.submitList(result.data.data)
-                        Log.d("success", result.toString())
+                        if (result.data.data.isNotEmpty()){
+                            binding.containerTransaction.isVisible = true
+                            binding.containerErorTransaction.isVisible = false
+                            transactionAdapter.submitList(result.data.data)
+                        }else{
+                            binding.containerTransaction.isVisible = false
+                            binding.containerErorTransaction.isVisible = true
+                        }
                     }
                     is Result.Error -> {
-                        Log.d("Error", result.toString())
                         binding.containerTransaction.isVisible = false
                         binding.containerErorTransaction.isVisible = true
                     }

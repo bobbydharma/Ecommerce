@@ -28,6 +28,8 @@ import com.example.ecommerce.databinding.FragmentStoreBinding
 import com.example.ecommerce.model.products.ProductsRequest
 import com.example.ecommerce.preference.PrefHelper
 import com.google.android.material.chip.Chip
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -41,14 +43,35 @@ class storeFragment : Fragment() {
 
     private var _binding: FragmentStoreBinding? = null
     private val binding get() = _binding!!
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
+
 
     @Inject
     lateinit var prefHelper: PrefHelper
     private val viewModel by activityViewModels<StoreViewModel>()
     private val pagingAdapter = ProductsAdapter(ProductsAdapter.ProductComparator){itemClicked ->
-        val bundle = bundleOf("id_product" to itemClicked)
+        val bundle = bundleOf("id_product" to itemClicked.productId)
         val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
         navController.navigate(R.id.main_to_detail_product, bundle)
+
+        //                start log event
+        val itemProduct = Bundle().apply {
+            putString(FirebaseAnalytics.Param.ITEM_ID, itemClicked.productId)
+            putString(FirebaseAnalytics.Param.ITEM_NAME, itemClicked.productName)
+            putString(FirebaseAnalytics.Param.ITEM_BRAND, itemClicked.brand)
+            putDouble(FirebaseAnalytics.Param.PRICE, (itemClicked.productPrice).toDouble())
+        }
+        val itemProductCart = Bundle(itemProduct).apply {
+            putLong(FirebaseAnalytics.Param.QUANTITY, 1)
+        }
+//                end log event
+
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM){
+            param(FirebaseAnalytics.Param.ITEM_ID, itemClicked.productId)
+            param(FirebaseAnalytics.Param.ITEM_NAME, itemClicked.productName)
+            param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemProductCart))
+        }
 
     }
 
@@ -76,6 +99,9 @@ class storeFragment : Fragment() {
                 lowest = viewModel.prooductQuery.value.lowest,
                 highest = viewModel.prooductQuery.value.highest
                 )
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS){
+                search?.let { param(FirebaseAnalytics.Param.SEARCH_TERM, it) }
+            }
         }
 
         binding.rvProduct.adapter = pagingAdapter.withLoadStateFooter(
@@ -102,10 +128,16 @@ class storeFragment : Fragment() {
                 highest = null,
                 lowest = null
             )
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Store_Reset" )
+            }
         }
 
         binding.btnRefreshConnection.setOnClickListener {
             pagingAdapter.refresh()
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Store_Refresh" )
+            }
         }
 
         binding.btnFilterStore.setOnClickListener {
@@ -114,6 +146,9 @@ class storeFragment : Fragment() {
                 requireActivity().supportFragmentManager,
                 bottomSheetFragment.tag
             )
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Store_Filter" )
+            }
         }
 
         binding.etSearchStore.setOnClickListener {

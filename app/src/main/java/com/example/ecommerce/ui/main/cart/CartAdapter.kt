@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.ItemListCartBinding
 import com.example.ecommerce.room.entity.CartEntity
+import com.google.android.material.color.MaterialColors
 import java.text.NumberFormat
 
 class CartAdapter(
@@ -41,11 +42,11 @@ class CartAdapter(
             binding.tvCartPrice.text = (cartEntity.productPrice + cartEntity.variantPrice).formatToIDR()
             binding.tvCartVarianNameList.text = cartEntity.variantName
             if (cartEntity.stock < 10){
-                binding.tvCartStokList.text = "${R.string.sisa} ${cartEntity.stock}"
+                binding.tvCartStokList.text = binding.root.context.getString(R.string.stok, cartEntity.stock.toString())
                 binding.tvCartStokList.setTextColor(Color.RED)
             }else{
-                binding.tvCartStokList.text = "${ R.string.stok } ${cartEntity.stock}"
-                binding.tvCartStokList.setTextColor(Color.BLACK)
+                binding.tvCartStokList.text = binding.root.context.getString(R.string.stok, cartEntity.stock.toString())
+                binding.tvCartStokList.setTextColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOnSecondaryContainer))
             }
             binding.tvOrderQuantity.text = cartEntity.quantity.toString()
             binding.checkboxItem.isChecked = cartEntity.isSelected

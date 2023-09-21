@@ -75,6 +75,13 @@ class MainFragment : Fragment() {
                     navController.navigate(R.id.main_to_cart)
                     true
                 }
+
+                R.id.notification -> {
+                    val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
+                    navController.navigate(R.id.main_to_notification)
+                    true
+                }
+
                 else -> false
             }
         }
@@ -87,6 +94,19 @@ class MainFragment : Fragment() {
                     badgeDrawable.number = count
                 }else{
                     badgeDrawable.isVisible = false
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch{
+            viewModel.itemNotification.collectLatest {
+                val count = it.count()
+
+                if (count != 0){
+                    val badgeDrawable = BadgeDrawable.create(requireContext())
+                    badgeDrawable.number = count
+                    badgeDrawable.badgeGravity = BadgeDrawable.TOP_END
+                    BadgeUtils.attachBadgeDrawable(badgeDrawable, binding.topAppBar, R.id.notification)
                 }
             }
         }

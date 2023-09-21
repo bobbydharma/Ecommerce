@@ -31,6 +31,8 @@ import com.example.ecommerce.preference.PrefHelper
 import com.example.ecommerce.utils.Result
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -51,6 +53,8 @@ class ProfileFragment : Fragment() {
 
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
     private var validName: Boolean = false
     val timestamp:String = SimpleDateFormat(
         FILENAME_FORMAT,
@@ -103,6 +107,9 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(context, "Gagal Upload Image", Toast.LENGTH_SHORT).show()
             }
 
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Profile_Done" )
+            }
         }
 
         viewModel.profileData.observe(viewLifecycleOwner) { result ->
@@ -129,6 +136,9 @@ class ProfileFragment : Fragment() {
 
         binding.ivProfile.setOnClickListener {
             val item = arrayOf(getString(R.string.kamera), getString(R.string.galeri))
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Profile_Image" )
+            }
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.pilih_gambar))
                 .setItems(item) { _, which ->
@@ -168,8 +178,8 @@ class ProfileFragment : Fragment() {
     }
 
     private fun checkCameraPermissionAndTakePicture() {
-//            viewModel.imageUri = createTempImageUri()
-        requestWriteExternalStoragePermission()
+            viewModel.imageUri = createTempImageUri()
+//        requestWriteExternalStoragePermission()
             takePictureLauncher.launch(viewModel.imageUri)
 
     }

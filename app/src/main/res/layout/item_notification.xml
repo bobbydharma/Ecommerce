@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_notification"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -7,6 +8,7 @@
     android:paddingLeft="16dp">
 
     <ImageView
+        android:id="@+id/iv_notification"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:src="@drawable/image_thumbnail"/>
@@ -23,6 +25,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tv_info_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/info"
@@ -30,6 +33,7 @@
                 android:textSize="12sp"/>
 
             <TextView
+                android:id="@+id/date_time_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
@@ -38,6 +42,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_title_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/transaksi_berhasil"
@@ -45,6 +50,7 @@
             android:fontFamily="@font/poppins_semibold"/>
 
         <TextView
+            android:id="@+id/tv_body_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

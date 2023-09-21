@@ -11,9 +11,12 @@ import com.example.ecommerce.auth.AuthInterceptor
 import com.example.ecommerce.auth.CekAuthorization
 import com.example.ecommerce.network.APIService
 import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.repository.NotificationRepository
 import com.example.ecommerce.room.AppDatabase
 import com.example.ecommerce.room.dao.CartDAO
+import com.example.ecommerce.room.dao.NotificationDAO
 import com.example.ecommerce.room.dao.WishlistDAO
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -50,6 +53,12 @@ object AppModule {
     @Singleton
     fun provideCartDao(database: AppDatabase): CartDAO {
         return database.cartDAO()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationDao(database: AppDatabase): NotificationDAO {
+        return database.notificationDAO()
     }
 
     @Provides
@@ -125,5 +134,13 @@ object AppModule {
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
         return remoteConfig
     }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAnalytics(@ApplicationContext context: Context): FirebaseAnalytics {
+        return FirebaseAnalytics.getInstance(context)
+    }
+
+
 
 }

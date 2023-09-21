@@ -14,11 +14,15 @@ import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentCartBinding
 import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.ui.main.checkout.toChekoutList
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CartFragment : Fragment() {
@@ -28,6 +32,8 @@ class CartFragment : Fragment() {
 
     private val viewModel by viewModels<CartViewModel>()
     private lateinit var listViewAdapter : CartAdapter
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +49,8 @@ class CartFragment : Fragment() {
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+
+
 
         listViewAdapter = CartAdapter(
             CartAdapter.CartEntityDiffCallback,
@@ -70,6 +78,9 @@ class CartFragment : Fragment() {
                     deleteAtOnce(it)
                     buyCart(it)
                     listViewAdapter.submitList(it)
+                    logEventViewCart(it)
+
+
                 } else {
                     listViewAdapter.submitList(it)
                     binding.containerCart.isVisible = false
@@ -77,6 +88,34 @@ class CartFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun logEventViewCart(it: List<CartEntity>) {
+        var totalPrice : Int = 0
+        it.forEach {
+            if (it.isSelected){
+                val productPrice = (it.productPrice + it.variantPrice) * it.quantity
+                totalPrice = totalPrice + productPrice
+            }
+
+        }
+
+        val item = it.map{
+            Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_ID, it.productId )
+                putString(FirebaseAnalytics.Param.ITEM_NAME, it.productName)
+                putString(FirebaseAnalytics.Param.ITEM_VARIANT, it.variantName)
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, it.brand)
+                putDouble(FirebaseAnalytics.Param.PRICE, (it.productPrice+it.variantPrice).toDouble())
+            }
+        }
+
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_CART){
+            param(FirebaseAnalytics.Param.CURRENCY, "IDR")
+            param(FirebaseAnalytics.Param.VALUE, totalPrice.toDouble())
+            item?.let { param(FirebaseAnalytics.Param.ITEMS, it.toTypedArray()) }
+        }
+
     }
 
     private fun buyCart(it: List<CartEntity>) {
@@ -177,6 +216,26 @@ class CartFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.deleteCart(cartEntity)
         }
+
+        //                start log event
+        val itemProduct = Bundle().apply {
+            putString(FirebaseAnalytics.Param.ITEM_ID, cartEntity.productId)
+            putString(FirebaseAnalytics.Param.ITEM_NAME, cartEntity.productName)
+            putString(FirebaseAnalytics.Param.ITEM_VARIANT, cartEntity.variantName)
+            putString(FirebaseAnalytics.Param.ITEM_BRAND, cartEntity.brand)
+            putDouble(FirebaseAnalytics.Param.PRICE, (cartEntity.productPrice+cartEntity.variantPrice).toDouble())
+        }
+        val itemProductCart = Bundle(itemProduct).apply {
+            putLong(FirebaseAnalytics.Param.QUANTITY, 1)
+        }
+//                end log event
+
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.REMOVE_FROM_CART){
+            param(FirebaseAnalytics.Param.CURRENCY, "IDR")
+            param(FirebaseAnalytics.Param.VALUE, (cartEntity.productPrice+cartEntity.variantPrice).toDouble())
+            param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemProductCart))
+        }
+
     }
 
     private fun onMinItemClick(cartEntity: CartEntity) {

@@ -41,7 +41,7 @@ class WishlistAdapter(
             binding.tvProductNameList.text = wishlistEntity.productName
             binding.tvProductPriceList.text = (wishlistEntity.productPrice + wishlistEntity.varianPrice).formatToIDR()
             binding.tvStoreList.text = wishlistEntity.store
-            binding.tvSaleList.text = "${wishlistEntity.productRating} ${R.string.terjual_item} ${wishlistEntity.sale}"
+            binding.tvSaleList.text = itemView.context.getString(R.string.terjuall, wishlistEntity.productRating.toString(), wishlistEntity.sale.toString())
 
             binding.btnDeleteWishlist.setOnClickListener {
                 deleteItemClick(wishlistEntity)

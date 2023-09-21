@@ -53,7 +53,7 @@ class MainRepository @Inject constructor(
             }else{
                 Result.Error(Exception("Gagal terhubung ke API"))
             }
-        }catch (e: HttpException){
+        }catch (e: Exception){
             Result.Error(e)
         }
 

@@ -19,9 +19,12 @@ import com.example.ecommerce.room.entity.convertToDetail
 import com.example.ecommerce.ui.main.cart.CartAdapter
 import com.example.ecommerce.ui.main.cart.WishlistAdapter
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class WishlistFragment : Fragment() {
@@ -32,6 +35,8 @@ class WishlistFragment : Fragment() {
     private val viewModel by viewModels<WishlistViewModel>()
     private lateinit var wishlistAdapter: WishlistAdapter
 
+    @Inject
+    lateinit var firebaseAnalytics : FirebaseAnalytics
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -68,7 +73,7 @@ class WishlistFragment : Fragment() {
                     binding.containerErorWishlist.isVisible=false
                     binding.containerWishlist.isVisible = true
                     wishlistAdapter.submitList(it)
-                    binding.tvTotalWishlist.text = "${it.size} ${R.string.barang}"
+                    binding.tvTotalWishlist.text = getString(R.string.total_barang, it.size.toString())
                 }else{
                     binding.containerErorWishlist.isVisible = true
                     binding.containerWishlist.isVisible = false
@@ -80,6 +85,20 @@ class WishlistFragment : Fragment() {
     }
 
     private fun addItemClick(wishlistEntity: WishlistEntity) {
+
+//                start log event
+        val itemProduct = Bundle().apply {
+            putString(FirebaseAnalytics.Param.ITEM_ID, wishlistEntity.productId)
+            putString(FirebaseAnalytics.Param.ITEM_NAME, wishlistEntity.productName)
+            putString(FirebaseAnalytics.Param.ITEM_VARIANT, wishlistEntity.varianName)
+            putString(FirebaseAnalytics.Param.ITEM_BRAND, wishlistEntity.brand)
+            putDouble(FirebaseAnalytics.Param.PRICE, (wishlistEntity.productPrice+wishlistEntity.varianPrice).toDouble())
+        }
+        val itemProductCart = Bundle(itemProduct).apply {
+            putLong(FirebaseAnalytics.Param.QUANTITY, 1)
+        }
+//                end log event
+
         viewLifecycleOwner.lifecycleScope.launch {
             val cartItem = viewModel.cekItem(wishlistEntity.productId)
             if (cartItem != null) {
@@ -88,6 +107,15 @@ class WishlistFragment : Fragment() {
                     val snackBar = Snackbar.make(requireView(),
                         getString(R.string.ditambahkan_kekeranjang), Snackbar.LENGTH_SHORT)
                     snackBar.setAnchorView(R.id.bnv_child).show()
+
+//                start log event
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART){
+                        param(FirebaseAnalytics.Param.CURRENCY, "IDR")
+                        param(FirebaseAnalytics.Param.VALUE, (cartItem.productPrice+cartItem.variantPrice).toDouble())
+                        param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemProductCart))
+                    }
+//                 end log event
+
                 } else {
                     val snackBar = Snackbar.make(requireView(),
                         getString(R.string.stok_habis), Snackbar.LENGTH_SHORT)
@@ -98,13 +126,31 @@ class WishlistFragment : Fragment() {
                 viewModel.insertOrUpdateItem(wishlistEntity.convertToDetail(), 0)
                 val snackBar = Snackbar.make(requireView(), getString(R.string.ditambahkan_kekeranjang), Snackbar.LENGTH_SHORT)
                 snackBar.setAnchorView(R.id.bnv_child).show()
+
+//                start log event
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART){
+                    param(FirebaseAnalytics.Param.CURRENCY, "IDR")
+                    param(FirebaseAnalytics.Param.VALUE, (wishlistEntity.productPrice+wishlistEntity.varianPrice).toDouble())
+                    param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemProductCart))
+                }
+//                end log event
+
+
             }
         }
+
+        firebaseAnalytics.logEvent("BUTTON_CLICK"){
+            param("BUTTON_NAME", "Wishlist_AddToCart" )
+        }
+
     }
 
     private fun deleteItemClick(wishlistEntity: WishlistEntity) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.deleteWishlist(wishlistEntity)
+        }
+        firebaseAnalytics.logEvent("BUTTON_CLICK"){
+            param("BUTTON_NAME", "Wishlist_Delete" )
         }
     }
 

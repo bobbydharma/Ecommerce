@@ -1,5 +1,6 @@
 package com.example.ecommerce.ui.main.payment
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,47 +29,48 @@ class PaymentViewModel @Inject constructor(
     private val _stringPayment = MutableLiveData<Result<String>>()
     val stringPayment: LiveData<Result<String>> = _stringPayment
 
-//    init {
-//        fetchAndActivateRemoteConfig()
-//        updateListener()
-//    }
-
-    fun postPayment() {
-        _paymentItem.value = Result.Loading
-        viewModelScope.launch {
-            val result = repository.postPayment()
-            _paymentItem.value = result
-        }
+    init {
+        fetchAndActivateRemoteConfig()
+        updateListener()
     }
 
-//    fun fetchAndActivateRemoteConfig() {
-//        remoteConfig.fetchAndActivate()
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    val data = remoteConfig.getString("Payment")
-//                    _stringPayment.value = Result.Success(data)
-//                } else {
-//
-//                }
-//            }
+//    fun postPayment() {
+//        _paymentItem.value = Result.Loading
+//        viewModelScope.launch {
+//            val result = repository.postPayment()
+//            _paymentItem.value = result
+//        }
 //    }
-//
-//    fun updateListener(){
-//        remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
-//            override fun onUpdate(configUpdate : ConfigUpdate) {
-//
-//                if (configUpdate.updatedKeys.contains("welcome_message")) {
-//                    remoteConfig.activate().addOnCompleteListener {
-//                        val data = remoteConfig.getString("Payment")
-//                        _stringPayment.value = Result.Success(data)
-//                    }
-//                }
-//            }
-//
-//            override fun onError(error : FirebaseRemoteConfigException) {
-//
-//            }
-//        })
-//    }
+
+    fun fetchAndActivateRemoteConfig() {
+        remoteConfig.fetchAndActivate()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val data = remoteConfig.getString("Payment")
+                    _stringPayment.value = Result.Success(data)
+                    Log.d("fetchAndActivateRemoteConfig", "if")
+                } else {
+                    Log.d("fetchAndActivateRemoteConfig", "else")
+                }
+            }
+    }
+
+    fun updateListener(){
+        remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
+            override fun onUpdate(configUpdate : ConfigUpdate) {
+
+                if (configUpdate.updatedKeys.contains("Payment")) {
+                    remoteConfig.activate().addOnCompleteListener {
+                        val data = remoteConfig.getString("Payment")
+                        _stringPayment.value = Result.Success(data)
+                    }
+                }
+            }
+
+            override fun onError(error : FirebaseRemoteConfigException) {
+                Log.d("onError", "onError")
+            }
+        })
+    }
 
 }

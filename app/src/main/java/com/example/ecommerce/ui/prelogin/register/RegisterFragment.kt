@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +19,14 @@ import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentRegisterBinding
 import com.example.ecommerce.model.user.UserRequest
 import com.example.ecommerce.utils.Result
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.color.MaterialColors
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
@@ -31,6 +38,8 @@ class RegisterFragment : Fragment() {
 
     private var validEmail: Boolean = false
     private var validPassword: Boolean = false
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,26 +51,48 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var token = ""
 
         spanText()
         validationButton()
         checking()
 
+        Firebase.messaging.token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("TAG", "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+                token = task.result
+                Log.d("TAG suskess token", token)
+            },
+        )
+
         binding.btnDaftarDaftar.setOnClickListener {
             val data = UserRequest()
             data.email = binding.layoutEtEmail.editText?.text.toString()
             data.password = binding.layoutEtPassword.editText?.text.toString()
+            data.firebaseToken = token
             viewModel.postRegister(data)
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Register" )
+            }
         }
 
         binding.btnMasukDaftar.setOnClickListener {
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Register_To_Login" )
+            }
         }
 
         viewModel.registerData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
                     binding.progressBarRegister.isVisible = false
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP){
+                        param(FirebaseAnalytics.Param.METHOD, "email")
+                    }
                     findNavController().navigate(R.id.prelogin_to_main)
                 }
 

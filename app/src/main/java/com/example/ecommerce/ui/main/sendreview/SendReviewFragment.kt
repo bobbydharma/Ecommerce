@@ -70,7 +70,9 @@ class SendReviewFragment : Fragment() {
 
         binding.btnDoneSendReview.setOnClickListener {
             if (viewModel.invoice != null){
-                if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty()){
+                if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty() && dataRating == 0){
+                    navigate()
+                }else if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty()){
                     val ratingRequest = RatingRequest(viewModel.invoice!!.invoiceId, dataRating, "")
                     viewLifecycleOwner.lifecycleScope.launch {
                         viewModel.postRating(ratingRequest)
@@ -81,7 +83,6 @@ class SendReviewFragment : Fragment() {
                         viewModel.postRating(ratingRequest)
                     }
                 }
-
             }
         }
 
@@ -125,6 +126,7 @@ class SendReviewFragment : Fragment() {
             binding.tvPaymentSendReview.text = this?.payment
             binding.tvTotalSendReview.text = this?.total?.formatToIDR()
         }
+
 
     }
 

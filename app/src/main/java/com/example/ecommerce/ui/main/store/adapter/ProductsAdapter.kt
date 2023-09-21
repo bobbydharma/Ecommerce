@@ -15,7 +15,7 @@ import com.example.ecommerce.databinding.ItemListBinding
 import com.example.ecommerce.model.products.Items
 import java.text.NumberFormat
 
-class ProductsAdapter(diffCallback: DiffUtil.ItemCallback<Items>, private val onItemClick: (String) -> Unit) :
+class ProductsAdapter(diffCallback: DiffUtil.ItemCallback<Items>, private val onItemClick: (Items) -> Unit) :
     PagingDataAdapter<Items, ViewHolder>  (diffCallback) {
 
     var isGridMode = false
@@ -98,7 +98,7 @@ class ProductsAdapter(diffCallback: DiffUtil.ItemCallback<Items>, private val on
         }
 
         holder.itemView.setOnClickListener {
-            getItem(position)?.let { it1 -> onItemClick(it1.productId) }
+            getItem(position)?.let { it1 -> onItemClick(it1) }
         }
     }
 

@@ -94,20 +94,27 @@ import com.example.ecommerce.model.products.DataProductDetail
 import com.example.ecommerce.model.products.ProductDetailResponse
 import com.example.ecommerce.model.products.ProductVariant
 import com.example.ecommerce.model.products.convertToCheckoutList
+import com.example.ecommerce.model.products.mappingCart
 import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.room.entity.WishlistEntity
 import com.example.ecommerce.ui.main.detail.DetailProductViewModel
 import com.example.ecommerce.utils.Result
 import com.example.ecommerce.utils.formatToIDR
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailProductComposeFragment : Fragment() {
 
     private val viewModel : DetailProductViewModel by viewModels()
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -123,11 +130,44 @@ class DetailProductComposeFragment : Fragment() {
                         {dataProductDetail, index -> buyNow(dataProductDetail, index)},
                         {dataProductDetail, index -> addToCart(dataProductDetail, index)},
                         {idProduct -> onReviewClick(idProduct)},
-                        shareLink = { shareLink() }
+                        shareLink = { shareLink() },
+                        {cartEntity, bundle -> sendLogEventAddToCart(cartEntity, bundle)  },
+                        {cartEntity, bundle -> sendLogEventViewItem(cartEntity, bundle)  },
+                        {dataProductDetail, bundle -> logEventAddToWishlist(dataProductDetail, bundle) }
                     )
                 }
             }
         }
+    }
+
+    private fun logEventAddToWishlist(dataProductDetail: DataProductDetail, bundle: Bundle) {
+
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST){
+            param(FirebaseAnalytics.Param.CURRENCY, "IDR")
+            param(FirebaseAnalytics.Param.VALUE, (dataProductDetail.productPrice+dataProductDetail.productVariant[0].variantPrice).toDouble())
+            param(FirebaseAnalytics.Param.ITEMS, arrayOf(bundle))
+        }
+
+    }
+
+    private fun sendLogEventAddToCart(cartEntity: CartEntity, bundle: Bundle) {
+        //                start log event
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART){
+            param(FirebaseAnalytics.Param.CURRENCY, "IDR")
+            param(FirebaseAnalytics.Param.VALUE, (cartEntity.productPrice+cartEntity.variantPrice).toDouble())
+            param(FirebaseAnalytics.Param.ITEMS, arrayOf(bundle))
+        }
+//                 end log event
+    }
+
+    private fun sendLogEventViewItem(cartEntity: CartEntity, bundle: Bundle) {
+        //                start log event
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM){
+            param(FirebaseAnalytics.Param.CURRENCY, "IDR")
+            param(FirebaseAnalytics.Param.VALUE, (cartEntity.productPrice+cartEntity.variantPrice).toDouble())
+            param(FirebaseAnalytics.Param.ITEMS, arrayOf(bundle))
+        }
+//                 end log event
     }
 
     private fun shareLink() {
@@ -175,7 +215,10 @@ fun DetailProductScreen(
     onBuyNow: (DataProductDetail, Int) -> Unit,
     addToCart: (DataProductDetail, Int) -> Unit,
     onReviewClick: (String) -> Unit,
-    shareLink : () -> Unit
+    shareLink : () -> Unit,
+    sendLogEventAddToCart: (CartEntity, Bundle) -> Unit,
+    sendLogEventViewItem: (CartEntity, Bundle) -> Unit,
+    logEventAddToWishlist: (DataProductDetail, Bundle) -> Unit
 ) {
     val detailProduct by viewModel.detailProduct.observeAsState()
     val itemWishList by viewModel.wishlistItem.collectAsState()
@@ -192,7 +235,10 @@ fun DetailProductScreen(
             itemWishList,
             shareLink = { shareLink() },
             itemCart,
-            { viewModel.id?.let { it1 -> viewModel.getDetailProduct(it1) } }
+            { viewModel.getDetailProduct(viewModel.id) },
+            {cartEntity, bundle -> sendLogEventAddToCart(cartEntity, bundle ) },
+            {cartEntity, bundle -> sendLogEventViewItem(cartEntity, bundle ) },
+            {dataProductDetail, bundle -> logEventAddToWishlist(dataProductDetail, bundle) }
             )
     }
 }
@@ -213,117 +259,158 @@ fun DetailProductScreen(
     itemWishList : WishlistEntity?,
     shareLink : () -> Unit,
     itemCart : CartEntity?,
-    refresh : () -> Unit
+    refresh : () -> Unit,
+    sendLogEventAddToCart : (CartEntity, Bundle) -> Unit,
+    sendLogEventViewItem: (CartEntity, Bundle) -> Unit,
+    logEventAddToWishlist: (DataProductDetail, Bundle) -> Unit
 ) {
     val poppins_regular = FontFamily(Font(R.font.poppins_regular))
     val poppins_medium = FontFamily(Font(R.font.poppins_medium))
     val poppins_semi_bold = FontFamily(Font(R.font.poppins_semibold))
     val poppins_bold = FontFamily(Font(R.font.poppins_bold))
     var globalIndex = rememberSaveable { mutableStateOf(0) }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    when (detailProduct) {
-        is Result.Success -> {
-            val isWishlist = rememberUpdatedState(itemWishList != null)
-            val scope = rememberCoroutineScope()
-            val snackbarHostState = remember { SnackbarHostState() }
-            var quantitiyGlobal = remember { mutableStateOf(0) }
-            if (itemCart != null){
-                quantitiyGlobal.value = itemCart.quantity
-            }else{
-                quantitiyGlobal.value = 0
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState){
+                androidx.compose.material3.Snackbar (
+                    snackbarData = it,
+                    containerColor = if(it.visuals.message.contains("Stok",true)) Color.Red else SnackbarDefaults.color
+                )
             }
+        },
+        modifier = Modifier
+            .background(Color.White),
+        topBar = {
+            Column {
+                TopAppBar(
+                    title = {
+                        Text(
+                            stringResource(R.string.detail_product),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontFamily = poppins_regular,
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            onNavigateUp()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    },
+                )
+                Divider()
+            }
+        },
 
-            Scaffold(
-                snackbarHost = {
-                    SnackbarHost(hostState = snackbarHostState){
-                        androidx.compose.material3.Snackbar (
-                            snackbarData = it,
-                            containerColor = if(it.visuals.message.contains("Stok",true)) Color.Red else SnackbarDefaults.color
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .background(Color.White),
-                topBar = {
-                    Column {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    stringResource(R.string.detail_product),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontFamily = poppins_regular,
-                                )
+        bottomBar = {
+        if(detailProduct is Result.Success){
+            val itemDetailProduct = detailProduct.data.data
+            //                start log event
+            val itemProduct = Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_ID, detailProduct.data.data.productId)
+                putString(FirebaseAnalytics.Param.ITEM_NAME, detailProduct.data.data.productName)
+                putString(FirebaseAnalytics.Param.ITEM_VARIANT, detailProduct.data.data.productVariant[globalIndex.value].variantName)
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, detailProduct.data.data.brand)
+                putDouble(FirebaseAnalytics.Param.PRICE, (itemDetailProduct.productPrice+itemDetailProduct.productVariant[globalIndex.value].variantPrice).toDouble())
+            }
+            val itemProductCart = Bundle(itemProduct).apply {
+                putLong(FirebaseAnalytics.Param.QUANTITY, 1)
+            }
+//                end log event
+
+                Column {
+                    Divider()
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                onBuyNow(detailProduct.data.data, globalIndex.value)
                             },
-                            navigationIcon = {
-                                IconButton(onClick = {
-                                    onNavigateUp()
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = "Localized description"
-                                    )
-                                }
-                            },
-                        )
-                        Divider()
-                    }
-                },
-                bottomBar = {
-                    Column {
-                        Divider()
-                        Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp)
+                                .weight(1f)
                         ) {
-                            OutlinedButton(
-                                onClick = {
-                                      onBuyNow(detailProduct.data.data, globalIndex.value)
-                                },
-                                modifier = Modifier
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = "Beli Langsung",
-                                    fontFamily = poppins_regular
-                                    )
-                            }
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Button(
-                                onClick = {
-                                    if (itemCart != null) {
-                                        if (itemCart.stock > itemCart.quantity ){
-                                            addToCart(detailProduct.data.data, globalIndex.value)
-                                            Log.d("itemCart.stock > itemCart.quantity", "${globalIndex.value}")
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar("Item ditambahkan")
-                                            }
-                                        }else{
-                                            Log.d("else", "${globalIndex.value}")
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar("Stok Habis")
-                                            }
-                                        }
-                                    }else{
+                            Text(
+                                text = "Beli Langsung",
+                                fontFamily = poppins_regular
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Button(
+                            onClick = {
+                                if (itemCart != null) {
+                                    if (itemCart.stock > itemCart.quantity ){
                                         addToCart(detailProduct.data.data, globalIndex.value)
+                                        Log.d("itemCart.stock > itemCart.quantity", "${globalIndex.value}")
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Item ditambahkan")
                                         }
+                                        sendLogEventAddToCart(itemCart, itemProductCart)
+                                    }else{
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Stok Habis")
+                                        }
                                     }
-                                          },
-                                modifier = Modifier
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text ="+ Keranjang",
-                                    fontFamily = poppins_regular
-                                )
-                            }
+                                }else{
+                                    addToCart(detailProduct.data.data, globalIndex.value)
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Item ditambahkan")
+                                    }
+                                    sendLogEventAddToCart(detailProduct.data.data.mappingCart(globalIndex.value), itemProductCart )
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text ="+ Keranjang",
+                                fontFamily = poppins_regular
+                            )
                         }
                     }
                 }
-            ) { innerPadding ->
+            }
+        }
+
+
+    ) { innerPadding ->
+
+        when (detailProduct) {
+            is Result.Success -> {
+                Log.d("detail product", "success")
+                val itemDetailProduct = detailProduct.data.data
+                val isWishlist = rememberUpdatedState(itemWishList != null)
+                var quantitiyGlobal = remember { mutableStateOf(0) }
+                if (itemCart != null){
+                    quantitiyGlobal.value = itemCart.quantity
+                }else{
+                    quantitiyGlobal.value = 0
+                }
+
+                //                start log event
+                val itemProduct = Bundle().apply {
+                    putString(FirebaseAnalytics.Param.ITEM_ID, detailProduct.data.data.productId)
+                    putString(FirebaseAnalytics.Param.ITEM_NAME, detailProduct.data.data.productName)
+                    putString(FirebaseAnalytics.Param.ITEM_VARIANT, detailProduct.data.data.productVariant[globalIndex.value].variantName)
+                    putString(FirebaseAnalytics.Param.ITEM_BRAND, detailProduct.data.data.brand)
+                    putDouble(FirebaseAnalytics.Param.PRICE, (itemDetailProduct.productPrice+itemDetailProduct.productVariant[globalIndex.value].variantPrice).toDouble())
+                }
+                val itemProductCart = Bundle(itemProduct).apply {
+                    putLong(FirebaseAnalytics.Param.QUANTITY, 1)
+                }
+//                end log event
+
+                sendLogEventViewItem(itemDetailProduct.mappingCart(0), itemProduct)
+
                 Column(
                     modifier = Modifier
                         .padding(innerPadding)
@@ -404,17 +491,18 @@ fun DetailProductScreen(
                             modifier = Modifier
                                 .align(Alignment.CenterVertically),
                             onClick = {
-                            if (isWishlist.value){
-                                deleteToWishList(detailProduct.data.data)
-                            }else{
-                                addToWishList(detailProduct.data.data)
-                            }
+                                if (isWishlist.value){
+                                    deleteToWishList(detailProduct.data.data)
+                                }else{
+                                    addToWishList(detailProduct.data.data)
+                                    logEventAddToWishlist(detailProduct.data.data, itemProductCart)
+                                }
 
-                        }) {
+                            }) {
                             Icon(
                                 imageVector = if (isWishlist.value) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = "Wishlist"
-                                )
+                            )
                         }
                     }
                     Text(
@@ -585,38 +673,11 @@ fun DetailProductScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
-        }
 
-        is Result.Loading -> {
-            Scaffold(
-                modifier = Modifier
-                    .background(Color.White),
-                topBar = {
-                    Column {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    stringResource(R.string.detail_product),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontFamily = poppins_regular,
-                                )
-                            },
-                            navigationIcon = {
-                                IconButton(onClick = {
-                                    onNavigateUp()
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = "Localized description"
-                                    )
-                                }
-                            },
-                        )
-                        Divider()
-                    }
-                },
-            ){innerPadding ->
+
+            is Result.Loading -> {
+                Log.d("detail product", "Loading")
+
                 Column(
                     modifier = Modifier
                         .padding(innerPadding)
@@ -629,36 +690,9 @@ fun DetailProductScreen(
                     )
                 }
             }
-        }
+            is Result.Error -> {
+                Log.d("detail product", "Error")
 
-        is Result.Error -> {
-            Scaffold(
-                topBar = {
-                    Column {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    stringResource(R.string.detail_product),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontFamily = poppins_regular,
-                                )
-                            },
-                            navigationIcon = {
-                                IconButton(onClick = {
-                                    onNavigateUp()
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = "Localized description"
-                                    )
-                                }
-                            },
-                        )
-                        Divider()
-                    }
-                },
-            ){innerPadding ->
                 Column(
                     modifier = Modifier
                         .padding(innerPadding)
@@ -690,83 +724,60 @@ fun DetailProductScreen(
                     Button(
                         onClick = {
                             refresh()
-                        },
-                    ) {
+                                  },
+                        ) {
                         Text(stringResource(R.string.refresh))
                     }
                 }
             }
-        }
 
-        else -> {
-
-            Scaffold(
-                topBar = {
-                    Column {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    stringResource(R.string.detail_product),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontFamily = poppins_regular,
-                                )
-                            },
-                            navigationIcon = {
-                                IconButton(onClick = {
-                                    onNavigateUp()
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = "Localized description"
-                                    )
-                                }
-                            },
-                        )
-                        Divider()
-                    }
-                },
-            ){innerPadding ->
-                Column(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ){
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(R.drawable.error_image)
-                            .crossfade(true)
-                            .build(),
-                        placeholder = painterResource(R.drawable.error_image),
-                        contentDescription = "test",
+            else -> {
+                Log.d("detail product", "Else")
+                    Column(
                         modifier = Modifier
-                            .height(128.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.connection),
-                        fontFamily = poppins_medium,
-                        fontSize = 32.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.your_connection_is_unavailable),
-                        fontFamily = poppins_regular,
-                        fontSize = 16.sp
-                    )
+                            .padding(innerPadding)
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ){
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(R.drawable.error_image)
+                                .crossfade(true)
+                                .build(),
+                            placeholder = painterResource(R.drawable.error_image),
+                            contentDescription = "test",
+                            modifier = Modifier
+                                .height(128.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.connection),
+                            fontFamily = poppins_medium,
+                            fontSize = 32.sp
+                        )
+                        Text(
+                            text = stringResource(R.string.your_connection_is_unavailable),
+                            fontFamily = poppins_regular,
+                            fontSize = 16.sp
+                        )
 
-                    Button(
-                        onClick = {
-                            refresh()
-                        },
-                    ) {
-                        Text(stringResource(R.string.refresh))
+                        Button(
+                            onClick = {
+                                refresh()
+                            },
+                        ) {
+                            Text(stringResource(R.string.refresh))
+                        }
                     }
-                }
             }
 
         }
+
+
     }
+
+
+
 }
 
 @Preview
@@ -808,6 +819,9 @@ fun GreetingPreview() {
         itemWishList = null,
         shareLink = { /*...*/ },
         itemCart = null,
-        refresh = {}
+        refresh = {},
+        sendLogEventAddToCart = {cartEntity, bundle ->  },
+        sendLogEventViewItem = {cartEntity, bundle ->  },
+        logEventAddToWishlist = {dataProductDetail, bundle ->  }
     )
 }

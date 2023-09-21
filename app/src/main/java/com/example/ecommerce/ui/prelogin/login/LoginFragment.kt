@@ -20,7 +20,13 @@ import com.example.ecommerce.databinding.FragmentLoginBinding
 import com.example.ecommerce.model.user.UserRequest
 import com.example.ecommerce.preference.PrefHelper
 import com.example.ecommerce.utils.Result
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.color.MaterialColors
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -36,6 +42,8 @@ class LoginFragment : Fragment() {
 
     private var validEmail: Boolean = false
     private var validPassword: Boolean = false
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,24 +65,50 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var token = ""
+        firebaseAnalytics = Firebase.analytics
+        Firebase.messaging.token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("TAG", "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+                token = task.result
+                Log.d("TAG suskess token", token)
+            },
+        )
+
         binding.btnMasuk.setOnClickListener {
             val data = UserRequest()
             data.email = binding.layoutEtEmailLogin.editText?.text.toString()
             data.password = binding.layoutEtPasswordLogin.editText?.text.toString()
+            data.firebaseToken = token
+            Log.d("FirebaseToken", token)
             viewModel.postLogin(data)
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Login" )
+            }
         }
         binding.btnDaftar.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "Login_To_Register")
+            }
         }
 
         spanText()
         validationButton()
         checking()
 
+
+
         viewModel.loginData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
                     binding.prgressBarLogin.isVisible = false
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN){
+                        param(FirebaseAnalytics.Param.METHOD, "email")
+                    }
                     findNavController().navigate(R.id.prelogin_to_main)
                 }
                 is Result.Error -> {

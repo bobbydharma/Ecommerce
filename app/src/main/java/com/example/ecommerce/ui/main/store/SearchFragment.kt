@@ -21,9 +21,12 @@ import androidx.lifecycle.lifecycleScope
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentSearchBinding
 import com.example.ecommerce.utils.Result
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchFragment : DialogFragment() {
@@ -75,6 +78,7 @@ class SearchFragment : DialogFragment() {
                     binding.progressBarSearch.isVisible = false
                     binding.rvSearch.isVisible = true
                     setDisplayProducts(result.data.data)
+
                 }
 
                 is Result.Error -> {

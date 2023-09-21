@@ -28,5 +28,6 @@ data class Data (
     val date: String,
     val time: String,
     val payment: String,
-    val total: Int
+    val total: Int,
+
 ):Parcelable

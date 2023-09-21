@@ -13,6 +13,8 @@ import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentOnBoardingBinding
 import com.example.ecommerce.preference.PrefHelper
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,6 +28,8 @@ class OnBoardingFragment : Fragment() {
 
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,16 +56,25 @@ class OnBoardingFragment : Fragment() {
 
         binding.obSelanjutnya.setOnClickListener {
             binding.pager.currentItem += 1
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "OnBoarding_Next" )
+            }
         }
 
         binding.obLewati.setOnClickListener {
             findNavController().navigate(R.id.action_onBoardingFragment_to_loginFragment)
             sharedPreferencesManager.obCheck = true
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "OnBoarding_Skip" )
+            }
         }
 
         binding.obGabung.setOnClickListener {
             findNavController().navigate(R.id.action_onBoardingFragment_to_registerFragment)
             sharedPreferencesManager.obCheck = true
+            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+                param("BUTTON_NAME", "OnBoarding_Join" )
+            }
         }
     }
 

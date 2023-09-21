@@ -40,9 +40,9 @@
     <string name="pilih_pembayaran">Select Payment</string>
     <string name="bayar">Pay</string>
     <string name="sisa">Left</string>
-    <string name="stok">Stock</string>
+    <string name="stok">Stock %1$s</string>
     <string name="barang_yang_dibeli">items to be purchased</string>
-    <string name="pembayaran_berhasil">payment successful</string>
+    <string name="pembayaran_berhasil">Payment successful</string>
     <string name="beri_ulasan">Review</string>
     <string name="detail_transaksi">Detail Transaction</string>
     <string name="id_transaksi">ID Transaction</string>
@@ -69,5 +69,7 @@
     <string name="refresh">Refresh</string>
     <string name="terjual">Sales %1$s</string>
     <string name="terjual_baru">%1$s | Sales %2$s</string>
+    <string name="total_barang">%1$s Item</string>
+    <string name="terjuall">%1$s | Sales %2$s</string>
 
 </resources>
