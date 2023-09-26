@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentWishlistBinding
@@ -58,13 +60,22 @@ class WishlistFragment : Fragment() {
             {wishlistEntity -> addItemClick(wishlistEntity) }
             )
 
-        binding.rvWishlist.adapter = wishlistAdapter
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        binding.btnToggle.setOnCheckedChangeListener{ _ , isChecked ->
+        binding.apply {
+            rvWishlist.adapter = wishlistAdapter
 
-            wishlistAdapter.isGridMode = isChecked
-            setLayoutManager(isChecked)
-            wishlistAdapter.notifyDataSetChanged()
+            btnToggle.setOnCheckedChangeListener{ _ , isChecked ->
+
+                wishlistAdapter.isGridMode = isChecked
+                setLayoutManager(isChecked)
+                wishlistAdapter.notifyDataSetChanged()
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

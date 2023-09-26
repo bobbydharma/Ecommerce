@@ -49,7 +49,7 @@ class MainFragment : Fragment() {
         if (prefHelper.token == null){
             findNavController().navigate(R.id.main_to_prelogin)
         }else{
-            if (prefHelper.nama == null){
+            if (prefHelper.nama.isNullOrEmpty()){
                 findNavController().navigate(R.id.main_to_profile)
             }
         }
@@ -68,9 +68,19 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.bnvChild.setupWithNavController(navController)
+        binding.apply {
+            bnvChild?.setupWithNavController(navController)
+            bnvChild?.setOnItemReselectedListener {  }
+
+            navigationView?.setupWithNavController(navController)
+
+            navigationRailView?.setupWithNavController(navController)
+            bnvChild?.setOnItemReselectedListener {  }
+        }
+
         binding.topAppBar.setTitle(prefHelper.nama)
-        val badgeDrawable = binding.bnvChild.getOrCreateBadge(R.id.wishlistFragment)
+        val wishlist = binding.bnvChild ?: binding.navigationRailView
+        val badgeDrawable = wishlist?.getOrCreateBadge(R.id.wishlistFragment)
 
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -100,10 +110,10 @@ class MainFragment : Fragment() {
             viewModel.itemWishlist.collectLatest {
                 val count = it.count()
                 if (count != 0){
-                    badgeDrawable.isVisible = true
-                    badgeDrawable.number = count
+                    badgeDrawable?.isVisible = true
+                    badgeDrawable?.number = count
                 }else{
-                    badgeDrawable.isVisible = false
+                    badgeDrawable?.isVisible = false
                 }
             }
         }

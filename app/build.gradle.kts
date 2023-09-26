@@ -130,6 +130,14 @@ dependencies {
 
     implementation ("com.airbnb.android:lottie:6.1.0")
 
+//    Unit Test
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.robolectric:robolectric:4.10.3")
+    testImplementation ("androidx.test:core:1.5.0")
+    testImplementation ("org.mockito:mockito-core:5.5.0")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation ("com.squareup.okhttp3:mockwebserver:4.11.0")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 }
 
 kapt {

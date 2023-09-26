@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
@@ -49,14 +51,7 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
         if (isGranted) {
-            Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT)
-                .show()
         } else {
-            Toast.makeText(
-                this,
-                "FCM can't post notifications without POST_NOTIFICATIONS permission",
-                Toast.LENGTH_LONG,
-            ).show()
         }
     }
 
@@ -64,6 +59,8 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        cekTheme()
 
         viewModel.test.observe(this){
             if (it == true){
@@ -105,6 +102,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this, android.Manifest.permission.POST_NOTIFICATIONS
+                )
+            ) {
+                // Tampilkan penjelasan kepada pengguna mengapa izin diperlukan
+                // Misalnya, dengan menggunakan dialog atau pesan lainnya
+            } else {
+                // Minta izin secara langsung
+                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    private fun cekTheme() {
+        if (sharedPreferencesManager.dark_theme){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
     }
 
 

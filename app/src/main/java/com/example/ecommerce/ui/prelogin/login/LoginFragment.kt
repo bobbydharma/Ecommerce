@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -51,7 +52,6 @@ class LoginFragment : Fragment() {
         if (sharedPreferencesManager.obCheck == false ){
             findNavController().navigate(R.id.action_loginFragment_to_onBoardingFragment)
         }
-
     }
 
     override fun onCreateView(
@@ -109,7 +109,11 @@ class LoginFragment : Fragment() {
                     firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN){
                         param(FirebaseAnalytics.Param.METHOD, "email")
                     }
-                    findNavController().navigate(R.id.prelogin_to_main)
+                    if (result.data.data.userName.isNullOrEmpty()){
+                        findNavController().navigate(R.id.main_to_profile)
+                    }else{
+                        findNavController().navigate(R.id.prelogin_to_main)
+                    }
                 }
                 is Result.Error -> {
 

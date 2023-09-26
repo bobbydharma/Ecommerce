@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingSource
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentTransactionBinding
 import com.example.ecommerce.utils.Result
@@ -21,6 +23,8 @@ import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,32 +57,68 @@ class TransactionFragment : Fragment() {
             }
         }
 
-        binding.rvTransaction.adapter = transactionAdapter
-        binding.rvTransaction.itemAnimator?.changeDuration = 0
+        binding.apply {
+            rvTransaction.adapter = transactionAdapter
+            rvTransaction.itemAnimator?.changeDuration = 0
+
+            btnRefreshConnection.setOnClickListener{
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.getTransaction()
+                }
+            }
+        }
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.getTransaction()
-        }
-
-
-        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.transaction.collectLatest { result ->
                 when (result) {
                     is Result.Success -> {
                         if (result.data.data.isNotEmpty()){
                             binding.containerTransaction.isVisible = true
                             binding.containerErorTransaction.isVisible = false
+                            binding.errorConnection.isVisible = false
+                            binding.progressBarTransaction.isVisible = false
                             transactionAdapter.submitList(result.data.data)
-                        }else{
-                            binding.containerTransaction.isVisible = false
-                            binding.containerErorTransaction.isVisible = true
                         }
                     }
                     is Result.Error -> {
-                        binding.containerTransaction.isVisible = false
-                        binding.containerErorTransaction.isVisible = true
+                        when(result.exception){
+                            is HttpException -> {
+                                binding.apply {
+                                    containerTransaction.isVisible = false
+                                    errorConnection.isVisible = false
+                                    progressBarTransaction.isVisible = false
+                                    containerErorTransaction.isVisible = true
+                                }
+                            }
+                            is IOException -> {
+                                binding.apply {
+                                    containerTransaction.isVisible = false
+                                    errorConnection.isVisible = true
+                                    progressBarTransaction.isVisible = false
+                                    containerErorTransaction.isVisible = false
+                                }
+
+                            }
+                            else -> {
+                                Log.d("else", "${result.exception}")
+                            }
+                        }
                     }
                     is Result.Loading -> {
+                        binding.apply {
+                            containerTransaction.isVisible = false
+                            errorConnection.isVisible = false
+                            containerErorTransaction.isVisible = false
+                            progressBarTransaction.isVisible = true
+                        }
                     }
                     else -> {}
                 }

@@ -1,0 +1,8 @@
+{
+  "code": 200,
+  "message": "OK",
+  "data": {
+    "userName": "Test",
+    "userImage": "userImage"
+  }
+}

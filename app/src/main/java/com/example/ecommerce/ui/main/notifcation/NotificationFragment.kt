@@ -41,9 +41,8 @@ class NotificationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         notificationAdapter = NotificationAdapter(
-            NotificationAdapter.NotificaitionEntityDiffCallback,
-            { it -> updateNotification(it)}
-            )
+            NotificationAdapter.NotificaitionEntityDiffCallback
+        ) { it -> updateNotification(it) }
 
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()

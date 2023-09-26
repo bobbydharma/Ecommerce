@@ -82,7 +82,7 @@ fun DataProductDetail.convertToCheckoutList(index : Int): CheckoutList {
             productId,
             productName,
             productPrice,
-            image[index],
+            image[0],
             brand,
             description,
             store,

@@ -13,8 +13,6 @@ class CartRepository @Inject constructor(
         return cartDAO.getAll()
     }
 
-
-
     suspend fun insertOrUpdateItem(cart: CartEntity){
         val existingCartItem = cartDAO.cekItem(cart.productId)
         if (existingCartItem != null) {

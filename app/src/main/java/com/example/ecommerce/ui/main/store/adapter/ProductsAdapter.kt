@@ -41,6 +41,9 @@ class ProductsAdapter(diffCallback: DiffUtil.ItemCallback<Items>, private val on
                 binding.tvStoreGrid.text = items.store
                 binding.tvSaleGrid.text =
                     binding.root.context.getString(R.string.terjual_baru, items.productRating.toString(), items.sale.toString())
+
+
+
             }
         }
 

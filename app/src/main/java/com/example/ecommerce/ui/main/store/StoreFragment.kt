@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,14 +20,18 @@ import androidx.navigation.NavAction
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ecommerce.MainActivity
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentStoreBinding
+import com.example.ecommerce.model.products.Items
 import com.example.ecommerce.model.products.ProductsRequest
 import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.utils.formatToIDR
 import com.google.android.material.chip.Chip
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -111,6 +116,13 @@ class storeFragment : Fragment() {
             itemAnimator?.changeDuration = 0
         }
 
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         binding.swipeRefresh.setOnRefreshListener {
             pagingAdapter.refresh()
             binding.swipeRefresh.isRefreshing = false
@@ -157,10 +169,8 @@ class storeFragment : Fragment() {
         }
 
         binding.btnToggle.setOnCheckedChangeListener{ _ , isChecked ->
-
             pagingAdapter.isGridMode = isChecked
             setLayoutManager(isChecked)
-//            pagingAdapter.notifyDataSetChanged()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -168,6 +178,7 @@ class storeFragment : Fragment() {
                 pagingAdapter.submitData(viewLifecycleOwner.lifecycle, it)
                 binding.chipFiltered.removeAllViews()
                 setChipFiltered()
+                logEventItemView(it)
             }
         }
 
@@ -196,7 +207,6 @@ class storeFragment : Fragment() {
                     binding.errorConnection.isVisible = false
                     binding.containerFilter.isVisible = true
                     binding.rvProduct.isVisible = true
-                    Log.d("LoadState.NotLoading", "NotLoading")
                 }
 
                 if (loadStates.refresh is LoadState.Error){
@@ -239,13 +249,13 @@ class storeFragment : Fragment() {
                             binding.rvProduct.isVisible = false
                             binding.errorConnection.isVisible = true
                             Log.d("LoadState.Error", "IOException")
+                            pagingAdapter.retry()
                         }
 
                         else -> {
                             Log.d("LoadState.Error", "else")
                             val errorMessage = error.message
                             val httpStatusCode = errorMessage?.split(":")?.lastOrNull()?.trim()
-                            pagingAdapter.retry()
                             if (httpStatusCode != null) {
                                 when (httpStatusCode) {
                                     "404" -> {
@@ -273,6 +283,31 @@ class storeFragment : Fragment() {
             }
         }
     }
+
+    private fun logEventItemView(it: PagingData<Items>) {
+
+        val item = pagingAdapter.snapshot().map{
+            Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_ID, it?.productId )
+                putString(FirebaseAnalytics.Param.ITEM_NAME, it?.productName)
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, it?.brand)
+                it?.productPrice?.let { it1 -> putDouble(FirebaseAnalytics.Param.PRICE, it1.toDouble()) }
+            }
+        }
+
+        val product = item.mapIndexed { index, bundle ->
+            Bundle().apply {
+                putString(FirebaseAnalytics.Param.INDEX, index.toString() )
+            }
+        }
+
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST){
+            param(FirebaseAnalytics.Param.ITEM_LIST_ID, "Store")
+            param(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Store")
+            product?.let { param(FirebaseAnalytics.Param.ITEMS, it.toTypedArray()) }
+        }
+    }
+
 
     private fun setLayoutManager(gridMode: Boolean) {
         val firstVisibleItemPosition = (binding.rvProduct.layoutManager as? GridLayoutManager)?.findFirstVisibleItemPosition() ?: 0
@@ -309,12 +344,6 @@ class storeFragment : Fragment() {
             lowest?.let { setChip("> ${lowest!!.formatToIDR()}") }
             highest?.let { setChip("< ${highest!!.formatToIDR()}") }
         }
-    }
-
-    fun Int.formatToIDR(): String {
-        val localeID = java.util.Locale("in", "ID")
-        val currencyFormatter = NumberFormat.getCurrencyInstance(localeID)
-        return currencyFormatter.format(this).replace(",00","")
     }
 
     private fun setChip(string: String) {
