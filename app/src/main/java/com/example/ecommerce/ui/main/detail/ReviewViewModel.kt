@@ -21,10 +21,10 @@ class ReviewViewModel @Inject constructor(
     private var _reviewProduct = MutableLiveData<Result<ReviewProduct>>()
     val reviewProduct : LiveData<Result<ReviewProduct>> = _reviewProduct
 
-    val id = savedStateHandle.get<String>("id_product_review")
+    val id = savedStateHandle.get<String>("id_product_review") ?: ""
 
     init {
-        getReviewProduct(id.toString())
+        getReviewProduct(id)
     }
     fun getReviewProduct( id : String) {
         _reviewProduct.value = Result.Loading

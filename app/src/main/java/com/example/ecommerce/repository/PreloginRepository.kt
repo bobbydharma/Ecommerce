@@ -42,7 +42,6 @@ class PreloginRepository @Inject constructor(
     suspend fun postProfile(profileRequest: ProfileRequest): Result<ProfileResponse> {
         return try {
             val response = APIService.postProfile(
-                "Bearer ${sharedPreferencesManager.token!!}",
                 profileRequest.userName,
                 profileRequest.userImage
             )

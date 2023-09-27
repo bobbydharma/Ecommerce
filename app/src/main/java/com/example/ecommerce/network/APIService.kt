@@ -40,7 +40,6 @@ interface APIService {
     @Multipart
     @POST("profile")
     suspend fun postProfile(
-        @Header("Authorization") authorization: String,
         @Part userImage: MultipartBody.Part,
         @Part userName: MultipartBody.Part
     ): Response<ProfileResponse>

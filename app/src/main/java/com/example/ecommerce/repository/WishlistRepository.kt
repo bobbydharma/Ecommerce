@@ -23,8 +23,4 @@ class WishlistRepository @Inject constructor(
     fun cekItemWishlist(productId: String) : Flow<WishlistEntity?> {
         return wishlistDAO.cekItemWishlist(productId)
     }
-
-    suspend fun deleteAllDataWishlist(){
-        wishlistDAO.deleteAllDataWishlist()
-    }
 }

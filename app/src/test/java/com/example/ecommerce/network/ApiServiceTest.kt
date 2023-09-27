@@ -106,7 +106,7 @@ class ApiServiceTest {
             )
         )
 
-        val apiResponse = apiService.postProfile(authorization, userImagePart, userNamePart)
+        val apiResponse = apiService.postProfile( userImagePart, userNamePart)
         assertEquals(apiResponse.body(), profileResponse)
     }
 

@@ -51,7 +51,6 @@ class HomeFragment : Fragment() {
     lateinit var database: AppDatabase
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
-    private val viewModel by viewModels<HomeViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

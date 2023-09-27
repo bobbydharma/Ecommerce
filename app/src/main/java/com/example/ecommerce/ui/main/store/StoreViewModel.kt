@@ -93,7 +93,6 @@ class StoreViewModel @Inject constructor(
 
     init {
         getPagerFlow(apiService,prooductQuery.value)
-        Log.d("getPagerFlow", "run")
         viewModelScope.launch {
             _debouncedSearch
                 .debounce(1000) // Wait for 1 second

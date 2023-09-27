@@ -46,10 +46,8 @@ class DetailProductViewModel @Inject constructor(
 
     init {
         getDetailProduct(id)
-        if (id != null) {
-            fetchData(id)
-            getCart(id)
-        }
+        fetchData(id)
+        getCart(id)
     }
     fun getDetailProduct( id : String) {
         _detailProduct.value = Result.Loading

@@ -38,7 +38,6 @@ class MainRepository @Inject constructor(
             }else{
                 Result.Error(Exception("API call failed"))
             }
-
         }catch (e:Exception){
             Result.Error(e)
         }
