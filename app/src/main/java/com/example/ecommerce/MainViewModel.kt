@@ -12,7 +12,7 @@ class MainViewModel @Inject constructor(
 
     val test = cekAuthorization.isDataLoaded
 
-    fun resetAuthorization(){
+    fun resetAuthorization() {
         cekAuthorization.resetAuthorization()
     }
 

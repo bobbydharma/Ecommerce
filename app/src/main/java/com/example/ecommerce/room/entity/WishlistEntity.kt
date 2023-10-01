@@ -25,7 +25,7 @@ data class WishlistEntity(
     val varianPrice: Int,
 )
 
-fun WishlistEntity.convertToDetail(): DataProductDetail{
+fun WishlistEntity.convertToDetail(): DataProductDetail {
     val variant = ProductVariant(
         varianName,
         varianPrice

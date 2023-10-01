@@ -28,89 +28,89 @@ import javax.inject.Inject
 
 class MainRepository @Inject constructor(
     private val APIService: APIService,
-){
-    suspend fun postSearch (search:String): Result<SearchResponse> {
+) {
+    suspend fun postSearch(search: String): Result<SearchResponse> {
         return try {
             val response = APIService.postSearch(search)
-            if (response.isSuccessful && response.body() != null){
+            if (response.isSuccessful && response.body() != null) {
                 val searchProdact = response.body()
                 Result.Success(searchProdact!!)
-            }else{
+            } else {
                 Result.Error(Exception("API call failed"))
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             Result.Error(e)
         }
     }
 
-    suspend fun getProductDetail (id : String): Result<ProductDetailResponse> {
-        return try{
+    suspend fun getProductDetail(id: String): Result<ProductDetailResponse> {
+        return try {
             val response = APIService.getDetailProduct(id)
-            if (response.isSuccessful && response.body() != null){
+            if (response.isSuccessful && response.body() != null) {
                 val detailProduct = response.body()
                 Result.Success(detailProduct!!)
-            }else{
+            } else {
                 Result.Error(Exception("Gagal terhubung ke API"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Result.Error(e)
         }
 
     }
 
-    suspend fun getReviewProduct (id : String): Result<ReviewProduct> {
-        return try{
+    suspend fun getReviewProduct(id: String): Result<ReviewProduct> {
+        return try {
             val response = APIService.getReviewProduct(id)
-            if (response.isSuccessful && response.body() != null){
+            if (response.isSuccessful && response.body() != null) {
                 val reviewProduct = response.body()
                 Result.Success(reviewProduct!!)
-            }else{
+            } else {
                 Result.Error(Exception("API call failed"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Result.Error(e)
         }
 
     }
 
-    suspend fun postPayment() : Result<PaymentResponse>{
-        return try {
-            val response = APIService.postPayment()
-            if (response.isSuccessful && response.body() != null){
-                val paymentItem = response.body()
-                Result.Success(paymentItem!!)
-            }else{
-                Result.Error(Exception("API call failed"))
-            }
-        }catch (e: Exception){
-            Result.Error(e)
-        }
-    }
+//    suspend fun postPayment() : Result<PaymentResponse>{
+//        return try {
+//            val response = APIService.postPayment()
+//            if (response.isSuccessful && response.body() != null){
+//                val paymentItem = response.body()
+//                Result.Success(paymentItem!!)
+//            }else{
+//                Result.Error(Exception("API call failed"))
+//            }
+//        }catch (e: Exception){
+//            Result.Error(e)
+//        }
+//    }
 
-    suspend fun postFulfillment(fulfillmentRequest: FulfillmentRequest) : Result<FulfillmentResponse>{
+    suspend fun postFulfillment(fulfillmentRequest: FulfillmentRequest): Result<FulfillmentResponse> {
         return try {
             val response = APIService.postFulfillment(fulfillmentRequest)
-            if (response.isSuccessful && response.body() != null){
+            if (response.isSuccessful && response.body() != null) {
                 val fulfillmentItem = response.body()
                 Result.Success(fulfillmentItem!!)
-            }else{
+            } else {
                 Result.Error(Exception("API call failed"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Result.Error(e)
         }
     }
 
-    suspend fun postRating(ratingRequest: RatingRequest): Result<RatingResponse>{
-        return try{
+    suspend fun postRating(ratingRequest: RatingRequest): Result<RatingResponse> {
+        return try {
             val response = APIService.postRating(ratingRequest)
-            if (response.isSuccessful && response.body() != null){
+            if (response.isSuccessful && response.body() != null) {
                 val rating = response.body()
                 Result.Success(rating!!)
-            }else{
+            } else {
                 Result.Error(Exception("API call failed"))
             }
-        }catch (e : Exception){
+        } catch (e: Exception) {
             Result.Error(e)
         }
     }

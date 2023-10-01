@@ -61,6 +61,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:tabBackground="@drawable/tab_pager_selector"
         app:tabGravity="center"
-        app:tabIndicatorHeight="0dp"/>
+        app:tabIndicatorHeight="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

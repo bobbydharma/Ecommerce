@@ -12,15 +12,15 @@ class WishlistRepository @Inject constructor(
         return wishlistDAO.getAll()
     }
 
-    suspend fun insertToWishlist(wishlistEntity: WishlistEntity){
+    suspend fun insertToWishlist(wishlistEntity: WishlistEntity) {
         wishlistDAO.insertWishlist(wishlistEntity)
     }
 
-    suspend fun deleteWishlist(wishlistEntity: WishlistEntity){
+    suspend fun deleteWishlist(wishlistEntity: WishlistEntity) {
         wishlistDAO.deleteWishlist(wishlistEntity)
     }
 
-    fun cekItemWishlist(productId: String) : Flow<WishlistEntity?> {
+    fun cekItemWishlist(productId: String): Flow<WishlistEntity?> {
         return wishlistDAO.cekItemWishlist(productId)
     }
 }

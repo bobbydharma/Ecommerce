@@ -28,7 +28,7 @@ import retrofit2.http.Query
 interface APIService {
 
     companion object {
-        const val BASE_URL = "http://172.17.20.121:5000/"
+        const val BASE_URL = "http://192.168.153.125:5000/"
     }
 
     @POST("register")
@@ -54,11 +54,11 @@ interface APIService {
     suspend fun postProducts(
         @Query("search") search: String?,
         @Query("brand") brand: String?,
-        @Query ("lowest") lowest: Int?,
-        @Query ("highest") highest: Int?,
-        @Query ("sort") sort: String?,
-        @Query ("limit") limit: Int?,
-        @Query ("page") page: Int?,
+        @Query("lowest") lowest: Int?,
+        @Query("highest") highest: Int?,
+        @Query("sort") sort: String?,
+        @Query("limit") limit: Int?,
+        @Query("page") page: Int?,
     ): Response<ProductsResponse>
 
     @POST("search")
@@ -69,17 +69,17 @@ interface APIService {
     @POST("refresh")
     suspend fun postRefresh(
         @Header("API_KEY") API_KEY: String,
-        @Body token: HashMap<String,String>
+        @Body token: HashMap<String, String>
     ): Response<UserResponse>
 
     @GET("products/{id}")
     suspend fun getDetailProduct(
-        @Path ("id") id : String
+        @Path("id") id: String
     ): Response<ProductDetailResponse>
 
     @GET("review/{id}")
     suspend fun getReviewProduct(
-        @Path ("id") id : String
+        @Path("id") id: String
     ): Response<ReviewProduct>
 
     @GET("payment")
@@ -88,13 +88,13 @@ interface APIService {
     @POST("fulfillment")
     suspend fun postFulfillment(
         @Body items: FulfillmentRequest
-    ) : Response<FulfillmentResponse>
+    ): Response<FulfillmentResponse>
 
     @POST("rating")
     suspend fun postRating(
-        @Body ratingRequest : RatingRequest
-    ) : Response<RatingResponse>
+        @Body ratingRequest: RatingRequest
+    ): Response<RatingResponse>
 
     @GET("transaction")
-    suspend fun getTransaction() : TransactionResponse
+    suspend fun getTransaction(): TransactionResponse
 }

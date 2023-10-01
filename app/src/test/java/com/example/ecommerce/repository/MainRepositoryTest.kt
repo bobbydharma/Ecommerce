@@ -17,10 +17,13 @@ import com.example.ecommerce.ui.main.transaction.Datum
 import com.example.ecommerce.ui.main.transaction.Item
 import com.example.ecommerce.ui.main.transaction.TransactionResponse
 import com.example.ecommerce.utils.Result
+import com.example.ecommerce.viewmodel.FlowDispatcher
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import okhttp3.ResponseBody
 import org.junit.Test
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -36,16 +39,20 @@ import retrofit2.Response
 @RunWith(JUnit4::class)
 class MainRepositoryTest {
 
-    private lateinit var  dataSource : APIService
-    private lateinit var  mainRepository : MainRepository
+    @get:Rule
+    var rule = FlowDispatcher()
+
+    private lateinit var dataSource: APIService
+    private lateinit var mainRepository: MainRepository
 
     @Before
-    fun setup(){
+    fun setup() {
         dataSource = mock()
         mainRepository = MainRepository(dataSource)
     }
+
     @Test
-    fun postSearchMainRepositoryTest() = runTest {
+    fun postSearchMainRepositoryTestSuccess() = runTest {
         val search = "Lenovo"
         val searchResponse = SearchResponse(
             code = 200,
@@ -63,11 +70,21 @@ class MainRepositoryTest {
             Response.success(searchResponse)
         )
         val result = mainRepository.postSearch(search)
-        assertEquals(searchResponse,(result as Result.Success).data)
+        assertEquals(searchResponse, (result as Result.Success).data)
     }
 
     @Test
-    fun getProductDetailMainRepositoryTest() = runTest {
+    fun postSearchMainRepositoryTestError() = runTest {
+        val search = "Lenovo"
+        val error = RuntimeException()
+
+        whenever(dataSource.postSearch(search)).thenThrow(error)
+        val result = mainRepository.postSearch(search)
+        assertEquals(error, (result as Result.Error).exception)
+    }
+
+    @Test
+    fun getProductDetailMainRepositoryTestSuccess() = runTest {
         val productId = ""
         val detailResponse = ProductDetailResponse(
             code = 200,
@@ -88,12 +105,12 @@ class MainRepositoryTest {
                 productRating = 5F,
                 productVariant = listOf(
                     ProductVariant(
-                    variantName = "RAM 16GB",
-                    variantPrice = 0
-                ), ProductVariant(
-                    variantName = "RAM 32GB",
-                    variantPrice = 1000000
-                )
+                        variantName = "RAM 16GB",
+                        variantPrice = 0
+                    ), ProductVariant(
+                        variantName = "RAM 32GB",
+                        variantPrice = 1000000
+                    )
                 )
             )
         )
@@ -103,28 +120,40 @@ class MainRepositoryTest {
         )
 
         val result = mainRepository.getProductDetail(productId)
-        assertEquals(detailResponse,(result as Result.Success).data)
+        assertEquals(detailResponse, (result as Result.Success).data)
 
     }
 
     @Test
-    fun getReviewProductMainRepositoryTest() = runTest {
+    fun getProductDetailMainRepositoryTestError() = runTest {
+        val productId = ""
+        val error = RuntimeException()
+
+        whenever(dataSource.getDetailProduct(productId)).thenThrow(error)
+
+        val result = mainRepository.getProductDetail(productId)
+        assertEquals(error, (result as Result.Error).exception)
+
+    }
+
+    @Test
+    fun getReviewProductMainRepositoryTestSuccess() = runTest {
         val productId = ""
         val reviewResponse = ReviewProduct(
-            code= 200,
+            code = 200,
             message = "OK",
             data = listOf(
                 DataReview(
-                userName = "John",
-                userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQM4VpzpVw8mR2j9_gDajEthwY3KCOWJ1tOhcv47-H9o1a-s9GRPxdb_6G9YZdGfv0HIg&usqp=CAU",
-                userRating = 4,
-                userReview = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-            ), DataReview(
-                userName = "Doe",
-                userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR3Z6PN8QNVhH0e7rEINu_XJS0qHIFpDT3nwF5WSkcYmr3znhY7LOTkc8puJ68Bts-TMc&usqp=CAU",
-                userRating = 5,
-                userReview = "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-            )
+                    userName = "John",
+                    userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQM4VpzpVw8mR2j9_gDajEthwY3KCOWJ1tOhcv47-H9o1a-s9GRPxdb_6G9YZdGfv0HIg&usqp=CAU",
+                    userRating = 4,
+                    userReview = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+                ), DataReview(
+                    userName = "Doe",
+                    userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR3Z6PN8QNVhH0e7rEINu_XJS0qHIFpDT3nwF5WSkcYmr3znhY7LOTkc8puJ68Bts-TMc&usqp=CAU",
+                    userRating = 5,
+                    userReview = "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+                )
             )
         )
 
@@ -133,19 +162,30 @@ class MainRepositoryTest {
         )
 
         val result = mainRepository.getReviewProduct(productId)
-        assertEquals(reviewResponse,(result as Result.Success).data)
+        assertEquals(reviewResponse, (result as Result.Success).data)
     }
 
     @Test
-    fun postFulfillmentMainRepositoryTest() = runTest {
+    fun getReviewProductMainRepositoryTestError() = runTest {
+        val productId = ""
+        val error = RuntimeException()
+
+        whenever(dataSource.getReviewProduct(productId)).thenThrow(error)
+
+        val result = mainRepository.getReviewProduct(productId)
+        assertEquals(error, (result as Result.Error).exception)
+    }
+
+    @Test
+    fun postFulfillmentMainRepositoryTestSuccess() = runTest {
         val fulfillmentRequest = FulfillmentRequest(
             payment = "",
             items = listOf(
                 ItemFullfillment(
-                productId = "",
-                variantName = "",
-                quantity = 1
-            )
+                    productId = "",
+                    variantName = "",
+                    quantity = 1
+                )
             )
         )
 
@@ -167,11 +207,32 @@ class MainRepositoryTest {
         )
 
         val result = mainRepository.postFulfillment(fulfillmentRequest)
-        assertEquals(fulfillmentResponse,(result as Result.Success).data)
+        assertEquals(fulfillmentResponse, (result as Result.Success).data)
     }
 
     @Test
-    fun postRatingMainRepositoryTest() = runTest {
+    fun postFulfillmentMainRepositoryTestError() = runTest {
+        val fulfillmentRequest = FulfillmentRequest(
+            payment = "",
+            items = listOf(
+                ItemFullfillment(
+                    productId = "",
+                    variantName = "",
+                    quantity = 1
+                )
+            )
+        )
+
+        val error = RuntimeException()
+
+        whenever(dataSource.postFulfillment(fulfillmentRequest)).thenThrow(error)
+
+        val result = mainRepository.postFulfillment(fulfillmentRequest)
+        assertEquals(error, (result as Result.Error).exception)
+    }
+
+    @Test
+    fun postRatingMainRepositoryTestSuccess() = runTest {
         val ratingRequest = RatingRequest(
             invoiceId = "",
             rating = 0,
@@ -188,34 +249,49 @@ class MainRepositoryTest {
         )
 
         val result = mainRepository.postRating(ratingRequest)
-        assertEquals(ratingResponse,(result as Result.Success).data)
+        assertEquals(ratingResponse, (result as Result.Success).data)
     }
 
     @Test
-    fun getTransactionMainRepositoryTest() = runTest(UnconfinedTestDispatcher()) {
+    fun postRatingMainRepositoryTestError() = runTest {
+        val ratingRequest = RatingRequest(
+            invoiceId = "",
+            rating = 0,
+            review = ""
+        )
+        val error = RuntimeException()
+
+        whenever(dataSource.postRating(ratingRequest)).thenThrow(error)
+
+        val result = mainRepository.postRating(ratingRequest)
+        assertEquals(error, (result as Result.Error).exception)
+    }
+
+    @Test
+    fun getTransactionMainRepositoryTestSuccess() = runTest(UnconfinedTestDispatcher()) {
         val transactionResponse = TransactionResponse(
             code = 200,
             message = "OK",
             data = listOf(
                 Datum(
-                invoiceId = "8cad85b1-a28f-42d8-9479-72ce4b7f3c7d",
-                status = true,
-                date = "09 Jun 2023",
-                time = "09:05",
-                payment = "Bank BCA",
-                total = 48998000,
-                items = listOf(
-                    Item(
-                        productId = "bee98108-660c-4ac0-97d3-63cdc1492f53",
-                        variantName = "RAM 16GB",
-                        quantity = 2
-                    )
-                ),
-                rating = 4,
-                review = "LGTM",
-                image = "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/6/0a49c399-cf6b-47f5-91c9-8cbd0b86462d.jpg",
-                name = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray"
-            )
+                    invoiceId = "8cad85b1-a28f-42d8-9479-72ce4b7f3c7d",
+                    status = true,
+                    date = "09 Jun 2023",
+                    time = "09:05",
+                    payment = "Bank BCA",
+                    total = 48998000,
+                    items = listOf(
+                        Item(
+                            productId = "bee98108-660c-4ac0-97d3-63cdc1492f53",
+                            variantName = "RAM 16GB",
+                            quantity = 2
+                        )
+                    ),
+                    rating = 4,
+                    review = "LGTM",
+                    image = "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/6/0a49c399-cf6b-47f5-91c9-8cbd0b86462d.jpg",
+                    name = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray"
+                )
             )
         )
 

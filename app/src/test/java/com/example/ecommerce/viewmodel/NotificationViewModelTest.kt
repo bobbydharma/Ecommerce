@@ -38,7 +38,7 @@ class NotificationViewModelTest {
     val expectedNotificationFlow = flowOf(listOf(notification))
 
     @Before
-    fun setup(){
+    fun setup() {
         repository = Mockito.mock()
 
         whenever(repository.getAll()).thenReturn(expectedNotificationFlow)
@@ -52,7 +52,7 @@ class NotificationViewModelTest {
 
     @Test
     fun `update read notification notification viewmodel test`() = runTest {
-        val idNotification : Long = 1
+        val idNotification: Long = 1
         val isRead = true
         whenever(repository.updateRead(idNotification, isRead)).thenReturn(Unit)
         val resul = notificationViewModel.updateRead(idNotification, isRead)

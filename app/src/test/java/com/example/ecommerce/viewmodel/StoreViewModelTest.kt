@@ -32,10 +32,11 @@ class StoreViewModelTest {
     private lateinit var storeViewModel: StoreViewModel
 
     @Before
-    fun setup(){
+    fun setup() {
         repository = Mockito.mock()
         apiService = Mockito.mock()
     }
+
     @Test
     fun `post search store viewmodel test success`() = runTest {
         val search = "Lenovo"

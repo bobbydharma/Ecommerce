@@ -15,18 +15,18 @@ import javax.inject.Inject
 @HiltViewModel
 class WishlistViewModel @Inject constructor(
     private val wishlistRepository: WishlistRepository,
-    private val cartRepository : CartRepository
+    private val cartRepository: CartRepository
 ) : ViewModel() {
 
     val wishlistItem = wishlistRepository.getAll()
 
-    suspend fun deleteWishlist(wishlistEntity: WishlistEntity){
+    suspend fun deleteWishlist(wishlistEntity: WishlistEntity) {
         viewModelScope.launch {
             wishlistRepository.deleteWishlist(wishlistEntity)
         }
     }
 
-    suspend fun insertOrUpdateItem(product: DataProductDetail, index: Int){
+    suspend fun insertOrUpdateItem(product: DataProductDetail, index: Int) {
         viewModelScope.launch {
             val cartItem = product.mappingCart(index)
             cartRepository.insertOrUpdateItem(cartItem)

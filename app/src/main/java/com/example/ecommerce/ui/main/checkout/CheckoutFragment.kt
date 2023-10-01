@@ -29,10 +29,11 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class CheckoutFragment : Fragment() {
 
-    private var _binding : FragmentCheckoutBinding? = null
+    private var _binding: FragmentCheckoutBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<CheckoutViewModel>()
     private lateinit var checkoutAdapter: CheckoutAdapter
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -47,30 +48,37 @@ class CheckoutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var totalPrice = 0
-        val item = viewModel.itemCheckoutList.value?.itemCheckout?.map{
+        val item = viewModel.itemCheckoutList.value?.itemCheckout?.map {
             Bundle().apply {
                 putString(FirebaseAnalytics.Param.ITEM_ID, it.productId)
                 putString(FirebaseAnalytics.Param.ITEM_NAME, it.productName)
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, it.varianName)
                 putString(FirebaseAnalytics.Param.ITEM_BRAND, it.brand)
-                putDouble(FirebaseAnalytics.Param.PRICE, (it.productPrice+it.varianPrice).toDouble())
+                putDouble(
+                    FirebaseAnalytics.Param.PRICE,
+                    (it.productPrice + it.varianPrice).toDouble()
+                )
             }
         }
 
         viewModel.itemCheckoutList.value?.itemCheckout?.forEachIndexed { index, checkoutItem ->
-            val priceProduct = (checkoutItem.productPrice + checkoutItem.varianPrice) * checkoutItem.quantity
+            val priceProduct =
+                (checkoutItem.productPrice + checkoutItem.varianPrice) * checkoutItem.quantity
             totalPrice += priceProduct
         }
 
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT){
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT) {
             param(FirebaseAnalytics.Param.CURRENCY, "IDR")
             param(FirebaseAnalytics.Param.VALUE, totalPrice.toDouble())
             item?.let { param(FirebaseAnalytics.Param.ITEMS, it.toTypedArray()) }
         }
 
-        requireActivity().supportFragmentManager.setFragmentResultListener("itemPayment", viewLifecycleOwner) { requestKey, bundle ->
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            "itemPayment",
+            viewLifecycleOwner
+        ) { requestKey, bundle ->
             viewModel.dataItemPayment = bundle.getParcelable("itemPayment")!!
-            var dataFulfillment : FulfillmentRequest
+            var dataFulfillment: FulfillmentRequest
             if (viewModel.dataItemPayment.label.isNotEmpty()) {
                 Glide.with(view.context)
                     .load(viewModel.dataItemPayment.image)
@@ -83,24 +91,28 @@ class CheckoutFragment : Fragment() {
                 if (viewModel.dataItemPayment.label.isNotEmpty()) {
                     if (items != null) {
                         viewLifecycleOwner.lifecycleScope.launch {
-                            dataFulfillment = FulfillmentRequest(viewModel.dataItemPayment.label, items)
+                            dataFulfillment =
+                                FulfillmentRequest(viewModel.dataItemPayment.label, items)
                             viewModel.postFulfillment(dataFulfillment)
                         }
                     }
                 }
             }
 
-            val item = viewModel.itemCheckoutList.value?.itemCheckout?.map{
+            val item = viewModel.itemCheckoutList.value?.itemCheckout?.map {
                 Bundle().apply {
                     putString(FirebaseAnalytics.Param.ITEM_ID, it.productId)
                     putString(FirebaseAnalytics.Param.ITEM_NAME, it.productName)
                     putString(FirebaseAnalytics.Param.ITEM_VARIANT, it.varianName)
                     putString(FirebaseAnalytics.Param.ITEM_BRAND, it.brand)
-                    putDouble(FirebaseAnalytics.Param.PRICE, (it.productPrice+it.varianPrice).toDouble())
+                    putDouble(
+                        FirebaseAnalytics.Param.PRICE,
+                        (it.productPrice + it.varianPrice).toDouble()
+                    )
                 }
             }
 
-            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_PAYMENT_INFO){
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_PAYMENT_INFO) {
                 param(FirebaseAnalytics.Param.CURRENCY, "IDR")
                 param(FirebaseAnalytics.Param.VALUE, totalPrice.toDouble())
                 param(FirebaseAnalytics.Param.PAYMENT_TYPE, viewModel.dataItemPayment.label)
@@ -122,7 +134,7 @@ class CheckoutFragment : Fragment() {
         binding.rvProductCheckout.adapter = checkoutAdapter
         setTotalPrice(viewModel.itemCheckoutList)
 
-        binding.carfViewCheckout.setOnClickListener{
+        binding.carfViewCheckout.setOnClickListener {
             findNavController().navigate(R.id.action_checkoutFragment_to_paymentFragment)
         }
 
@@ -132,17 +144,27 @@ class CheckoutFragment : Fragment() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBarChekout.isVisible = false
-                    val bundle = bundleOf("FulfillmentResponse" to result.data.data , "SourceFragment" to "Checkout")
-                    findNavController().navigate(R.id.action_checkoutFragment_to_sendReviewFragment, bundle)
+                    val bundle = bundleOf(
+                        "FulfillmentResponse" to result.data.data,
+                        "SourceFragment" to "Checkout"
+                    )
+                    findNavController().navigate(
+                        R.id.action_checkoutFragment_to_sendReviewFragment,
+                        bundle
+                    )
 
                     logEventPurchase(result.data.data)
                 }
+
                 is Result.Error -> {
+                    binding.progressBarChekout.isVisible = false
                     Toast.makeText(context, "Gagal melakukan pembayaran", Toast.LENGTH_SHORT).show()
                 }
+
                 is Result.Loading -> {
                     binding.progressBarChekout.isVisible = true
                 }
+
                 else -> {
                 }
             }
@@ -155,16 +177,19 @@ class CheckoutFragment : Fragment() {
         val items = viewModel.itemCheckoutList.value?.itemCheckout
         val data = items?.map {
             Bundle().apply {
-                putString(FirebaseAnalytics.Param.ITEM_ID, it.productId )
+                putString(FirebaseAnalytics.Param.ITEM_ID, it.productId)
                 putString(FirebaseAnalytics.Param.ITEM_NAME, it.productName)
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, it.varianName)
                 putString(FirebaseAnalytics.Param.ITEM_BRAND, it.brand)
-                putDouble(FirebaseAnalytics.Param.PRICE, (it.productPrice+it.varianPrice).toDouble())
+                putDouble(
+                    FirebaseAnalytics.Param.PRICE,
+                    (it.productPrice + it.varianPrice).toDouble()
+                )
             }
         }
         if (items != null) {
             items.forEach {
-                totalPrice = totalPrice+it.productPrice
+                totalPrice = totalPrice + it.productPrice
             }
         }
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.PURCHASE) {
@@ -180,7 +205,8 @@ class CheckoutFragment : Fragment() {
     private fun setTotalPrice(item: StateFlow<CheckoutList?>) {
         var totalPrice = 0
         item.value?.itemCheckout?.forEachIndexed { index, checkoutItem ->
-            val priceProduct = (checkoutItem.productPrice + checkoutItem.varianPrice) * checkoutItem.quantity
+            val priceProduct =
+                (checkoutItem.productPrice + checkoutItem.varianPrice) * checkoutItem.quantity
             totalPrice += priceProduct
         }
         binding.tvTotalPriceCheckout.text = totalPrice.formatToIDR()

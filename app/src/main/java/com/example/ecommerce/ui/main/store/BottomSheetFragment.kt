@@ -32,8 +32,8 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
 
     private val viewModel by activityViewModels<StoreViewModel>()
-    var cekHighest:Boolean = false
-    var cekLowest:Boolean = false
+    var cekHighest: Boolean = false
+    var cekLowest: Boolean = false
     var cekSort: Boolean = false
     var cekBrand: Boolean = false
 
@@ -60,7 +60,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         updateButtonReset()
 
-        viewLifecycleOwner.lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.prooductQuery.collectLatest {
                 updateButtonReset()
                 binding.btnResetFilter.isVisible =
@@ -68,14 +68,14 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
                 it.sort?.let { it1 -> binding.chipGroupUrutkan.selectChipByText(it1) }
                 it.brand?.let { it1 -> binding.chipGroupBrand.selectChipByText(it1) }
-                if (it.lowest == null){
+                if (it.lowest == null) {
                     binding.etLowest.setText("")
-                }else{
+                } else {
                     binding.etLowest.setText(it.lowest.toString())
                 }
-                if (it.lowest == null){
+                if (it.lowest == null) {
                     binding.etHighest.setText("")
-                }else{
+                } else {
                     binding.etHighest.setText(it.highest.toString())
                 }
 
@@ -86,28 +86,28 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         binding.apply {
-            etHighest.doOnTextChanged { text, _, _, _, ->
+            etHighest.doOnTextChanged { text, _, _, _ ->
                 cekHighest = text != null
-                if (text.isNullOrEmpty()){
+                if (text.isNullOrEmpty()) {
                     cekHighest = false
                 }
                 updateButtonReset()
             }
 
-            etLowest.doOnTextChanged { text, _, _, _, ->
+            etLowest.doOnTextChanged { text, _, _, _ ->
                 cekLowest = text != null
-                if (text.isNullOrEmpty()){
+                if (text.isNullOrEmpty()) {
                     cekLowest = false
                 }
                 updateButtonReset()
             }
 
-            chipGroupUrutkan.setOnCheckedChangeListener{ group, checkedIds ->
+            chipGroupUrutkan.setOnCheckedChangeListener { group, checkedIds ->
                 cekSort = isAnyChipChecked(group)
                 updateButtonReset()
             }
 
-            chipGroupBrand.setOnCheckedChangeListener{ group, checkedIds ->
+            chipGroupBrand.setOnCheckedChangeListener { group, checkedIds ->
                 cekBrand = isAnyChipChecked(group)
                 updateButtonReset()
             }
@@ -184,7 +184,8 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
                 sort = data.sort,
                 brand = data.brand,
                 lowest = data.lowest,
-                highest = data.highest)
+                highest = data.highest
+            )
 
             requireActivity().supportFragmentManager.setFragmentResult(
                 "filter",
@@ -210,9 +211,9 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun updateButtonReset() {
-        if (cekSort == false && cekBrand == false && cekHighest == false && cekLowest == false){
+        if (cekSort == false && cekBrand == false && cekHighest == false && cekLowest == false) {
             binding.btnResetFilter.isVisible = false
-        }else{
+        } else {
             binding.btnResetFilter.isVisible = true
         }
     }
@@ -226,8 +227,9 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         }
         return false
     }
+
     fun ChipGroup.resetSelected() {
-        for (i in 0 until childCount){
+        for (i in 0 until childCount) {
             val chip = getChildAt(i) as Chip
             chip.isChecked = false
         }

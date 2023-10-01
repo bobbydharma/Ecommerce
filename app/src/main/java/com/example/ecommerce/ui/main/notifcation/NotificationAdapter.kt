@@ -17,10 +17,13 @@ import com.google.android.material.color.MaterialColors
 
 class NotificationAdapter(
     diffCallback: DiffUtil.ItemCallback<NotificationEntity>,
-    private val itemClick : (NotificationEntity) -> Unit
-) : ListAdapter<NotificationEntity, NotificationAdapter.notificationViewHolder> (NotificaitionEntityDiffCallback) {
+    private val itemClick: (NotificationEntity) -> Unit
+) : ListAdapter<NotificationEntity, NotificationAdapter.notificationViewHolder>(
+    NotificaitionEntityDiffCallback
+) {
 
-    inner class notificationViewHolder(private val binding: ItemNotificationBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class notificationViewHolder(private val binding: ItemNotificationBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(notificationEntity: NotificationEntity) {
 
             Glide.with(itemView.context)
@@ -31,20 +34,30 @@ class NotificationAdapter(
 
             binding.tvBodyNotification.text = notificationEntity.body
             binding.tvTitleNotification.text = notificationEntity.title
-            binding.dateTimeNotification.text = "${notificationEntity.date} ${notificationEntity.time}"
+            binding.dateTimeNotification.text =
+                "${notificationEntity.date} ${notificationEntity.time}"
 
-            if (!notificationEntity.isRead){
-                binding.containerNotification.setBackgroundColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorPrimaryContainer))
-            }else{
-                binding.containerNotification.setBackgroundColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorSurfaceContainerLowest))
+            if (!notificationEntity.isRead) {
+                binding.containerNotification.setBackgroundColor(
+                    MaterialColors.getColor(
+                        itemView,
+                        com.google.android.material.R.attr.colorPrimaryContainer
+                    )
+                )
+            } else {
+                binding.containerNotification.setBackgroundColor(
+                    MaterialColors.getColor(
+                        itemView,
+                        com.google.android.material.R.attr.colorSurfaceContainerLowest
+                    )
+                )
             }
 
             binding.containerNotification.setOnClickListener {
                 itemClick(notificationEntity)
-               }
+            }
         }
     }
-
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): notificationViewHolder {
@@ -59,11 +72,17 @@ class NotificationAdapter(
     }
 
     object NotificaitionEntityDiffCallback : DiffUtil.ItemCallback<NotificationEntity>() {
-        override fun areItemsTheSame(oldItem: NotificationEntity, newItem: NotificationEntity): Boolean {
+        override fun areItemsTheSame(
+            oldItem: NotificationEntity,
+            newItem: NotificationEntity
+        ): Boolean {
             return oldItem.idNotification == newItem.idNotification
         }
 
-        override fun areContentsTheSame(oldItem: NotificationEntity, newItem: NotificationEntity): Boolean {
+        override fun areContentsTheSame(
+            oldItem: NotificationEntity,
+            newItem: NotificationEntity
+        ): Boolean {
             return oldItem == newItem
         }
     }

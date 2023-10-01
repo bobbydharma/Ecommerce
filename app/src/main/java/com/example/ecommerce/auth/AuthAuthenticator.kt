@@ -25,20 +25,20 @@ class AuthAuthenticator @Inject constructor(
     @ApplicationContext private val context: Context,
     private val prefHelper: PrefHelper,
     private val cekAuthorization: CekAuthorization
-): Authenticator {
+) : Authenticator {
 
-//    192.168.153.125
+    //    192.168.153.125
     companion object {
-        const val BASE_URL = "http://172.17.20.121:5000/"
+        const val BASE_URL = "http://192.168.153.125:5000/"
         const val API_KEY = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
     }
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        synchronized(this){
-            return  runBlocking {
+        synchronized(this) {
+            return runBlocking {
                 try {
                     val token = prefHelper.refreshToken
-                    val newToken =  getNewToken(token ?: "")
+                    val newToken = getNewToken(token ?: "")
                     if (newToken.isSuccessful && newToken.body() != null) {
                         newToken?.body()?.let {
                             prefHelper.token = it.data.accessToken
@@ -46,16 +46,16 @@ class AuthAuthenticator @Inject constructor(
                                 .header("Authorization", "Bearer ${token}")
                                 .build()
                         }
-                    }else{
-                        if (newToken.code() == 401){
+                    } else {
+                        if (newToken.code() == 401) {
                             Log.d("error authenticator", "401")
                             cekAuthorization.setAutorization()
                             null
-                        }else{
+                        } else {
                             null
                         }
                     }
-                }catch (e: HttpException){
+                } catch (e: HttpException) {
                     null
                 }
             }
@@ -64,7 +64,7 @@ class AuthAuthenticator @Inject constructor(
     }
 
 
-    suspend fun getNewToken(token: String): retrofit2.Response<UserResponse>{
+    suspend fun getNewToken(token: String): retrofit2.Response<UserResponse> {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val chuckerInterceptor = ChuckerInterceptor.Builder(context)

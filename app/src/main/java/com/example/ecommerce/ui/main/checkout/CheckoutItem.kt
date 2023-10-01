@@ -1,11 +1,13 @@
 package com.example.ecommerce.ui.main.checkout
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import androidx.room.PrimaryKey
 import com.example.ecommerce.model.products.DataProductDetail
 import com.example.ecommerce.room.entity.CartEntity
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 data class CheckoutItem(
     var productId: String,
@@ -26,13 +28,13 @@ data class CheckoutItem(
     var quantity: Int = 1,
     var isSelected: Boolean = false
 ) : Parcelable
-
+@Keep
 @Parcelize
 data class CheckoutList(
     var itemCheckout: List<CheckoutItem>
 ) : Parcelable
 
-fun List<CartEntity>.toChekoutList() : CheckoutList {
+fun List<CartEntity>.toChekoutList(): CheckoutList {
     val checkoutList = mutableListOf<CheckoutItem>()
     this.forEach {
         checkoutList.add(
@@ -60,7 +62,7 @@ fun List<CartEntity>.toChekoutList() : CheckoutList {
     return CheckoutList(checkoutList)
 }
 
-fun List<CheckoutItem>.toFulfillmentItem() : List<ItemFullfillment> {
+fun List<CheckoutItem>.toFulfillmentItem(): List<ItemFullfillment> {
     val fulfilmentItems = mutableListOf<ItemFullfillment>()
     this.forEach {
         fulfilmentItems.add(

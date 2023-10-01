@@ -5,7 +5,7 @@
     android:background="?attr/selectableItemBackground"
     style="?attr/materialCardViewElevatedStyle"
     app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-    app:cardElevation = "3dp"
+    app:cardElevation="3dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="10dp"
@@ -22,8 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="186dp"
             app:srcCompat="@drawable/image_thumbnail"
-            android:scaleType="centerCrop"
-            />
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,8 +38,8 @@
                 android:textSize="12sp"
                 android:maxLines="2"
                 android:layout_marginBottom="2dp"
-                android:text="Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GBasdasdasdasdasdasdasd"
-                />
+                android:text="Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GBasdasdasdasdasdasdasd" />
+
             <TextView
                 android:id="@+id/tv_product_price_grid"
                 android:layout_width="wrap_content"

@@ -20,7 +20,7 @@ class WishlistRepositoryTest {
     private lateinit var wishlistRepository: WishlistRepository
 
     @Before
-    fun setup(){
+    fun setup() {
         wishlistDAO = Mockito.mock()
         wishlistRepository = WishlistRepository(wishlistDAO)
     }

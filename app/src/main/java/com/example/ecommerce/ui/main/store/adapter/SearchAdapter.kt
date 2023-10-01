@@ -5,7 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ecommerce.databinding.ItemSearchBinding
 
-class SearchAdapter(private val searchList: List<String>,private val onItemClick: (String) -> Unit) :
+class SearchAdapter(
+    private val searchList: List<String>,
+    private val onItemClick: (String) -> Unit
+) :
     RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     inner class SearchViewHolder(private val binding: ItemSearchBinding) :

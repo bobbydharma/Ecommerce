@@ -15,18 +15,22 @@ import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentPaymentBinding
 import com.example.ecommerce.utils.Result
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class PaymentFragment : Fragment() {
 
-    private var _binding : FragmentPaymentBinding? = null
+    private var _binding: FragmentPaymentBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<PaymentViewModel>()
     private lateinit var parentPaymentAdapter: ParentPaymentAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,9 +84,9 @@ class PaymentFragment : Fragment() {
 //            }
 //        }
 
-        viewModel.stringPayment.observe(viewLifecycleOwner){result ->
+        viewModel.stringPayment.observe(viewLifecycleOwner) { result ->
 
-            when(result){
+            when (result) {
                 is Result.Success -> {
                     binding.rvPayment.isVisible = true
                     binding.progressBarPayment.isVisible = false

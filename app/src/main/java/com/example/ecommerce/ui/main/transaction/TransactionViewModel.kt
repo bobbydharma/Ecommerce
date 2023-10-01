@@ -16,17 +16,17 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionViewModel @Inject constructor(
     private val repository: MainRepository
-) : ViewModel(){
+) : ViewModel() {
 
     private val _transaction = MutableStateFlow<Result<TransactionResponse>>(Result.Loading)
     val transaction = _transaction
 
-    suspend fun getTransaction(){
+    suspend fun getTransaction() {
         viewModelScope.launch {
             repository.getTransaction()
                 .catch {
                     _transaction.value = Result.Error(it)
-                }.collect{
+                }.collect {
                     _transaction.value = Result.Success(it)
                 }
         }

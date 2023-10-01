@@ -26,16 +26,17 @@ class CheckoutViewModelTest {
     @get:Rule
     var mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var repository : MainRepository
+    private lateinit var repository: MainRepository
     private lateinit var checkoutViewModel: CheckoutViewModel
     private lateinit var savedStateHandle: SavedStateHandle
 
     @Before
-    fun setup(){
+    fun setup() {
         savedStateHandle = Mockito.mock()
         repository = Mockito.mock()
-        checkoutViewModel = CheckoutViewModel(savedStateHandle,repository)
+        checkoutViewModel = CheckoutViewModel(savedStateHandle, repository)
     }
+
     val fulfillmentRequest = FulfillmentRequest(
         payment = "",
         items = listOf(
@@ -59,9 +60,14 @@ class CheckoutViewModelTest {
             total = 48998000
         )
     )
+
     @Test
     fun `post fulfillment checkout viewmodel success`() = runTest {
-        whenever(repository.postFulfillment(fulfillmentRequest)).thenReturn(Result.Success(fulfillmentResponse))
+        whenever(repository.postFulfillment(fulfillmentRequest)).thenReturn(
+            Result.Success(
+                fulfillmentResponse
+            )
+        )
         checkoutViewModel.postFulfillment(fulfillmentRequest)
 
         Assert.assertEquals(Result.Loading, checkoutViewModel.fulfillment.getOrAwaitValue())

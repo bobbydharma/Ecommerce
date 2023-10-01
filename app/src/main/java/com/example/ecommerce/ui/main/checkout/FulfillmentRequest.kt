@@ -1,28 +1,30 @@
 package com.example.ecommerce.ui.main.checkout
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
-data class FulfillmentRequest (
+data class FulfillmentRequest(
     var payment: String,
     val items: List<ItemFullfillment>
 )
 
-data class ItemFullfillment (
+data class ItemFullfillment(
     val productId: String,
     val variantName: String,
     val quantity: Int
 )
-
+@Keep
 @Parcelize
-data class FulfillmentResponse (
+data class FulfillmentResponse(
     val code: Int,
     val message: String,
     val data: Data
-):Parcelable
+) : Parcelable
 
+@Keep
 @Parcelize
-data class Data (
+data class Data(
     val invoiceId: String,
     val status: Boolean,
     val date: String,
@@ -30,4 +32,4 @@ data class Data (
     val payment: String,
     val total: Int,
 
-):Parcelable
+    ) : Parcelable

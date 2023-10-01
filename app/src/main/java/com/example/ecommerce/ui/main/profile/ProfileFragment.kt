@@ -34,8 +34,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.InputStream
@@ -53,10 +56,11 @@ class ProfileFragment : Fragment() {
 
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
     private var validName: Boolean = false
-    val timestamp:String = SimpleDateFormat(
+    val timestamp: String = SimpleDateFormat(
         FILENAME_FORMAT,
         Locale.US
     ).format(System.currentTimeMillis())
@@ -85,7 +89,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (viewModel.imageUri != null){
+        if (viewModel.imageUri != null) {
             displayCapturedPhoto()
         }
 
@@ -94,20 +98,28 @@ class ProfileFragment : Fragment() {
         checking()
 
         binding.btnSelesai.setOnClickListener {
-            val userName = MultipartBody.Part.createFormData("userName", binding.layoutEtName.editText?.text.toString())
-            if (viewModel.imageUri != null){
+            val userName = MultipartBody.Part.createFormData(
+                "userName",
+                binding.layoutEtName.editText?.text.toString()
+            )
+            if (viewModel.imageUri != null) {
                 val file = uriToFile(viewModel.imageUri!!, requireContext())
-                val part = MultipartBody.Part.createFormData("userImage", file.name, file.asRequestBody(
-                    "image/*".toMediaType()
-                ))
+                val part = MultipartBody.Part.createFormData(
+                    "userImage", file.name, file.asRequestBody(
+                        "image/*".toMediaType()
+                    )
+                )
                 val data = ProfileRequest(userName, part)
                 viewModel.postProfile(data)
-            }else{
-                Toast.makeText(context, "Gagal Upload Image", Toast.LENGTH_SHORT).show()
+            } else {
+                val emptyRequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "")
+                val userImagePart = MultipartBody.Part.createFormData("userImage", "", emptyRequestBody)
+                val data = ProfileRequest(userName, userImagePart)
+                viewModel.postProfile(data)
             }
 
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Profile_Done" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Profile_Done")
             }
         }
 
@@ -135,8 +147,8 @@ class ProfileFragment : Fragment() {
 
         binding.ivProfile.setOnClickListener {
             val item = arrayOf(getString(R.string.kamera), getString(R.string.galeri))
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Profile_Image" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Profile_Image")
             }
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.pilih_gambar))
@@ -165,7 +177,8 @@ class ProfileFragment : Fragment() {
 
     private fun validationButton() {
         val uri = viewModel.imageUri.toString()
-        binding.btnSelesai.isEnabled = validName && !binding.layoutEtName.editText?.text.isNullOrEmpty() && !uri.isNullOrEmpty()
+        binding.btnSelesai.isEnabled =
+            validName && !binding.layoutEtName.editText?.text.isNullOrEmpty() && !uri.isNullOrEmpty()
     }
 
     private fun displayCapturedPhoto() {
@@ -177,9 +190,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun checkCameraPermissionAndTakePicture() {
-            viewModel.imageUri = createTempImageUri()
+        viewModel.imageUri = createTempImageUri()
 //        requestWriteExternalStoragePermission()
-            takePictureLauncher.launch(viewModel.imageUri)
+        takePictureLauncher.launch(viewModel.imageUri)
 
     }
 
@@ -220,16 +233,38 @@ class ProfileFragment : Fragment() {
         val kebijakanStartIndex = combinedText.indexOf(getString(R.string.kebijakan_privasi))
         val kebijakanEndIndex = kebijakanStartIndex + getString(R.string.kebijakan_privasi).length
 
-        spannableString.setSpan(ForegroundColorSpan(MaterialColors.getColor(requireView(), android.R.attr.colorPrimary)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-        spannableString.setSpan(ForegroundColorSpan(MaterialColors.getColor(requireView(), android.R.attr.colorPrimary)), kebijakanStartIndex, kebijakanEndIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+        )
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ), kebijakanStartIndex, kebijakanEndIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+        )
 
         binding.tvSyarat.text = spannableString
     }
 
     private fun requestWriteExternalStoragePermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             // Jika izin belum diberikan, minta izin kepada pengguna
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_WRITE_EXTERNAL_STORAGE)
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_WRITE_EXTERNAL_STORAGE
+            )
         } else {
             // Izin sudah diberikan, lanjutkan dengan operasi yang memerlukan izin tersebut
             viewModel.imageUri = createTempImageUri()

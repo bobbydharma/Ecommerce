@@ -36,7 +36,7 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:focusable="true"
-            android:nextFocusDown="@+id/et_search_fragment"/>
+            android:nextFocusDown="@+id/et_search_fragment" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

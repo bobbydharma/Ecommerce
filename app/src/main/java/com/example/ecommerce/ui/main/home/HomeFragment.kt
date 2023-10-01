@@ -47,8 +47,10 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
+
     @Inject
     lateinit var database: AppDatabase
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -65,10 +67,10 @@ class HomeFragment : Fragment() {
 
 
         binding.btnLogoutHome.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO){
+            GlobalScope.launch(Dispatchers.IO) {
                 database.clearAllTables()
-                firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                    param("BUTTON_NAME", "Home_Logout" )
+                firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                    param("BUTTON_NAME", "Home_Logout")
                 }
             }
 
@@ -77,7 +79,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.switchLanguage.apply {
-            setOnCheckedChangeListener {_, isChecked ->
+            setOnCheckedChangeListener { _, isChecked ->
                 val check = if (isChecked) "in" else "en"
                 val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(check)
                 AppCompatDelegate.setApplicationLocales(appLocale)
@@ -89,10 +91,10 @@ class HomeFragment : Fragment() {
 
         binding.switchTheme.apply {
             setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked){
+                if (isChecked) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     sharedPreferencesManager.dark_theme = true
-                }else{
+                } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     sharedPreferencesManager.dark_theme = false
                 }
@@ -103,8 +105,9 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (AppCompatDelegate.getApplicationLocales().get(0)?.language != null){
-            binding.switchLanguage.isChecked = AppCompatDelegate.getApplicationLocales().get(0)!!.language == "in"
+        if (AppCompatDelegate.getApplicationLocales().get(0)?.language != null) {
+            binding.switchLanguage.isChecked =
+                AppCompatDelegate.getApplicationLocales().get(0)!!.language == "in"
         }
     }
 

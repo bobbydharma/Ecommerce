@@ -28,6 +28,7 @@ class OnBoardingFragment : Fragment() {
 
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -36,7 +37,7 @@ class OnBoardingFragment : Fragment() {
         if (sharedPreferencesManager.obCheck) {
             Log.d("onBoarding", "success")
             findNavController().navigate(R.id.action_onBoardingFragment_to_loginFragment)
-        }else{
+        } else {
             Log.d("onBoarding", "Onboarding")
         }
     }
@@ -56,24 +57,24 @@ class OnBoardingFragment : Fragment() {
 
         binding.obSelanjutnya.setOnClickListener {
             binding.pager.currentItem += 1
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "OnBoarding_Next" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "OnBoarding_Next")
             }
         }
 
         binding.obLewati.setOnClickListener {
             findNavController().navigate(R.id.action_onBoardingFragment_to_loginFragment)
             sharedPreferencesManager.obCheck = true
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "OnBoarding_Skip" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "OnBoarding_Skip")
             }
         }
 
         binding.obGabung.setOnClickListener {
             findNavController().navigate(R.id.action_onBoardingFragment_to_registerFragment)
             sharedPreferencesManager.obCheck = true
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "OnBoarding_Join" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "OnBoarding_Join")
             }
         }
     }

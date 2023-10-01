@@ -34,7 +34,7 @@ class SendReviewViewModelTest {
     private lateinit var sendReviewViewModel: SendReviewViewModel
 
     @Before
-    fun setup(){
+    fun setup() {
         repository = Mockito.mock()
         savedStateHandle = Mockito.mock()
         sendReviewViewModel = SendReviewViewModel(savedStateHandle, repository)

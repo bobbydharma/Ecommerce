@@ -21,6 +21,6 @@ interface NotificationDAO {
     suspend fun updateRead(idNotification: Long, isRead: Boolean)
 
     @Query("SELECT * FROM notification WHERE isRead = :isRead ")
-    fun cekIsRead(isRead: Boolean) : Flow<List<NotificationEntity>>
+    fun cekIsRead(isRead: Boolean): Flow<List<NotificationEntity>>
 
 }

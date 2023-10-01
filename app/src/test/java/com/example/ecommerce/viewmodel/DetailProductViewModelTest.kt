@@ -15,6 +15,7 @@ import com.example.ecommerce.ui.main.detail.DetailProductViewModel
 import com.example.ecommerce.ui.prelogin.login.LoginViewModel
 import com.example.ecommerce.utils.Result
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
@@ -112,38 +113,45 @@ class DetailProductViewModelTest {
     )
 
     val dataProductDetail = DataProductDetail(
-    productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
-    productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
-    productPrice = 24499000,
-    image = listOf("image_url"),
-    brand = "Asus",
-    description = "Description",
-    store = "AsusStore",
-    sale = 12,
-    stock = 2,
-    totalRating = 7,
-    totalReview = 5,
-    totalSatisfaction = 100,
-    productRating = 5F,
-    productVariant = listOf(ProductVariant(
-    variantName = "RAM 16GB",
-    variantPrice = 0
-    ), ProductVariant(
-    variantName = "RAM 32GB",
-    variantPrice = 1000000
-    ))
+        productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
+        productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
+        productPrice = 24499000,
+        image = listOf("image_url"),
+        brand = "Asus",
+        description = "Description",
+        store = "AsusStore",
+        sale = 12,
+        stock = 2,
+        totalRating = 7,
+        totalReview = 5,
+        totalSatisfaction = 100,
+        productRating = 5F,
+        productVariant = listOf(
+            ProductVariant(
+                variantName = "RAM 16GB",
+                variantPrice = 0
+            ), ProductVariant(
+                variantName = "RAM 32GB",
+                variantPrice = 1000000
+            )
+        )
     )
 
     val idProduct = ""
-    val expectedWishlistResponse = MutableStateFlow(wishlistEntity)
-    val expectedCartEntity = MutableStateFlow(cartEntity)
+    val expectedWishlistResponse = flowOf(wishlistEntity)
+    val expectedCartEntity = flowOf(cartEntity)
+
     @Before
-    fun setup() = runTest{
+    fun setup() = runTest {
         mainRepository = Mockito.mock()
         cartRepository = Mockito.mock()
         savedStateHandle = Mockito.mock()
         wishlistRepository = Mockito.mock()
-        whenever(mainRepository.getProductDetail(idProduct)).thenReturn(Result.Success(detailResponse))
+        whenever(mainRepository.getProductDetail(idProduct)).thenReturn(
+            Result.Success(
+                detailResponse
+            )
+        )
         whenever(wishlistRepository.cekItemWishlist(idProduct)).thenReturn(expectedWishlistResponse)
         whenever(cartRepository.getItem(idProduct)).thenReturn(expectedCartEntity)
         detailProductViewModel = DetailProductViewModel(
@@ -155,10 +163,12 @@ class DetailProductViewModelTest {
     }
 
     @Test
-    fun `get detail product fetch data and get cart checkout viewmodel test`() = runTest {
-        whenever(mainRepository.getProductDetail(idProduct)).thenReturn(Result.Success(detailResponse))
-        whenever(wishlistRepository.cekItemWishlist(idProduct)).thenReturn(expectedWishlistResponse)
-        whenever(cartRepository.getItem(idProduct)).thenReturn(expectedCartEntity)
+    fun `get detail product fetch data and get cart checkout viewmodel test success`() = runTest {
+        whenever(mainRepository.getProductDetail(idProduct)).thenReturn(
+            Result.Success(
+                detailResponse
+            )
+        )
 
         detailProductViewModel = DetailProductViewModel(
             mainRepository,
@@ -169,9 +179,42 @@ class DetailProductViewModelTest {
 
         Assert.assertEquals(Result.Loading, detailProductViewModel.detailProduct.getOrAwaitValue())
         advanceTimeBy(1)
-        Assert.assertEquals(Result.Success(detailResponse), detailProductViewModel.detailProduct.getOrAwaitValue())
-//        Assert.assertEquals(expectedWishlistResponse, detailProductViewModel.wishlistItem)
-//        Assert.assertEquals(expectedCartEntity, detailProductViewModel.cartEntityFlow)
+        Assert.assertEquals(
+            Result.Success(detailResponse),
+            detailProductViewModel.detailProduct.getOrAwaitValue()
+        )
+    }
+
+    @Test
+    fun `get detail product fetch data and get cart checkout viewmodel test error`() = runTest {
+        val error = RuntimeException()
+        whenever(mainRepository.getProductDetail(idProduct)).thenReturn(Result.Error(error))
+
+        detailProductViewModel = DetailProductViewModel(
+            mainRepository,
+            cartRepository,
+            savedStateHandle,
+            wishlistRepository
+        )
+
+        Assert.assertEquals(Result.Loading, detailProductViewModel.detailProduct.getOrAwaitValue())
+        advanceTimeBy(1)
+        Assert.assertEquals(
+            Result.Error(error),
+            detailProductViewModel.detailProduct.getOrAwaitValue()
+        )
+    }
+
+    @Test
+    fun `fetch data wishlist and get item cart checkout viewmodel test`() = runTest {
+        whenever(wishlistRepository.cekItemWishlist("")).thenReturn(expectedWishlistResponse)
+        val result = detailProductViewModel.wishlistItem
+
+        whenever(cartRepository.getItem("")).thenReturn(expectedCartEntity)
+        val resultCart = detailProductViewModel.cartEntityFlow
+
+        Assert.assertEquals(expectedWishlistResponse.first(), result.first())
+        Assert.assertEquals(expectedCartEntity.first(), resultCart.first())
     }
 
     @Test
@@ -186,7 +229,7 @@ class DetailProductViewModelTest {
     @Test
     fun `insert or update item detail product viewmodel test`() = runTest {
         whenever(cartRepository.insertOrUpdateItem(cartEntity)).thenReturn(Unit)
-        val result = detailProductViewModel.insertOrUpdateItem(dataProductDetail,0)
+        val result = detailProductViewModel.insertOrUpdateItem(dataProductDetail, 0)
         Assert.assertEquals(Unit, result)
     }
 

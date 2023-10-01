@@ -16,10 +16,13 @@ import com.example.ecommerce.ui.main.cart.CartAdapter
 
 class ChildPaymentAdapter constructor(
     private val itemOnClick: (Item) -> Unit
-) : androidx.recyclerview.widget.ListAdapter<Item, ChildPaymentAdapter.ChildPaymentViewHolder>(itemPaymentDiffCallback) {
+) : androidx.recyclerview.widget.ListAdapter<Item, ChildPaymentAdapter.ChildPaymentViewHolder>(
+    itemPaymentDiffCallback
+) {
 
-    inner class ChildPaymentViewHolder(private val binding: ItemPaymentBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind (item: Item){
+    inner class ChildPaymentViewHolder(private val binding: ItemPaymentBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Item) {
 
             Glide.with(itemView.context)
                 .load(item.image)
@@ -27,7 +30,7 @@ class ChildPaymentAdapter constructor(
 
             binding.tvLabelPayment.text = item.label
 
-            if (item.status == false){
+            if (item.status == false) {
                 binding.itemPayment.isEnabled = false
                 binding.itemPayment.alpha = 0.5F
             }
@@ -38,7 +41,10 @@ class ChildPaymentAdapter constructor(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChildPaymentAdapter.ChildPaymentViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ChildPaymentAdapter.ChildPaymentViewHolder {
         val binding =
             ItemPaymentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ChildPaymentViewHolder(binding)

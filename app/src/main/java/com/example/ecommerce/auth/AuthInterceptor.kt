@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
     private val prefHelper: PrefHelper
-): Interceptor {
+) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = runBlocking {
             prefHelper.token

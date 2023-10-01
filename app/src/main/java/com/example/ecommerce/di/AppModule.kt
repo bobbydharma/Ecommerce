@@ -75,9 +75,10 @@ object AppModule {
     @Singleton
     @Provides
     fun provideAuthenticator(
-        @ApplicationContext context : Context,
+        @ApplicationContext context: Context,
         prefHelper: PrefHelper,
-        cekAuthorization: CekAuthorization): Authenticator {
+        cekAuthorization: CekAuthorization
+    ): Authenticator {
         return AuthAuthenticator(context, prefHelper, cekAuthorization)
     }
 
@@ -125,7 +126,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun remoteConfig():FirebaseRemoteConfig{
+    fun remoteConfig(): FirebaseRemoteConfig {
         val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
         val configSettings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600
@@ -140,7 +141,6 @@ object AppModule {
     fun provideFirebaseAnalytics(@ApplicationContext context: Context): FirebaseAnalytics {
         return FirebaseAnalytics.getInstance(context)
     }
-
 
 
 }

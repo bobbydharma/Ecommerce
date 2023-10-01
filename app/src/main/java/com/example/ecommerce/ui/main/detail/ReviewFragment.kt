@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ReviewFragment : Fragment() {
 
-    private var _binding : FragmentUlasanPembeliBinding? = null
+    private var _binding: FragmentUlasanPembeliBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<ReviewViewModel>()
@@ -40,7 +40,7 @@ class ReviewFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        viewModel.reviewProduct.observe(viewLifecycleOwner){result ->
+        viewModel.reviewProduct.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
                     setDisplay(result)

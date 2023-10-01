@@ -11,5 +11,5 @@ sealed class Result<out T> {
 fun Int.formatToIDR(): String {
     val localeID = java.util.Locale("in", "ID")
     val currencyFormatter = NumberFormat.getCurrencyInstance(localeID)
-    return currencyFormatter.format(this).replace(",00","")
+    return currencyFormatter.format(this).replace(",00", "")
 }

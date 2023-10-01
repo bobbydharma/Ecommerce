@@ -5,13 +5,13 @@ import com.example.ecommerce.room.entity.WishlistEntity
 import com.example.ecommerce.ui.main.checkout.CheckoutItem
 import com.example.ecommerce.ui.main.checkout.CheckoutList
 
-data class ProductDetailResponse (
+data class ProductDetailResponse(
     val code: Int,
     val message: String,
     val data: DataProductDetail
 )
 
-data class DataProductDetail (
+data class DataProductDetail(
     val productId: String,
     val productName: String,
     var productPrice: Int,
@@ -28,12 +28,12 @@ data class DataProductDetail (
     val productVariant: List<ProductVariant>
 )
 
-data class ProductVariant (
+data class ProductVariant(
     val variantName: String,
     val variantPrice: Int
 )
 
-fun DataProductDetail.mappingCart(index:Int): CartEntity {
+fun DataProductDetail.mappingCart(index: Int): CartEntity {
     val cartEntity = CartEntity(
         productId,
         productName,
@@ -54,7 +54,7 @@ fun DataProductDetail.mappingCart(index:Int): CartEntity {
     return cartEntity
 }
 
-fun DataProductDetail.mappingWishlist(): WishlistEntity {
+fun DataProductDetail.mappingWishlist(index: Int): WishlistEntity {
     val wishlistEntity = WishlistEntity(
         productId,
         productName,
@@ -69,13 +69,13 @@ fun DataProductDetail.mappingWishlist(): WishlistEntity {
         totalReview,
         totalSatisfaction,
         productRating,
-        productVariant[0].variantName,
-        productVariant[0].variantPrice
+        productVariant[index].variantName,
+        productVariant[index].variantPrice
     )
     return wishlistEntity
 }
 
-fun DataProductDetail.convertToCheckoutList(index : Int): CheckoutList {
+fun DataProductDetail.convertToCheckoutList(index: Int): CheckoutList {
     val checkoutList = mutableListOf<CheckoutItem>()
     checkoutList.add(
         CheckoutItem(

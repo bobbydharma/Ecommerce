@@ -91,10 +91,12 @@ class ApiServiceTest {
 
         val authorization = "api_key"
         val userImageRequestBody = "your_image_data".toRequestBody("image/jpeg".toMediaTypeOrNull())
-        val userImagePart = MultipartBody.Part.createFormData("userImage", "image.jpg", userImageRequestBody)
+        val userImagePart =
+            MultipartBody.Part.createFormData("userImage", "image.jpg", userImageRequestBody)
 
         val userNameRequestBody = "John Doe".toRequestBody("text/plain".toMediaTypeOrNull())
-        val userNamePart = MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
+        val userNamePart =
+            MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
 
 
         val profileResponse = ProfileResponse(
@@ -106,7 +108,7 @@ class ApiServiceTest {
             )
         )
 
-        val apiResponse = apiService.postProfile( userImagePart, userNamePart)
+        val apiResponse = apiService.postProfile(userImagePart, userNamePart)
         assertEquals(apiResponse.body(), profileResponse)
     }
 
@@ -141,7 +143,7 @@ class ApiServiceTest {
 
         val query = "query"
 
-        val searchResponse =SearchResponse(
+        val searchResponse = SearchResponse(
             code = 200,
             message = "OK",
             data = listOf(
@@ -188,29 +190,31 @@ class ApiServiceTest {
         val productId = ""
         val detailResponse = ProductDetailResponse(
             code = 200,
-        message = "OK",
-        data = DataProductDetail(
-            productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
-            productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
-            productPrice = 24499000,
-            image = listOf("image_url"),
-            brand = "Asus",
-            description = "Description",
-            store = "AsusStore",
-            sale = 12,
-            stock = 2,
-            totalRating = 7,
-            totalReview = 5,
-            totalSatisfaction = 100,
-            productRating = 5F,
-            productVariant = listOf(ProductVariant(
-                variantName = "RAM 16GB",
-                variantPrice = 0
-            ), ProductVariant(
-                variantName = "RAM 32GB",
-                variantPrice = 1000000
-                ))
-        )
+            message = "OK",
+            data = DataProductDetail(
+                productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
+                productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
+                productPrice = 24499000,
+                image = listOf("image_url"),
+                brand = "Asus",
+                description = "Description",
+                store = "AsusStore",
+                sale = 12,
+                stock = 2,
+                totalRating = 7,
+                totalReview = 5,
+                totalSatisfaction = 100,
+                productRating = 5F,
+                productVariant = listOf(
+                    ProductVariant(
+                        variantName = "RAM 16GB",
+                        variantPrice = 0
+                    ), ProductVariant(
+                        variantName = "RAM 32GB",
+                        variantPrice = 1000000
+                    )
+                )
+            )
         )
 
         val apiResponse = apiService.getDetailProduct(productId)
@@ -225,19 +229,21 @@ class ApiServiceTest {
         val productId = ""
 
         val reviewResponse = ReviewProduct(
-            code= 200,
+            code = 200,
             message = "OK",
-            data = listOf(DataReview(
-                userName = "John",
-                userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQM4VpzpVw8mR2j9_gDajEthwY3KCOWJ1tOhcv47-H9o1a-s9GRPxdb_6G9YZdGfv0HIg&usqp=CAU",
-                userRating = 4,
-                userReview = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-            ), DataReview(
-                userName = "Doe",
-                userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR3Z6PN8QNVhH0e7rEINu_XJS0qHIFpDT3nwF5WSkcYmr3znhY7LOTkc8puJ68Bts-TMc&usqp=CAU",
-                userRating = 5,
-                userReview = "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-        ))
+            data = listOf(
+                DataReview(
+                    userName = "John",
+                    userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQM4VpzpVw8mR2j9_gDajEthwY3KCOWJ1tOhcv47-H9o1a-s9GRPxdb_6G9YZdGfv0HIg&usqp=CAU",
+                    userRating = 4,
+                    userReview = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+                ), DataReview(
+                    userName = "Doe",
+                    userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR3Z6PN8QNVhH0e7rEINu_XJS0qHIFpDT3nwF5WSkcYmr3znhY7LOTkc8puJ68Bts-TMc&usqp=CAU",
+                    userRating = 5,
+                    userReview = "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+                )
+            )
         )
 
         val apiResponse = apiService.getReviewProduct(productId)
@@ -245,13 +251,14 @@ class ApiServiceTest {
     }
 
     @Test
-    fun postFulfillmentTestApiService() =  runTest {
+    fun postFulfillmentTestApiService() = runTest {
         val response = createMockResponse("Fulfillment_Response.json")
         mockWebServer.enqueue(response)
 
         val fulfillmentRequest = FulfillmentRequest(
             payment = "",
-            items = listOf(ItemFullfillment(
+            items = listOf(
+                ItemFullfillment(
                     productId = "",
                     variantName = "",
                     quantity = 1
@@ -304,25 +311,26 @@ class ApiServiceTest {
         val transactionResponse = TransactionResponse(
             code = 200,
             message = "OK",
-            data = listOf(Datum(
-                invoiceId = "8cad85b1-a28f-42d8-9479-72ce4b7f3c7d",
-                status = true,
-                date = "09 Jun 2023",
-                time = "09:05",
-                payment = "Bank BCA",
-                total = 48998000,
-                items = listOf(
-                    Item(
-                        productId = "bee98108-660c-4ac0-97d3-63cdc1492f53",
-                        variantName = "RAM 16GB",
-                        quantity = 2
-                    )
-                ),
-                rating = 4,
-                review = "LGTM",
-                image = "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/6/0a49c399-cf6b-47f5-91c9-8cbd0b86462d.jpg",
-                name = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray"
-            )
+            data = listOf(
+                Datum(
+                    invoiceId = "8cad85b1-a28f-42d8-9479-72ce4b7f3c7d",
+                    status = true,
+                    date = "09 Jun 2023",
+                    time = "09:05",
+                    payment = "Bank BCA",
+                    total = 48998000,
+                    items = listOf(
+                        Item(
+                            productId = "bee98108-660c-4ac0-97d3-63cdc1492f53",
+                            variantName = "RAM 16GB",
+                            quantity = 2
+                        )
+                    ),
+                    rating = 4,
+                    review = "LGTM",
+                    image = "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/6/0a49c399-cf6b-47f5-91c9-8cbd0b86462d.jpg",
+                    name = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray"
+                )
             )
         )
 

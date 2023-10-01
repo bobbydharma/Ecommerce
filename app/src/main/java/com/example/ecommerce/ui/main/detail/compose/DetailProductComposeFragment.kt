@@ -111,7 +111,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DetailProductComposeFragment : Fragment() {
 
-    private val viewModel : DetailProductViewModel by viewModels()
+    private val viewModel: DetailProductViewModel by viewModels()
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -126,14 +127,19 @@ class DetailProductComposeFragment : Fragment() {
                 ThemeCompose() {
                     DetailProductScreen(
                         viewModel,
-                        onNavigateUp = {findNavController().navigateUp()},
-                        {dataProductDetail, index -> buyNow(dataProductDetail, index)},
-                        {dataProductDetail, index -> addToCart(dataProductDetail, index)},
-                        {idProduct -> onReviewClick(idProduct)},
+                        onNavigateUp = { findNavController().navigateUp() },
+                        { dataProductDetail, index -> buyNow(dataProductDetail, index) },
+                        { dataProductDetail, index -> addToCart(dataProductDetail, index) },
+                        { idProduct -> onReviewClick(idProduct) },
                         shareLink = { shareLink() },
-                        {cartEntity, bundle -> sendLogEventAddToCart(cartEntity, bundle)  },
-                        {cartEntity, bundle -> sendLogEventViewItem(cartEntity, bundle)  },
-                        {dataProductDetail, bundle -> logEventAddToWishlist(dataProductDetail, bundle) }
+                        { cartEntity, bundle -> sendLogEventAddToCart(cartEntity, bundle) },
+                        { cartEntity, bundle -> sendLogEventViewItem(cartEntity, bundle) },
+                        { dataProductDetail, bundle ->
+                            logEventAddToWishlist(
+                                dataProductDetail,
+                                bundle
+                            )
+                        }
                     )
                 }
             }
@@ -142,9 +148,12 @@ class DetailProductComposeFragment : Fragment() {
 
     private fun logEventAddToWishlist(dataProductDetail: DataProductDetail, bundle: Bundle) {
 
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST){
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST) {
             param(FirebaseAnalytics.Param.CURRENCY, "IDR")
-            param(FirebaseAnalytics.Param.VALUE, (dataProductDetail.productPrice+dataProductDetail.productVariant[0].variantPrice).toDouble())
+            param(
+                FirebaseAnalytics.Param.VALUE,
+                (dataProductDetail.productPrice + dataProductDetail.productVariant[0].variantPrice).toDouble()
+            )
             param(FirebaseAnalytics.Param.ITEMS, arrayOf(bundle))
         }
 
@@ -152,9 +161,12 @@ class DetailProductComposeFragment : Fragment() {
 
     private fun sendLogEventAddToCart(cartEntity: CartEntity, bundle: Bundle) {
         //                start log event
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART){
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART) {
             param(FirebaseAnalytics.Param.CURRENCY, "IDR")
-            param(FirebaseAnalytics.Param.VALUE, (cartEntity.productPrice+cartEntity.variantPrice).toDouble())
+            param(
+                FirebaseAnalytics.Param.VALUE,
+                (cartEntity.productPrice + cartEntity.variantPrice).toDouble()
+            )
             param(FirebaseAnalytics.Param.ITEMS, arrayOf(bundle))
         }
 //                 end log event
@@ -162,9 +174,12 @@ class DetailProductComposeFragment : Fragment() {
 
     private fun sendLogEventViewItem(cartEntity: CartEntity, bundle: Bundle) {
         //                start log event
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM){
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM) {
             param(FirebaseAnalytics.Param.CURRENCY, "IDR")
-            param(FirebaseAnalytics.Param.VALUE, (cartEntity.productPrice+cartEntity.variantPrice).toDouble())
+            param(
+                FirebaseAnalytics.Param.VALUE,
+                (cartEntity.productPrice + cartEntity.variantPrice).toDouble()
+            )
             param(FirebaseAnalytics.Param.ITEMS, arrayOf(bundle))
         }
 //                 end log event
@@ -173,7 +188,10 @@ class DetailProductComposeFragment : Fragment() {
     private fun shareLink() {
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/plain"
-        intent.putExtra(Intent.EXTRA_TEXT, "http://com.example.ecommerce.ui.main.detail/${viewModel.id}")
+        intent.putExtra(
+            Intent.EXTRA_TEXT,
+            "http://com.example.ecommerce.ui.main.detail/${viewModel.id}"
+        )
         val title = "Bagikan ke"
         val chooser = Intent.createChooser(intent, title)
         if (intent.resolveActivity(requireContext().packageManager) != null) {
@@ -184,7 +202,10 @@ class DetailProductComposeFragment : Fragment() {
 
     private fun onReviewClick(idProduct: String) {
         val bundle = bundleOf("id_product_review" to idProduct)
-        findNavController().navigate(R.id.action_detailProductFragment3_to_ulasanPembeliFragment2, bundle)
+        findNavController().navigate(
+            R.id.action_detailProductFragment3_to_ulasanPembeliFragment2,
+            bundle
+        )
     }
 
     private fun addToCart(dataProductDetail: DataProductDetail, index: Int) {
@@ -195,7 +216,7 @@ class DetailProductComposeFragment : Fragment() {
                     viewModel.insertOrUpdateItem(dataProductDetail, index)
                 } else {
                 }
-            }else{
+            } else {
                 viewModel.insertOrUpdateItem(dataProductDetail, index)
             }
         }
@@ -215,7 +236,7 @@ fun DetailProductScreen(
     onBuyNow: (DataProductDetail, Int) -> Unit,
     addToCart: (DataProductDetail, Int) -> Unit,
     onReviewClick: (String) -> Unit,
-    shareLink : () -> Unit,
+    shareLink: () -> Unit,
     sendLogEventAddToCart: (CartEntity, Bundle) -> Unit,
     sendLogEventViewItem: (CartEntity, Bundle) -> Unit,
     logEventAddToWishlist: (DataProductDetail, Bundle) -> Unit
@@ -230,16 +251,16 @@ fun DetailProductScreen(
             { dataProductDetail, index -> onBuyNow(dataProductDetail, index) },
             { dataProductDetail, index -> addToCart(dataProductDetail, index) },
             { onReviewClick -> onReviewClick(onReviewClick) },
-            { dataProductDetail -> viewModel.insertToWishlist(dataProductDetail) },
+            { dataProductDetail, index -> viewModel.insertToWishlist(dataProductDetail, index) },
             { dataProductDetail -> viewModel.deleteWishlist(dataProductDetail) },
             itemWishList,
             shareLink = { shareLink() },
             itemCart,
             { viewModel.getDetailProduct(viewModel.id) },
-            {cartEntity, bundle -> sendLogEventAddToCart(cartEntity, bundle ) },
-            {cartEntity, bundle -> sendLogEventViewItem(cartEntity, bundle ) },
-            {dataProductDetail, bundle -> logEventAddToWishlist(dataProductDetail, bundle) }
-            )
+            { cartEntity, bundle -> sendLogEventAddToCart(cartEntity, bundle) },
+            { cartEntity, bundle -> sendLogEventViewItem(cartEntity, bundle) },
+            { dataProductDetail, bundle -> logEventAddToWishlist(dataProductDetail, bundle) }
+        )
     }
 }
 
@@ -250,17 +271,17 @@ fun DetailProductScreen(
 @Composable
 fun DetailProductScreen(
     detailProduct: Result<ProductDetailResponse> = Result.Loading,
-    onNavigateUp : () -> Unit,
-    onBuyNow : (DataProductDetail, Int) -> Unit,
-    addToCart : (DataProductDetail, Int) -> Unit,
-    onReviewClick : (String) -> Unit,
-    addToWishList : (DataProductDetail) -> Unit,
-    deleteToWishList : (DataProductDetail) -> Unit,
-    itemWishList : WishlistEntity?,
-    shareLink : () -> Unit,
-    itemCart : CartEntity?,
-    refresh : () -> Unit,
-    sendLogEventAddToCart : (CartEntity, Bundle) -> Unit,
+    onNavigateUp: () -> Unit,
+    onBuyNow: (DataProductDetail, Int) -> Unit,
+    addToCart: (DataProductDetail, Int) -> Unit,
+    onReviewClick: (String) -> Unit,
+    addToWishList: (DataProductDetail, Int) -> Unit,
+    deleteToWishList: (DataProductDetail) -> Unit,
+    itemWishList: WishlistEntity?,
+    shareLink: () -> Unit,
+    itemCart: CartEntity?,
+    refresh: () -> Unit,
+    sendLogEventAddToCart: (CartEntity, Bundle) -> Unit,
     sendLogEventViewItem: (CartEntity, Bundle) -> Unit,
     logEventAddToWishlist: (DataProductDetail, Bundle) -> Unit
 ) {
@@ -274,10 +295,14 @@ fun DetailProductScreen(
 
     Scaffold(
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState){
-                androidx.compose.material3.Snackbar (
+            SnackbarHost(hostState = snackbarHostState) {
+                androidx.compose.material3.Snackbar(
                     snackbarData = it,
-                    containerColor = if(it.visuals.message.contains("Stok",true)) Color.Red else SnackbarDefaults.color
+                    containerColor = if (it.visuals.message.contains(
+                            "Stok",
+                            true
+                        )
+                    ) Color.Red else SnackbarDefaults.color
                 )
             }
         },
@@ -310,19 +335,28 @@ fun DetailProductScreen(
         },
 
         bottomBar = {
-        if(detailProduct is Result.Success){
-            val itemDetailProduct = detailProduct.data.data
-            //                start log event
-            val itemProduct = Bundle().apply {
-                putString(FirebaseAnalytics.Param.ITEM_ID, detailProduct.data.data.productId)
-                putString(FirebaseAnalytics.Param.ITEM_NAME, detailProduct.data.data.productName)
-                putString(FirebaseAnalytics.Param.ITEM_VARIANT, detailProduct.data.data.productVariant[globalIndex.value].variantName)
-                putString(FirebaseAnalytics.Param.ITEM_BRAND, detailProduct.data.data.brand)
-                putDouble(FirebaseAnalytics.Param.PRICE, (itemDetailProduct.productPrice+itemDetailProduct.productVariant[globalIndex.value].variantPrice).toDouble())
-            }
-            val itemProductCart = Bundle(itemProduct).apply {
-                putLong(FirebaseAnalytics.Param.QUANTITY, 1)
-            }
+            if (detailProduct is Result.Success) {
+                val itemDetailProduct = detailProduct.data.data
+                //                start log event
+                val itemProduct = Bundle().apply {
+                    putString(FirebaseAnalytics.Param.ITEM_ID, detailProduct.data.data.productId)
+                    putString(
+                        FirebaseAnalytics.Param.ITEM_NAME,
+                        detailProduct.data.data.productName
+                    )
+                    putString(
+                        FirebaseAnalytics.Param.ITEM_VARIANT,
+                        detailProduct.data.data.productVariant[globalIndex.value].variantName
+                    )
+                    putString(FirebaseAnalytics.Param.ITEM_BRAND, detailProduct.data.data.brand)
+                    putDouble(
+                        FirebaseAnalytics.Param.PRICE,
+                        (itemDetailProduct.productPrice + itemDetailProduct.productVariant[globalIndex.value].variantPrice).toDouble()
+                    )
+                }
+                val itemProductCart = Bundle(itemProduct).apply {
+                    putLong(FirebaseAnalytics.Param.QUANTITY, 1)
+                }
 //                end log event
 
                 Column {
@@ -340,7 +374,7 @@ fun DetailProductScreen(
                                 .weight(1f)
                         ) {
                             Text(
-                                text = "Beli Langsung",
+                                text = stringResource(R.string.beli_langsung),
                                 fontFamily = poppins_regular
                             )
                         }
@@ -348,31 +382,38 @@ fun DetailProductScreen(
                         Button(
                             onClick = {
                                 if (itemCart != null) {
-                                    if (itemCart.stock > itemCart.quantity ){
+                                    if (itemCart.stock > itemCart.quantity) {
                                         addToCart(detailProduct.data.data, globalIndex.value)
-                                        Log.d("itemCart.stock > itemCart.quantity", "${globalIndex.value}")
+                                        Log.d(
+                                            "itemCart.stock > itemCart.quantity",
+                                            "${globalIndex.value}"
+                                        )
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Item ditambahkan")
                                         }
                                         sendLogEventAddToCart(itemCart, itemProductCart)
-                                    }else{
+                                    } else {
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Stok Habis")
                                         }
                                     }
-                                }else{
+                                } else {
                                     addToCart(detailProduct.data.data, globalIndex.value)
                                     scope.launch {
                                         snackbarHostState.showSnackbar("Item ditambahkan")
                                     }
-                                    sendLogEventAddToCart(detailProduct.data.data.mappingCart(globalIndex.value), itemProductCart )
+                                    sendLogEventAddToCart(
+                                        detailProduct.data.data.mappingCart(
+                                            globalIndex.value
+                                        ), itemProductCart
+                                    )
                                 }
                             },
                             modifier = Modifier
                                 .weight(1f)
                         ) {
                             Text(
-                                text ="+ Keranjang",
+                                text = stringResource(R.string.btn_tambah_keranjang),
                                 fontFamily = poppins_regular
                             )
                         }
@@ -390,19 +431,28 @@ fun DetailProductScreen(
                 val itemDetailProduct = detailProduct.data.data
                 val isWishlist = rememberUpdatedState(itemWishList != null)
                 var quantitiyGlobal = remember { mutableStateOf(0) }
-                if (itemCart != null){
+                if (itemCart != null) {
                     quantitiyGlobal.value = itemCart.quantity
-                }else{
+                } else {
                     quantitiyGlobal.value = 0
                 }
 
                 //                start log event
                 val itemProduct = Bundle().apply {
                     putString(FirebaseAnalytics.Param.ITEM_ID, detailProduct.data.data.productId)
-                    putString(FirebaseAnalytics.Param.ITEM_NAME, detailProduct.data.data.productName)
-                    putString(FirebaseAnalytics.Param.ITEM_VARIANT, detailProduct.data.data.productVariant[globalIndex.value].variantName)
+                    putString(
+                        FirebaseAnalytics.Param.ITEM_NAME,
+                        detailProduct.data.data.productName
+                    )
+                    putString(
+                        FirebaseAnalytics.Param.ITEM_VARIANT,
+                        detailProduct.data.data.productVariant[globalIndex.value].variantName
+                    )
                     putString(FirebaseAnalytics.Param.ITEM_BRAND, detailProduct.data.data.brand)
-                    putDouble(FirebaseAnalytics.Param.PRICE, (itemDetailProduct.productPrice+itemDetailProduct.productVariant[globalIndex.value].variantPrice).toDouble())
+                    putDouble(
+                        FirebaseAnalytics.Param.PRICE,
+                        (itemDetailProduct.productPrice + itemDetailProduct.productVariant[globalIndex.value].variantPrice).toDouble()
+                    )
                 }
                 val itemProductCart = Bundle(itemProduct).apply {
                     putLong(FirebaseAnalytics.Param.QUANTITY, 1)
@@ -491,10 +541,10 @@ fun DetailProductScreen(
                             modifier = Modifier
                                 .align(Alignment.CenterVertically),
                             onClick = {
-                                if (isWishlist.value){
+                                if (isWishlist.value) {
                                     deleteToWishList(detailProduct.data.data)
-                                }else{
-                                    addToWishList(detailProduct.data.data)
+                                } else {
+                                    addToWishList(detailProduct.data.data, globalIndex.value)
                                     logEventAddToWishlist(detailProduct.data.data, itemProductCart)
                                 }
 
@@ -684,12 +734,13 @@ fun DetailProductScreen(
                         .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
-                ){
+                ) {
                     CircularProgressIndicator(
                         strokeWidth = 4.dp
                     )
                 }
             }
+
             is Result.Error -> {
                 Log.d("detail product", "Error")
 
@@ -699,7 +750,7 @@ fun DetailProductScreen(
                         .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
-                ){
+                ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(R.drawable.error_image)
@@ -724,8 +775,8 @@ fun DetailProductScreen(
                     Button(
                         onClick = {
                             refresh()
-                                  },
-                        ) {
+                        },
+                    ) {
                         Text(stringResource(R.string.refresh))
                     }
                 }
@@ -733,49 +784,48 @@ fun DetailProductScreen(
 
             else -> {
                 Log.d("detail product", "Else")
-                    Column(
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(R.drawable.error_image)
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(R.drawable.error_image),
+                        contentDescription = "test",
                         modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ){
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(R.drawable.error_image)
-                                .crossfade(true)
-                                .build(),
-                            placeholder = painterResource(R.drawable.error_image),
-                            contentDescription = "test",
-                            modifier = Modifier
-                                .height(128.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.connection),
-                            fontFamily = poppins_medium,
-                            fontSize = 32.sp
-                        )
-                        Text(
-                            text = stringResource(R.string.your_connection_is_unavailable),
-                            fontFamily = poppins_regular,
-                            fontSize = 16.sp
-                        )
+                            .height(128.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.connection),
+                        fontFamily = poppins_medium,
+                        fontSize = 32.sp
+                    )
+                    Text(
+                        text = stringResource(R.string.your_connection_is_unavailable),
+                        fontFamily = poppins_regular,
+                        fontSize = 16.sp
+                    )
 
-                        Button(
-                            onClick = {
-                                refresh()
-                            },
-                        ) {
-                            Text(stringResource(R.string.refresh))
-                        }
+                    Button(
+                        onClick = {
+                            refresh()
+                        },
+                    ) {
+                        Text(stringResource(R.string.refresh))
                     }
+                }
             }
 
         }
 
 
     }
-
 
 
 }
@@ -811,17 +861,17 @@ fun GreetingPreview() {
     DetailProductScreen(
         detailProduct = Result.Success(dummyProductDetailResponse),
         onNavigateUp = {},
-        onBuyNow = { dataProductDetail, index ->  },
-        addToCart = { dataProductDetail, index ->  },
-        onReviewClick = { idProduct ->  },
-        addToWishList = { dataProductDetail ->  },
-        deleteToWishList = { dataProductDetail ->  },
+        onBuyNow = { dataProductDetail, index -> },
+        addToCart = { dataProductDetail, index -> },
+        onReviewClick = { idProduct -> },
+        addToWishList = { dataProductDetail, Int -> },
+        deleteToWishList = { dataProductDetail -> },
         itemWishList = null,
         shareLink = { /*...*/ },
         itemCart = null,
         refresh = {},
-        sendLogEventAddToCart = {cartEntity, bundle ->  },
-        sendLogEventViewItem = {cartEntity, bundle ->  },
-        logEventAddToWishlist = {dataProductDetail, bundle ->  }
+        sendLogEventAddToCart = { cartEntity, bundle -> },
+        sendLogEventViewItem = { cartEntity, bundle -> },
+        logEventAddToWishlist = { dataProductDetail, bundle -> }
     )
 }

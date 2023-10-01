@@ -52,7 +52,7 @@ class CartDaoTest {
         variantPrice = 1000,
         quantity = 3,
         isSelected = false
-        )
+    )
 
     @Test
     fun insertAndGetAllCartItems() = runTest {
@@ -91,7 +91,7 @@ class CartDaoTest {
         val productId = "productId"
         val quantityUpdate = 2
         cartDao.insertCart(cartEntity)
-        cartDao.updateQuantityCart(productId,quantityUpdate)
+        cartDao.updateQuantityCart(productId, quantityUpdate)
         val result = cartDao.getItem(productId).first()
         assertEquals(quantityUpdate, result?.quantity)
     }
@@ -101,7 +101,7 @@ class CartDaoTest {
         val productId = "productId"
         val selectedUpdate = true
         cartDao.insertCart(cartEntity)
-        cartDao.updateSelectedCart(productId,selectedUpdate)
+        cartDao.updateSelectedCart(productId, selectedUpdate)
         val result = cartDao.getItem(productId).first()
         assertEquals(selectedUpdate, result?.isSelected)
     }

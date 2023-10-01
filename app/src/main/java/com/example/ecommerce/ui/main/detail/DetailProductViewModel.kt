@@ -28,10 +28,10 @@ class DetailProductViewModel @Inject constructor(
     private val cartRepository: CartRepository,
     private val savedStateHandle: SavedStateHandle,
     private val wishlistRepository: WishlistRepository
-) : ViewModel(){
+) : ViewModel() {
 
     private var _detailProduct = MutableLiveData<Result<ProductDetailResponse>>()
-    val detailProduct : LiveData<Result<ProductDetailResponse>> = _detailProduct
+    val detailProduct: LiveData<Result<ProductDetailResponse>> = _detailProduct
 
     val id = savedStateHandle.get<String>("id_product") ?: ""
 
@@ -49,7 +49,8 @@ class DetailProductViewModel @Inject constructor(
         fetchData(id)
         getCart(id)
     }
-    fun getDetailProduct( id : String) {
+
+    fun getDetailProduct(id: String) {
         _detailProduct.value = Result.Loading
         viewModelScope.launch {
             val result = repository.getProductDetail(id)
@@ -61,23 +62,23 @@ class DetailProductViewModel @Inject constructor(
         return cartRepository.cekItem(productId)
     }
 
-    suspend fun insertOrUpdateItem(product: DataProductDetail, index: Int){
+    suspend fun insertOrUpdateItem(product: DataProductDetail, index: Int) {
         viewModelScope.launch {
             val cartItem = product.mappingCart(index)
             cartRepository.insertOrUpdateItem(cartItem)
         }
     }
 
-    fun insertToWishlist(product: DataProductDetail){
+    fun insertToWishlist(product: DataProductDetail, index: Int) {
         viewModelScope.launch {
-            val wishlistItem = product.mappingWishlist()
+            val wishlistItem = product.mappingWishlist(index)
             wishlistRepository.insertToWishlist(wishlistItem)
         }
     }
 
-    fun deleteWishlist(product: DataProductDetail){
+    fun deleteWishlist(product: DataProductDetail) {
         viewModelScope.launch {
-            val wishlistItem = product.mappingWishlist()
+            val wishlistItem = product.mappingWishlist(0)
             wishlistRepository.deleteWishlist(wishlistItem)
         }
     }

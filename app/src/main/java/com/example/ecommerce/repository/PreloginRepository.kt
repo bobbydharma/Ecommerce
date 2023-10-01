@@ -28,9 +28,9 @@ class PreloginRepository @Inject constructor(
                 sharedPreferencesManager.refreshToken = userResponse?.data?.refreshToken
                 Result.Success(userResponse!!)
             } else {
-                if (response.code() == 400){
+                if (response.code() == 400) {
                     Result.Error(Exception("Email sudah digunakan"))
-                }else{
+                } else {
                     Result.Error(Exception("Api key is not valid"))
                 }
             }
@@ -63,7 +63,7 @@ class PreloginRepository @Inject constructor(
             val response = APIService.postLogin(API_KEY, loginRequest)
             if (response.isSuccessful && response.body() != null) {
                 val loginResponse = response.body()
-                sharedPreferencesManager.apply{
+                sharedPreferencesManager.apply {
                     nama = loginResponse?.data?.userName
                     image_url = loginResponse?.data?.userImage
                     token = loginResponse?.data?.accessToken
@@ -71,9 +71,9 @@ class PreloginRepository @Inject constructor(
                 }
                 Result.Success(response.body()!!)
             } else {
-                if (response.code() == 400){
+                if (response.code() == 400) {
                     Result.Error(Exception("Email or password is not valid"))
-                }else{
+                } else {
                     Result.Error(Exception("Api key is not valid"))
                 }
             }

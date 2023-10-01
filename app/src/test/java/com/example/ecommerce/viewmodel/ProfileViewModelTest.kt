@@ -31,20 +31,22 @@ class ProfileViewModelTest {
     @get:Rule
     var mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var repository : PreloginRepository
+    private lateinit var repository: PreloginRepository
     private lateinit var profileViewModel: ProfileViewModel
 
     @Before
-    fun setup(){
+    fun setup() {
         repository = Mockito.mock()
         profileViewModel = ProfileViewModel(repository)
     }
 
     val userImageRequestBody = "your_image_data".toRequestBody("image/jpeg".toMediaTypeOrNull())
-    val userImagePart = MultipartBody.Part.createFormData("userImage", "image.jpg", userImageRequestBody)
+    val userImagePart =
+        MultipartBody.Part.createFormData("userImage", "image.jpg", userImageRequestBody)
 
     val userNameRequestBody = "John Doe".toRequestBody("text/plain".toMediaTypeOrNull())
-    val userNamePart = MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
+    val userNamePart =
+        MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
 
     val profileResponse = ProfileResponse(
         code = 200,

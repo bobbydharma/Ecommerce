@@ -11,7 +11,7 @@
         android:id="@+id/appBarLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="?attr/colorSurfaceContainerLowest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -218,15 +218,15 @@
 
             </com.google.android.material.chip.ChipGroup>
 
-                <com.google.android.material.divider.MaterialDivider
-                    android:id="@+id/divider2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="12dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/chip_group_detail_product" />
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chip_group_detail_product" />
 
             <TextView
                 android:id="@+id/textView12"
@@ -340,8 +340,7 @@
                 tools:text="2 rating · 2 ulasan"
                 android:layout_marginLeft="32dp"
                 app:layout_constraintStart_toEndOf="@+id/textView15"
-                app:layout_constraintTop_toBottomOf="@+id/tv_persentase_review_product"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/tv_persentase_review_product" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

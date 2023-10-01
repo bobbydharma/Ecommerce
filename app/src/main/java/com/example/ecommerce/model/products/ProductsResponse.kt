@@ -1,12 +1,12 @@
 package com.example.ecommerce.model.products
 
-data class ProductsResponse (
+data class ProductsResponse(
     val code: Int,
     val message: String,
     val data: Data
 )
 
-data class Data (
+data class Data(
     val itemsPerPage: Int,
     val currentItemCount: Int,
     val pageIndex: Int,
@@ -14,8 +14,8 @@ data class Data (
     val items: List<Items>
 )
 
-data class Items (
-    val productId : String,
+data class Items(
+    val productId: String,
     val productName: String,
     val productPrice: Int,
     val image: String,

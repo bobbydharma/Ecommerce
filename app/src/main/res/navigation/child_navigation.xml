@@ -24,7 +24,7 @@
         android:id="@+id/transactionFragment"
         android:name="com.example.ecommerce.ui.main.transaction.TransactionFragment"
         android:label="fragment_transaction"
-        tools:layout="@layout/fragment_transaction" >
+        tools:layout="@layout/fragment_transaction">
         <argument
             android:name="FulfillmentResponse"
             app:argType="com.example.ecommerce.ui.main.transaction.Datum" />

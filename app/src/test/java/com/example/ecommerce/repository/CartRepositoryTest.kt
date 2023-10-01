@@ -21,7 +21,7 @@ class CartRepositoryTest {
     private lateinit var cartRepository: CartRepository
 
     @Before
-    fun setup(){
+    fun setup() {
         cartDAO = mock()
         cartRepository = CartRepository(cartDAO)
     }
@@ -91,9 +91,9 @@ class CartRepositoryTest {
     fun updateQuantityCartCartRepositoryTest() = runTest {
         val productId = ""
         val quantity = 1
-        whenever(cartDAO.updateQuantityCart(productId,quantity)).thenReturn(Unit)
+        whenever(cartDAO.updateQuantityCart(productId, quantity)).thenReturn(Unit)
 
-        val result = cartRepository.updateQuantityCart(productId,quantity)
+        val result = cartRepository.updateQuantityCart(productId, quantity)
         Assert.assertEquals(Unit, result)
     }
 
@@ -101,9 +101,9 @@ class CartRepositoryTest {
     fun updateSelectedCartCartRepositoryTest() = runTest {
         val productId = ""
         val isSelected = true
-        whenever(cartDAO.updateSelectedCart(productId,isSelected)).thenReturn(Unit)
+        whenever(cartDAO.updateSelectedCart(productId, isSelected)).thenReturn(Unit)
 
-        val result = cartRepository.updateSelectedCart(productId,isSelected)
+        val result = cartRepository.updateSelectedCart(productId, isSelected)
         Assert.assertEquals(Unit, result)
     }
 

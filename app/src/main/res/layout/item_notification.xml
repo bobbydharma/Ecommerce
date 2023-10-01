@@ -11,7 +11,7 @@
         android:id="@+id/iv_notification"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:src="@drawable/image_thumbnail"/>
+        android:src="@drawable/image_thumbnail" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,14 +30,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/info"
                 android:layout_weight="1"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/date_time_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
-                android:text="12 Jun 2023, 11:45"/>
+                android:text="12 Jun 2023, 11:45" />
 
         </LinearLayout>
 
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="@string/transaksi_berhasil"
             android:textSize="14sp"
-            android:fontFamily="@font/poppins_semibold"/>
+            android:fontFamily="@font/poppins_semibold" />
 
         <TextView
             android:id="@+id/tv_body_notification"
@@ -56,13 +56,12 @@
             android:layout_marginTop="4dp"
             android:text="Transaksi anda sedang di proses oleh penjual, mohon ditunggu untuk update selanjutnya di aplikasi. Sambil menunggu, anda bisa cari barang lain terlebih dahulu"
             android:textSize="12sp"
-            android:layout_marginRight="16dp"
-            />
+            android:layout_marginRight="16dp" />
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="12dp" />
 
     </LinearLayout>
 

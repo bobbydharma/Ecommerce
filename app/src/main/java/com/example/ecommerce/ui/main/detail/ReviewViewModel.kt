@@ -16,17 +16,18 @@ import javax.inject.Inject
 class ReviewViewModel @Inject constructor(
     private val repository: MainRepository,
     private val savedStateHandle: SavedStateHandle
-): ViewModel(){
+) : ViewModel() {
 
     private var _reviewProduct = MutableLiveData<Result<ReviewProduct>>()
-    val reviewProduct : LiveData<Result<ReviewProduct>> = _reviewProduct
+    val reviewProduct: LiveData<Result<ReviewProduct>> = _reviewProduct
 
     val id = savedStateHandle.get<String>("id_product_review") ?: ""
 
     init {
         getReviewProduct(id)
     }
-    fun getReviewProduct( id : String) {
+
+    fun getReviewProduct(id: String) {
         _reviewProduct.value = Result.Loading
         viewModelScope.launch {
             val result = repository.getReviewProduct(id)

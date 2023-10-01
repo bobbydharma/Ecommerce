@@ -15,10 +15,10 @@ interface CartDAO {
     fun getAll(): Flow<List<CartEntity>>
 
     @Query("SELECT * FROM cart WHERE productId = :productId ")
-    suspend fun cekItem(productId: String) : CartEntity?
+    suspend fun cekItem(productId: String): CartEntity?
 
     @Query("SELECT * FROM cart WHERE productId = :productId ")
-    fun getItem(productId: String) : Flow<CartEntity?>
+    fun getItem(productId: String): Flow<CartEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCart(cartEntity: CartEntity)
@@ -27,7 +27,7 @@ interface CartDAO {
     suspend fun deleteCart(vararg cartEntity: CartEntity)
 
     @Query("UPDATE cart SET quantity = :quantity WHERE productId = :productId")
-    suspend fun updateQuantityCart(productId: String, quantity : Int)
+    suspend fun updateQuantityCart(productId: String, quantity: Int)
 
     @Query("UPDATE cart SET isSelected = :isSelected WHERE productId =  :productId")
     suspend fun updateSelectedCart(productId: String, isSelected: Boolean)

@@ -38,11 +38,11 @@ class LoginViewModelTest {
     @get:Rule
     var mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var repository : PreloginRepository
-    private lateinit var loginViewModel : LoginViewModel
+    private lateinit var repository: PreloginRepository
+    private lateinit var loginViewModel: LoginViewModel
 
     @Before
-    fun setup(){
+    fun setup() {
         repository = mock()
         loginViewModel = LoginViewModel(repository)
     }

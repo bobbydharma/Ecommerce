@@ -51,28 +51,32 @@ class SearchFragment : DialogFragment() {
         binding.etSearchFragment.setText(viewModel.prooductQuery.value.search)
         binding.etSearchFragment.requestFocus()
 
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(binding.etSearchFragment, InputMethodManager.SHOW_IMPLICIT)
         binding.etSearchFragment.imeOptions = EditorInfo.IME_ACTION_SEARCH
 
-        binding.etSearchFragment.doOnTextChanged{text, actionId , _ , _ ->
+        binding.etSearchFragment.doOnTextChanged { text, actionId, _, _ ->
             viewModel.setSearchTerm(text.toString())
         }
 
-        binding.etSearchFragment.setOnEditorActionListener{_,actionId,event ->
-            if(actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)){
+        binding.etSearchFragment.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                 val searchText = binding.etSearchFragment.text.toString()
                 viewModel.search = searchText
-                requireActivity().supportFragmentManager.setFragmentResult("search", bundleOf("searchItem" to searchText))
+                requireActivity().supportFragmentManager.setFragmentResult(
+                    "search",
+                    bundleOf("searchItem" to searchText)
+                )
                 dismiss()
-                 true
-            }else{
+                true
+            } else {
                 false
             }
 
         }
 
-        viewModel.searchData.observe(viewLifecycleOwner){result ->
+        viewModel.searchData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
                     binding.progressBarSearch.isVisible = false
@@ -99,9 +103,12 @@ class SearchFragment : DialogFragment() {
     }
 
     private fun setDisplayProducts(result: List<String>) {
-        searchAdapter = SearchAdapter(result){ clickedItem->
+        searchAdapter = SearchAdapter(result) { clickedItem ->
             viewModel.search = clickedItem
-            requireActivity().supportFragmentManager.setFragmentResult("search", bundleOf("searchItem" to clickedItem))
+            requireActivity().supportFragmentManager.setFragmentResult(
+                "search",
+                bundleOf("searchItem" to clickedItem)
+            )
             dismiss()
         }
         binding.rvSearch.adapter = searchAdapter
@@ -112,7 +119,8 @@ class SearchFragment : DialogFragment() {
         super.onDestroyView()
 
         // Menyembunyikan keyboard saat DialogFragment ditutup
-        val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val focusedView = dialog?.currentFocus
         focusedView?.let {
             inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)

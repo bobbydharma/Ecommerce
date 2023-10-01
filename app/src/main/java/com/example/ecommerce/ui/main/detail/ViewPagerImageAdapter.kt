@@ -25,7 +25,11 @@ class ViewPagerImageAdapter(private val imageProductItem: List<String>) :
         viewType: Int
     ): ViewPagerImageViewHolder {
         val binding =
-            ItemOnboardingImageProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemOnboardingImageProductBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
         return ViewPagerImageViewHolder(binding)
     }
 

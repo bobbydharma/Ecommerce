@@ -26,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @AndroidEntryPoint
 class MainFragment : Fragment() {
 
@@ -38,18 +39,20 @@ class MainFragment : Fragment() {
     private val navController by lazy {
         navHostFragment.navController
     }
+
     @Inject
     lateinit var prefHelper: PrefHelper
+
     @Inject
-    lateinit var firebaseAnalytics:FirebaseAnalytics
+    lateinit var firebaseAnalytics: FirebaseAnalytics
     private val viewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (prefHelper.token == null){
+        if (prefHelper.token == null) {
             findNavController().navigate(R.id.main_to_prelogin)
-        }else{
-            if (prefHelper.nama.isNullOrEmpty()){
+        } else {
+            if (prefHelper.nama.isNullOrEmpty()) {
                 findNavController().navigate(R.id.main_to_profile)
             }
         }
@@ -70,12 +73,12 @@ class MainFragment : Fragment() {
 
         binding.apply {
             bnvChild?.setupWithNavController(navController)
-            bnvChild?.setOnItemReselectedListener {  }
+            bnvChild?.setOnItemReselectedListener { }
 
             navigationView?.setupWithNavController(navController)
 
             navigationRailView?.setupWithNavController(navController)
-            bnvChild?.setOnItemReselectedListener {  }
+            bnvChild?.setOnItemReselectedListener { }
         }
 
         binding.topAppBar.setTitle(prefHelper.nama)
@@ -85,19 +88,21 @@ class MainFragment : Fragment() {
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.cart -> {
-                    val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
+                    val navController =
+                        Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
                     navController.navigate(R.id.main_to_cart)
-                    firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                        param("BUTTON_NAME", "MainFragment_To_Cart" )
+                    firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                        param("BUTTON_NAME", "MainFragment_To_Cart")
                     }
                     true
                 }
 
                 R.id.notification -> {
-                    val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
+                    val navController =
+                        Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
                     navController.navigate(R.id.main_to_notification)
-                    firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                        param("BUTTON_NAME", "MainFragment_To_Notification" )
+                    firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                        param("BUTTON_NAME", "MainFragment_To_Notification")
                     }
                     true
                 }
@@ -106,27 +111,31 @@ class MainFragment : Fragment() {
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.itemWishlist.collectLatest {
                 val count = it.count()
-                if (count != 0){
+                if (count != 0) {
                     badgeDrawable?.isVisible = true
                     badgeDrawable?.number = count
-                }else{
+                } else {
                     badgeDrawable?.isVisible = false
                 }
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.itemNotification.collectLatest {
                 val count = it.count()
 
-                if (count != 0){
+                if (count != 0) {
                     val badgeDrawable = BadgeDrawable.create(requireContext())
                     badgeDrawable.number = count
                     badgeDrawable.badgeGravity = BadgeDrawable.TOP_END
-                    BadgeUtils.attachBadgeDrawable(badgeDrawable, binding.topAppBar, R.id.notification)
+                    BadgeUtils.attachBadgeDrawable(
+                        badgeDrawable,
+                        binding.topAppBar,
+                        R.id.notification
+                    )
                 }
             }
         }
@@ -135,7 +144,7 @@ class MainFragment : Fragment() {
             viewModel.cartItem.collectLatest {
 
                 val count = it.count()
-                if (count != 0){
+                if (count != 0) {
                     val badgeDrawable = BadgeDrawable.create(requireContext())
                     badgeDrawable.number = count
                     badgeDrawable.badgeGravity = BadgeDrawable.TOP_END
@@ -143,7 +152,6 @@ class MainFragment : Fragment() {
                 }
             }
         }
-
 
 
     }

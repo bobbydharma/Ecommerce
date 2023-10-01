@@ -30,10 +30,11 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TransactionFragment : Fragment() {
 
-    private var _binding : FragmentTransactionBinding? = null
+    private var _binding: FragmentTransactionBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<TransactionViewModel>()
     private lateinit var transactionAdapter: TransactionAdapter
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -49,11 +50,15 @@ class TransactionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         transactionAdapter = TransactionAdapter {
-            val bundle = bundleOf("FulfillmentResponse" to it.convertToDataFulfillment(), "SourceFragment" to "Transaction")
-            val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
+            val bundle = bundleOf(
+                "FulfillmentResponse" to it.convertToDataFulfillment(),
+                "SourceFragment" to "Transaction"
+            )
+            val navController =
+                Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
             navController.navigate(R.id.main_to_send_review, bundle)
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Transaction_Review" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Transaction_Review")
             }
         }
 
@@ -61,7 +66,7 @@ class TransactionFragment : Fragment() {
             rvTransaction.adapter = transactionAdapter
             rvTransaction.itemAnimator?.changeDuration = 0
 
-            btnRefreshConnection.setOnClickListener{
+            btnRefreshConnection.setOnClickListener {
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.getTransaction()
                 }
@@ -80,7 +85,7 @@ class TransactionFragment : Fragment() {
             viewModel.transaction.collectLatest { result ->
                 when (result) {
                     is Result.Success -> {
-                        if (result.data.data.isNotEmpty()){
+                        if (result.data.data.isNotEmpty()) {
                             binding.containerTransaction.isVisible = true
                             binding.containerErorTransaction.isVisible = false
                             binding.errorConnection.isVisible = false
@@ -88,8 +93,9 @@ class TransactionFragment : Fragment() {
                             transactionAdapter.submitList(result.data.data)
                         }
                     }
+
                     is Result.Error -> {
-                        when(result.exception){
+                        when (result.exception) {
                             is HttpException -> {
                                 binding.apply {
                                     containerTransaction.isVisible = false
@@ -98,6 +104,7 @@ class TransactionFragment : Fragment() {
                                     containerErorTransaction.isVisible = true
                                 }
                             }
+
                             is IOException -> {
                                 binding.apply {
                                     containerTransaction.isVisible = false
@@ -107,11 +114,13 @@ class TransactionFragment : Fragment() {
                                 }
 
                             }
+
                             else -> {
                                 Log.d("else", "${result.exception}")
                             }
                         }
                     }
+
                     is Result.Loading -> {
                         binding.apply {
                             containerTransaction.isVisible = false
@@ -120,6 +129,7 @@ class TransactionFragment : Fragment() {
                             progressBarTransaction.isVisible = true
                         }
                     }
+
                     else -> {}
                 }
             }

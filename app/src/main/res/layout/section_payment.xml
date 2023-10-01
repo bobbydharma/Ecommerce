@@ -14,14 +14,14 @@
         android:text="Transfer Virtual Account"
         android:fontFamily="@font/poppins"
         android:textSize="16sp"
-        android:padding="16dp"/>
+        android:padding="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_parent_payment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_payment"/>
+        tools:listitem="@layout/item_payment" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider_top_payment"

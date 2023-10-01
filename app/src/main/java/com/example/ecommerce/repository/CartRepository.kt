@@ -9,17 +9,17 @@ class CartRepository @Inject constructor(
     private val cartDAO: CartDAO
 ) {
 
-    fun getAll(): Flow<List<CartEntity>>{
+    fun getAll(): Flow<List<CartEntity>> {
         return cartDAO.getAll()
     }
 
-    suspend fun insertOrUpdateItem(cart: CartEntity){
+    suspend fun insertOrUpdateItem(cart: CartEntity) {
         val existingCartItem = cartDAO.cekItem(cart.productId)
         if (existingCartItem != null) {
-            if (existingCartItem.stock > existingCartItem.quantity){
+            if (existingCartItem.stock > existingCartItem.quantity) {
                 existingCartItem.quantity += cart.quantity
                 cartDAO.updateQuantityCart(existingCartItem.productId, existingCartItem.quantity)
-            }else{
+            } else {
             }
         } else {
             cartDAO.insertCart(cart)
@@ -34,23 +34,23 @@ class CartRepository @Inject constructor(
         return cartDAO.getItem(productId)
     }
 
-    suspend fun deleteCart(vararg cartEntity: CartEntity){
+    suspend fun deleteCart(vararg cartEntity: CartEntity) {
         cartDAO.deleteCart(*cartEntity)
     }
 
-    suspend fun updateQuantityCart(productId: String, quantity: Int){
+    suspend fun updateQuantityCart(productId: String, quantity: Int) {
         cartDAO.updateQuantityCart(productId, quantity)
     }
 
-    suspend fun updateSelectedCart(productId: String, isSelected: Boolean){
+    suspend fun updateSelectedCart(productId: String, isSelected: Boolean) {
         cartDAO.updateSelectedCart(productId, isSelected)
     }
 
-    suspend fun updateAllSelectedCart(isSelected : Boolean){
+    suspend fun updateAllSelectedCart(isSelected: Boolean) {
         cartDAO.updateAllSelectedCart(isSelected)
     }
 
-    suspend fun deleteAllDataCart(){
+    suspend fun deleteAllDataCart() {
         cartDAO.deleteAllDataCart()
     }
 }

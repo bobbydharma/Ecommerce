@@ -4,16 +4,17 @@ import android.os.Parcelable
 import com.example.ecommerce.model.products.DataProductDetail
 import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.ui.main.checkout.Data
+import com.google.errorprone.annotations.Keep
 import kotlinx.parcelize.Parcelize
 
-data class TransactionResponse (
+data class TransactionResponse(
     val code: Int,
     val message: String,
     val data: List<Datum>
 )
-
+@Keep
 @Parcelize
-data class Datum (
+data class Datum(
     val invoiceId: String,
     val status: Boolean,
     val date: String,
@@ -25,14 +26,14 @@ data class Datum (
     val review: String,
     val image: String,
     val name: String
-):Parcelable
-
+) : Parcelable
+@Keep
 @Parcelize
-data class Item (
+data class Item(
     val productId: String,
     val variantName: String,
     val quantity: Long
-): Parcelable
+) : Parcelable
 
 fun Datum.convertToDataFulfillment(): Data {
     val data = Data(

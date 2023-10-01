@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class NotificationFragment : Fragment() {
 
-    private var _bindig : FragmentNotificationBinding? = null
+    private var _bindig: FragmentNotificationBinding? = null
     val binding get() = _bindig!!
 
     private lateinit var notificationAdapter: NotificationAdapter
@@ -48,15 +48,15 @@ class NotificationFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.recyclerView.adapter = notificationAdapter
-        binding.recyclerView.itemAnimator?.changeDuration=0
+        binding.recyclerView.itemAnimator?.changeDuration = 0
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.notificationItem.collect{
-                if (it.isNotEmpty()){
+            viewModel.notificationItem.collect {
+                if (it.isNotEmpty()) {
                     binding.recyclerView.isVisible = true
                     binding.errorData.isVisible = false
                     notificationAdapter.submitList(it)
-                }else{
+                } else {
                     binding.errorData.isVisible = true
                     binding.recyclerView.isVisible = false
                 }

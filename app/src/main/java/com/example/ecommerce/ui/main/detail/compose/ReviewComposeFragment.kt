@@ -253,6 +253,7 @@ class ReviewComposeFragment : Fragment() {
                     }
                 }
             }
+
             else -> {}
         }
 

@@ -34,8 +34,8 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateAllSelectedCart(isSelected: Boolean){
-        viewModelScope.launch{
+    suspend fun updateAllSelectedCart(isSelected: Boolean) {
+        viewModelScope.launch {
             repository.updateAllSelectedCart(isSelected)
         }
     }

@@ -37,7 +37,7 @@ class TransactionViewModelTest {
     private lateinit var transactionViewModel: TransactionViewModel
 
     @Before
-    fun setup(){
+    fun setup() {
         repository = Mockito.mock()
         transactionViewModel = TransactionViewModel(repository)
     }

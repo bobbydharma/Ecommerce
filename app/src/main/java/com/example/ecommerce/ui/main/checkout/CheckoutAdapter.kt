@@ -14,12 +14,16 @@ import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.ui.main.cart.CartAdapter
 import java.text.NumberFormat
 
-class CheckoutAdapter(diffCallback: DiffUtil.ItemCallback<CheckoutItem>,
-                      private val addItemClick: (CheckoutItem)-> Unit,
-                      private val minItemClick: (CheckoutItem) -> Unit
-) : androidx.recyclerview.widget.ListAdapter<CheckoutItem, CheckoutAdapter.CheckoutViewHolder>(CheckoutAdapter.checkoutItemDiffCallback) {
+class CheckoutAdapter(
+    diffCallback: DiffUtil.ItemCallback<CheckoutItem>,
+    private val addItemClick: (CheckoutItem) -> Unit,
+    private val minItemClick: (CheckoutItem) -> Unit
+) : androidx.recyclerview.widget.ListAdapter<CheckoutItem, CheckoutAdapter.CheckoutViewHolder>(
+    CheckoutAdapter.checkoutItemDiffCallback
+) {
 
-    inner class CheckoutViewHolder(private val binding: ItemCheckoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class CheckoutViewHolder(private val binding: ItemCheckoutBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(chekoutItem: CheckoutItem) {
 
             Glide.with(itemView.context)
@@ -29,11 +33,12 @@ class CheckoutAdapter(diffCallback: DiffUtil.ItemCallback<CheckoutItem>,
             binding.tvNameProductCheckout.text = chekoutItem.productName
             binding.tvVarianNameCheckout.text = chekoutItem.varianName
             binding.tvStokCheckout.text = "${chekoutItem.stock} Stok"
-            binding.tvPriceProductCheckout.text = (chekoutItem.productPrice+chekoutItem.varianPrice).formatToIDR()
+            binding.tvPriceProductCheckout.text =
+                (chekoutItem.productPrice + chekoutItem.varianPrice).formatToIDR()
             binding.tvQuantityCheckout.text = chekoutItem.quantity.toString()
 
             binding.btnPlusCheckout.setOnClickListener {
-                if(chekoutItem.stock > chekoutItem.quantity){
+                if (chekoutItem.stock > chekoutItem.quantity) {
                     chekoutItem.quantity += 1
                     binding.tvQuantityCheckout.text = chekoutItem.quantity.toString()
                 }
@@ -41,7 +46,7 @@ class CheckoutAdapter(diffCallback: DiffUtil.ItemCallback<CheckoutItem>,
             }
 
             binding.btnMinCheckout.setOnClickListener {
-                if(chekoutItem.quantity > 1){
+                if (chekoutItem.quantity > 1) {
                     chekoutItem.quantity -= 1
                     binding.tvQuantityCheckout.text = chekoutItem.quantity.toString()
                 }
@@ -50,7 +55,10 @@ class CheckoutAdapter(diffCallback: DiffUtil.ItemCallback<CheckoutItem>,
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckoutAdapter.CheckoutViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): CheckoutAdapter.CheckoutViewHolder {
         val binding =
             ItemCheckoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CheckoutViewHolder(binding)
@@ -75,6 +83,6 @@ class CheckoutAdapter(diffCallback: DiffUtil.ItemCallback<CheckoutItem>,
     fun Int.formatToIDR(): String {
         val localeID = java.util.Locale("in", "ID")
         val currencyFormatter = NumberFormat.getCurrencyInstance(localeID)
-        return currencyFormatter.format(this).replace(",00","")
+        return currencyFormatter.format(this).replace(",00", "")
     }
 }

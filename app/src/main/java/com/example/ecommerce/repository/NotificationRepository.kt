@@ -12,15 +12,16 @@ class NotificationRepository @Inject constructor(
     fun getAll(): Flow<List<NotificationEntity>> {
         return notificationDAO.getAll()
     }
-    suspend fun insertToNotification(notificationEntity: NotificationEntity){
+
+    suspend fun insertToNotification(notificationEntity: NotificationEntity) {
         notificationDAO.insertNotification(notificationEntity)
     }
 
-    suspend fun updateRead(idNotification: Long, isRead: Boolean){
+    suspend fun updateRead(idNotification: Long, isRead: Boolean) {
         notificationDAO.updateRead(idNotification, isRead)
     }
 
-    fun cekIsRead(isRead: Boolean) : Flow<List<NotificationEntity>>{
+    fun cekIsRead(isRead: Boolean): Flow<List<NotificationEntity>> {
         return notificationDAO.cekIsRead(isRead)
     }
 }

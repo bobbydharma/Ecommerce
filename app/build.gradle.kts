@@ -7,6 +7,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("org.gradle.jacoco")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -29,11 +30,12 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -81,7 +83,7 @@ android {
                 sourceDirectories.setFrom(
                     files("$projectDir/src/main/java")
                 )
-                 executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
+                executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
 //                executionData.setFrom(file("$buildDir/outputs/unit_test_code_coverage/${variant.name}UnitTest/$testTaskName.exec"))
             }
 
@@ -140,11 +142,12 @@ dependencies {
 
     implementation("de.hdodenhof:circleimageview:3.1.0")
     debugImplementation("com.github.chuckerteam.chucker:library:4.0.0")
+    releaseImplementation ("com.github.chuckerteam.chucker:library-no-op:4.0.0")
 
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 
-    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     val paging_version = "3.1.1"
 
@@ -156,19 +159,19 @@ dependencies {
     implementation("androidx.paging:paging-compose:1.0.0-alpha18")
 
 //    shimmer
-    implementation ("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
 
 //    room
     val room_version = "2.5.0"
 
     implementation("androidx.room:room-runtime:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
-    implementation ("androidx.room:room-ktx:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 
 //    snake bar
-    implementation ("com.google.android.material:material:1.5.0")
+    implementation("com.google.android.material:material:1.5.0")
 //    swap refresh
-    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.0")
@@ -185,17 +188,19 @@ dependencies {
 
 //    implementation ("androidx.navigation:navigation-compose:2.4.0")
 
-    implementation ("com.airbnb.android:lottie:6.1.0")
+    implementation("com.airbnb.android:lottie:6.1.0")
 
 //    Unit Test
-    testImplementation ("junit:junit:4.13.2")
-    testImplementation ("org.robolectric:robolectric:4.10.3")
-    testImplementation ("androidx.test:core:1.5.0")
-    testImplementation ("org.mockito:mockito-core:5.5.0")
-    testImplementation ("org.mockito.kotlin:mockito-kotlin:5.1.0")
-    testImplementation ("com.squareup.okhttp3:mockwebserver:4.11.0")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-    testImplementation ("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.10.3")
+    testImplementation("androidx.test:core:1.5.0")
+    testImplementation("org.mockito:mockito-core:5.5.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.0")
 }
 
 kapt {

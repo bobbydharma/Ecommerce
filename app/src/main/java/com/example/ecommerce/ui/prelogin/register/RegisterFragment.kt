@@ -38,6 +38,7 @@ class RegisterFragment : Fragment() {
 
     private var validEmail: Boolean = false
     private var validPassword: Boolean = false
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -74,15 +75,15 @@ class RegisterFragment : Fragment() {
             data.password = binding.layoutEtPassword.editText?.text.toString()
             data.firebaseToken = token
             viewModel.postRegister(data)
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Register" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Register")
             }
         }
 
         binding.btnMasukDaftar.setOnClickListener {
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Register_To_Login" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Register_To_Login")
             }
         }
 
@@ -90,7 +91,7 @@ class RegisterFragment : Fragment() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBarRegister.isVisible = false
-                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP){
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
                         param(FirebaseAnalytics.Param.METHOD, "email")
                     }
                     findNavController().navigate(R.id.prelogin_to_main)
@@ -158,8 +159,22 @@ class RegisterFragment : Fragment() {
         val kebijakanStartIndex = combinedText.indexOf(getString(R.string.kebijakan_privasi))
         val kebijakanEndIndex = kebijakanStartIndex + getString(R.string.kebijakan_privasi).length
 
-        spannableString.setSpan(ForegroundColorSpan(MaterialColors.getColor(requireView(), android.R.attr.colorPrimary)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-        spannableString.setSpan(ForegroundColorSpan(MaterialColors.getColor(requireView(), android.R.attr.colorPrimary)), kebijakanStartIndex, kebijakanEndIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+        )
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ), kebijakanStartIndex, kebijakanEndIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+        )
 
         binding.syaratDaftar.text = spannableString
     }

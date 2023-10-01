@@ -21,17 +21,18 @@ import java.text.NumberFormat
 class WishlistAdapter(
     diffCallback: DiffUtil.ItemCallback<WishlistEntity>,
     private val deleteItemClick: (WishlistEntity) -> Unit,
-    private val addItemClick: (WishlistEntity)-> Unit,
+    private val addItemClick: (WishlistEntity) -> Unit,
 ) : ListAdapter<WishlistEntity, ViewHolder>(WishlistEntityDiffCallback) {
 
     var isGridMode = false
+
     companion object {
         private const val LIST_PRODUCT = 0
         private const val GRID_PRODUCT = 1
     }
 
-    inner class wishlistListViewHolder(private val binding: ItemListWishlistBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    inner class wishlistListViewHolder(private val binding: ItemListWishlistBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(wishlistEntity: WishlistEntity) {
 
             Glide.with(itemView.context)
@@ -39,9 +40,14 @@ class WishlistAdapter(
                 .into(binding.ivProductList)
 
             binding.tvProductNameList.text = wishlistEntity.productName
-            binding.tvProductPriceList.text = (wishlistEntity.productPrice + wishlistEntity.varianPrice).formatToIDR()
+            binding.tvProductPriceList.text =
+                (wishlistEntity.productPrice + wishlistEntity.varianPrice).formatToIDR()
             binding.tvStoreList.text = wishlistEntity.store
-            binding.tvSaleList.text = itemView.context.getString(R.string.terjuall, wishlistEntity.productRating.toString(), wishlistEntity.sale.toString())
+            binding.tvSaleList.text = itemView.context.getString(
+                R.string.terjuall,
+                wishlistEntity.productRating.toString(),
+                wishlistEntity.sale.toString()
+            )
 
             binding.btnDeleteWishlist.setOnClickListener {
                 deleteItemClick(wishlistEntity)
@@ -54,8 +60,8 @@ class WishlistAdapter(
         }
     }
 
-    inner class wishlistGridViewHolder(private val binding: ItemGridWishlistBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    inner class wishlistGridViewHolder(private val binding: ItemGridWishlistBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(wishlistEntity: WishlistEntity) {
 
             Glide.with(itemView.context)
@@ -63,9 +69,11 @@ class WishlistAdapter(
                 .into(binding.ivProductGrid)
 
             binding.tvProductNameGrid.text = wishlistEntity.productName
-            binding.tvProductPriceGrid.text = (wishlistEntity.productPrice + wishlistEntity.varianPrice).formatToIDR()
+            binding.tvProductPriceGrid.text =
+                (wishlistEntity.productPrice + wishlistEntity.varianPrice).formatToIDR()
             binding.tvStoreGrid.text = wishlistEntity.store
-            binding.tvSaleGrid.text = "${wishlistEntity.productRating} ${R.string.terjual_item} ${wishlistEntity.sale}"
+            binding.tvSaleGrid.text =
+                "${wishlistEntity.productRating} ${R.string.terjual_item} ${wishlistEntity.sale}"
 
             binding.btnDeleteWishlist.setOnClickListener {
                 deleteItemClick(wishlistEntity)
@@ -92,10 +100,12 @@ class WishlistAdapter(
                 val binding = ItemListWishlistBinding.inflate(inflater, parent, false)
                 wishlistListViewHolder(binding)
             }
+
             WishlistAdapter.GRID_PRODUCT -> {
                 val binding = ItemGridWishlistBinding.inflate(inflater, parent, false)
                 wishlistGridViewHolder(binding)
             }
+
             else -> throw throw IllegalArgumentException("Undefined view type")
         }
     }
@@ -104,15 +114,17 @@ class WishlistAdapter(
         val item = getItem(position)
         when (holder) {
             is WishlistAdapter.wishlistListViewHolder -> {
-                if (item != null){
+                if (item != null) {
                     holder.bind(item)
                 }
             }
+
             is WishlistAdapter.wishlistGridViewHolder -> {
-                if (item != null){
+                if (item != null) {
                     holder.bind(item)
                 }
             }
+
             else -> throw IllegalArgumentException("Undefined view type")
         }
 
@@ -131,7 +143,7 @@ class WishlistAdapter(
     fun Int.formatToIDR(): String {
         val localeID = java.util.Locale("in", "ID")
         val currencyFormatter = NumberFormat.getCurrencyInstance(localeID)
-        return currencyFormatter.format(this).replace(",00","")
+        return currencyFormatter.format(this).replace(",00", "")
     }
 
 }

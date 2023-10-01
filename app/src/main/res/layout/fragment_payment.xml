@@ -10,7 +10,7 @@
         android:id="@+id/layout_top_app_bar_payment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+        android:background="?attr/colorSurfaceContainerLowest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -104,6 +104,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_top_payment"
-        tools:listitem="@layout/section_payment"/>
+        tools:listitem="@layout/section_payment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

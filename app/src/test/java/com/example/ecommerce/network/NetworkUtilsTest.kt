@@ -5,14 +5,14 @@ import java.io.InputStreamReader
 
 object NetworkUtilsTest {
 
-    fun createStringFromFile(fileName : String) : String {
+    fun createStringFromFile(fileName: String): String {
         val inputstream = javaClass.classLoader?.getResourceAsStream(fileName)
         val inputStreamReader = InputStreamReader(inputstream)
         return inputStreamReader.readText()
     }
 
-    fun createMockResponse( fileName: String ) = MockResponse()
-            .setResponseCode(200)
-            .setBody(createStringFromFile(fileName))
+    fun createMockResponse(fileName: String) = MockResponse()
+        .setResponseCode(200)
+        .setBody(createStringFromFile(fileName))
 
 }

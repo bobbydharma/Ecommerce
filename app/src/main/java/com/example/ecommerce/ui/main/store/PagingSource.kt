@@ -27,36 +27,37 @@ class PagingSource(
                 query.highest,
                 query.sort,
                 query.limit,
-                currentPage)
-            if (response.isSuccessful && response.body() != null ){
+                currentPage
+            )
+            if (response.isSuccessful && response.body() != null) {
                 return LoadResult.Page(
                     data = response.body()!!.data.items,
                     prevKey = null,
-                    nextKey = if(currentPage == response.body()!!.data.totalPages) null else currentPage +1
+                    nextKey = if (currentPage == response.body()!!.data.totalPages) null else currentPage + 1
                 )
-            }else {
+            } else {
                 if (response.code() == 404) {
-                    Log.d("404" , "${response.code()}")
+                    Log.d("404", "${response.code()}")
                     return LoadResult.Error(MyCustomError(response.code().toString()))
                 } else {
-                    Log.d("Else 404" , "error")
+                    Log.d("Else 404", "error")
                     return LoadResult.Error(HttpException(response))
                 }
             }
         } catch (e: Exception) {
-            return when(e){
+            return when (e) {
                 is HttpException -> {
-                    Log.d("HttpException" , "${e.code()}")
+                    Log.d("HttpException", "${e.code()}")
                     LoadResult.Error(e)
                 }
 
                 is IOException -> {
-                    Log.d("IOException" , "${e.message}")
+                    Log.d("IOException", "${e.message}")
                     LoadResult.Error(e)
                 }
 
                 else -> {
-                    Log.d("Else" , "${e.message}")
+                    Log.d("Else", "${e.message}")
                     LoadResult.Error(e)
                 }
             }

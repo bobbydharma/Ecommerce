@@ -6,7 +6,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" tools:node="remove"/>
+    <uses-permission
+        android:name="android.permission.POST_NOTIFICATIONS"
+        tools:node="remove" />
 
     <application
         android:name=".MainApplication"
@@ -30,7 +32,8 @@
                 android:value="true" />
         </service>
 
-        <service android:name=".firebase.MyFirebaseMessagingService"
+        <service
+            android:name=".firebase.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -41,7 +44,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.App.Starting">
-            <nav-graph android:value="@navigation/app_navigation"/>
+            <nav-graph android:value="@navigation/app_navigation" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,7 +66,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
-
 
 
     </application>

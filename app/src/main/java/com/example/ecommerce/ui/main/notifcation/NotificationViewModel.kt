@@ -10,7 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
     private val repository: NotificationRepository
-) :ViewModel() {
+) : ViewModel() {
 
     val notificationItem = repository.getAll()
 

@@ -26,10 +26,11 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SendReviewFragment : Fragment() {
 
-    private var _binding : FragmentSendReviewBinding? = null
+    private var _binding: FragmentSendReviewBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<SendReviewViewModel>()
-    private var sourceFragment : String? = ""
+    private var sourceFragment: String? = ""
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -74,19 +75,23 @@ class SendReviewFragment : Fragment() {
 
 
         binding.btnDoneSendReview.setOnClickListener {
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Ratting_Done" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Ratting_Done")
             }
-            if (viewModel.invoice != null){
-                if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty() && dataRating == 0){
+            if (viewModel.invoice != null) {
+                if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty() && dataRating == 0) {
                     navigate()
-                }else if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty()){
+                } else if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty()) {
                     val ratingRequest = RatingRequest(viewModel.invoice!!.invoiceId, dataRating, "")
                     viewLifecycleOwner.lifecycleScope.launch {
                         viewModel.postRating(ratingRequest)
                     }
-                }else{
-                    val ratingRequest = RatingRequest(viewModel.invoice!!.invoiceId, dataRating, binding.layoutEtReviewSendReview.editText?.text.toString())
+                } else {
+                    val ratingRequest = RatingRequest(
+                        viewModel.invoice!!.invoiceId,
+                        dataRating,
+                        binding.layoutEtReviewSendReview.editText?.text.toString()
+                    )
                     viewLifecycleOwner.lifecycleScope.launch {
                         viewModel.postRating(ratingRequest)
                     }
@@ -94,18 +99,21 @@ class SendReviewFragment : Fragment() {
             }
         }
 
-        viewModel.ratingResponse.observe(viewLifecycleOwner){result ->
+        viewModel.ratingResponse.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> {
                     binding.progressBarSendReview.isVisible = false
                     navigate()
                 }
+
                 is Result.Error -> {
                     Toast.makeText(context, "Gagal mengirim review", Toast.LENGTH_SHORT).show()
                 }
+
                 is Result.Loading -> {
                     binding.progressBarSendReview.isVisible = true
                 }
+
                 else -> {
                 }
             }
@@ -114,9 +122,9 @@ class SendReviewFragment : Fragment() {
     }
 
     private fun navigate() {
-        if (sourceFragment == "Checkout"){
+        if (sourceFragment == "Checkout") {
             findNavController().navigate(R.id.action_sendReviewFragment_to_main_navigation)
-        }else if(sourceFragment == "Transaction"){
+        } else if (sourceFragment == "Transaction") {
             findNavController().navigateUp()
         }
     }
@@ -124,9 +132,9 @@ class SendReviewFragment : Fragment() {
     private fun setDisplay() {
         viewModel.invoice?.apply {
             binding.tvIdInvoiceSendReview.text = this?.invoiceId
-            if (this?.status == true){
+            if (this?.status == true) {
                 binding.tvStatusSendReview.text = "Berhasil"
-            }else{
+            } else {
                 binding.tvStatusSendReview.text = "Gagal"
             }
             binding.tvDateSendReview.text = this?.date

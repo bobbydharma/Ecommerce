@@ -43,13 +43,14 @@ class LoginFragment : Fragment() {
 
     private var validEmail: Boolean = false
     private var validPassword: Boolean = false
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (sharedPreferencesManager.obCheck == false ){
+        if (sharedPreferencesManager.obCheck == false) {
             findNavController().navigate(R.id.action_loginFragment_to_onBoardingFragment)
         }
     }
@@ -85,13 +86,13 @@ class LoginFragment : Fragment() {
             data.firebaseToken = token
             Log.d("FirebaseToken", token)
             viewModel.postLogin(data)
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Login" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Login")
             }
         }
         binding.btnDaftar.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
                 param("BUTTON_NAME", "Login_To_Register")
             }
         }
@@ -106,15 +107,16 @@ class LoginFragment : Fragment() {
             when (result) {
                 is Result.Success -> {
                     binding.prgressBarLogin.isVisible = false
-                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN){
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
                         param(FirebaseAnalytics.Param.METHOD, "email")
                     }
-                    if (result.data.data.userName.isNullOrEmpty()){
+                    if (result.data.data.userName.isNullOrEmpty()) {
                         findNavController().navigate(R.id.main_to_profile)
-                    }else{
+                    } else {
                         findNavController().navigate(R.id.prelogin_to_main)
                     }
                 }
+
                 is Result.Error -> {
 
                     binding.etEmail.setText("")
@@ -125,6 +127,7 @@ class LoginFragment : Fragment() {
                     binding.layoutEtEmailLogin.requestFocus()
 
                 }
+
                 is Result.Loading -> {
 
                     binding.prgressBarLogin.isVisible = true
@@ -183,8 +186,22 @@ class LoginFragment : Fragment() {
         val kebijakanStartIndex = combinedText.indexOf(getString(R.string.kebijakan_privasi))
         val kebijakanEndIndex = kebijakanStartIndex + getString(R.string.kebijakan_privasi).length
 
-        spannableString.setSpan(ForegroundColorSpan(MaterialColors.getColor(requireView(), android.R.attr.colorPrimary)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-        spannableString.setSpan(ForegroundColorSpan(MaterialColors.getColor(requireView(), android.R.attr.colorPrimary)), kebijakanStartIndex, kebijakanEndIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+        )
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                MaterialColors.getColor(
+                    requireView(),
+                    android.R.attr.colorPrimary
+                )
+            ), kebijakanStartIndex, kebijakanEndIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+        )
 
         binding.syarat.text = spannableString
     }

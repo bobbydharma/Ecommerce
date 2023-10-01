@@ -27,11 +27,11 @@ class RegisterViewModelTest {
     @get:Rule
     var mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var repository : PreloginRepository
-    private lateinit var registerViewModel : RegisterViewModel
+    private lateinit var repository: PreloginRepository
+    private lateinit var registerViewModel: RegisterViewModel
 
     @Before
-    fun setup(){
+    fun setup() {
         repository = Mockito.mock()
         registerViewModel = RegisterViewModel(repository)
     }

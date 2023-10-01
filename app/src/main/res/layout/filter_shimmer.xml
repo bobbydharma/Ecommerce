@@ -10,7 +10,7 @@
         android:id="@+id/btn_filter_shimmer"
         android:layout_width="84dp"
         android:layout_height="wrap_content"
-        android:text= ""
+        android:text=""
         app:chipBackgroundColor="#DDD"
         app:chipStrokeWidth="0dp"
         app:layout_constraintStart_toStartOf="parent"

@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repository: PreloginRepository
-) : ViewModel(){
+) : ViewModel() {
     private val _loginData = MutableLiveData<Result<LoginResponse>>()
     val loginData: LiveData<Result<LoginResponse>> = _loginData
 

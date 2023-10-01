@@ -35,10 +35,12 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
+
     @Inject
     lateinit var database: AppDatabase
+
     @Inject
-    lateinit var firebaseAnalytics : FirebaseAnalytics
+    lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private val navHostFragment: NavHostFragment by lazy {
         supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
@@ -62,9 +64,9 @@ class MainActivity : AppCompatActivity() {
 
         cekTheme()
 
-        viewModel.test.observe(this){
-            if (it == true){
-                GlobalScope.launch(Dispatchers.IO){
+        viewModel.test.observe(this) {
+            if (it == true) {
+                GlobalScope.launch(Dispatchers.IO) {
                     database.clearAllTables()
                 }
                 sharedPreferencesManager.logout()
@@ -77,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             .addOnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     Log.d("TAG", "Gagal Berlangganan")
-                }else{
+                } else {
                     Log.d("TAG", "berhasil Berlangganan")
                 }
             }
@@ -117,15 +119,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cekTheme() {
-        if (sharedPreferencesManager.dark_theme){
+        if (sharedPreferencesManager.dark_theme) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }else{
+        } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
 
 
-    fun logout(){
+    fun logout() {
         navController.navigate(R.id.main_to_prelogin)
     }
 

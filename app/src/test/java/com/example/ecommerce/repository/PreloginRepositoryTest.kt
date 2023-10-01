@@ -31,19 +31,19 @@ import retrofit2.Response
 @RunWith(JUnit4::class)
 class PreloginRepositoryTest {
 
-    private lateinit var  dataSource : APIService
-    private lateinit var  preloginRepository: PreloginRepository
+    private lateinit var dataSource: APIService
+    private lateinit var preloginRepository: PreloginRepository
     private lateinit var prefHelper: PrefHelper
 
     @Before
-    fun setup(){
+    fun setup() {
         prefHelper = mock()
         dataSource = mock()
-        preloginRepository = PreloginRepository(dataSource,prefHelper)
+        preloginRepository = PreloginRepository(dataSource, prefHelper)
     }
 
     @Test
-    fun postRegisterPreloginRepositoryTest() = runTest {
+    fun postRegisterPreloginRepositoryTestSuccess() = runTest {
         val userRequest = UserRequest()
 
         val userResponse = UserResponse(
@@ -64,12 +64,24 @@ class PreloginRepositoryTest {
     }
 
     @Test
-    fun postProfilePreloginRepositoryTest() = runTest {
+    fun postRegisterPreloginRepositoryTestError() = runTest {
+        val userRequest = UserRequest()
+        val error = RuntimeException()
+
+        whenever(dataSource.postRegister(API_KEY, userRequest)).thenThrow(error)
+        val result = preloginRepository.postRegister(userRequest)
+        assertEquals(error, (result as Result.Error).exception)
+    }
+
+    @Test
+    fun postProfilePreloginRepositoryTestSuccess() = runTest {
         val userImageRequestBody = "your_image_data".toRequestBody("image/jpeg".toMediaTypeOrNull())
-        val userImagePart = MultipartBody.Part.createFormData("userImage", "image.jpg", userImageRequestBody)
+        val userImagePart =
+            MultipartBody.Part.createFormData("userImage", "image.jpg", userImageRequestBody)
 
         val userNameRequestBody = "John Doe".toRequestBody("text/plain".toMediaTypeOrNull())
-        val userNamePart = MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
+        val userNamePart =
+            MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
 
         val profileResponse = ProfileResponse(
             code = 200,
@@ -85,7 +97,7 @@ class PreloginRepositoryTest {
             userImage = userImagePart
         )
 
-        whenever(dataSource.postProfile( userNamePart ,userImagePart)).thenReturn(
+        whenever(dataSource.postProfile(userNamePart, userImagePart)).thenReturn(
             Response.success(profileResponse)
         )
         val result = preloginRepository.postProfile(profileRequest)
@@ -93,7 +105,29 @@ class PreloginRepositoryTest {
     }
 
     @Test
-    fun postLoginPreloginRepositoryTest() = runTest {
+    fun postProfilePreloginRepositoryTestError() = runTest {
+        val userImageRequestBody = "your_image_data".toRequestBody("image/jpeg".toMediaTypeOrNull())
+        val userImagePart =
+            MultipartBody.Part.createFormData("userImage", "image.jpg", userImageRequestBody)
+
+        val userNameRequestBody = "John Doe".toRequestBody("text/plain".toMediaTypeOrNull())
+        val userNamePart =
+            MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
+
+        val error = RuntimeException()
+
+        val profileRequest = ProfileRequest(
+            userName = userNamePart,
+            userImage = userImagePart
+        )
+
+        whenever(dataSource.postProfile(userNamePart, userImagePart)).thenThrow(error)
+        val result = preloginRepository.postProfile(profileRequest)
+        Assert.assertEquals(error, (result as Result.Error).exception)
+    }
+
+    @Test
+    fun postLoginPreloginRepositoryTestSuccess() = runTest {
         val userRequest = UserRequest()
 
         val loginResponse = LoginResponse(
@@ -108,10 +142,20 @@ class PreloginRepositoryTest {
             )
         )
 
-        whenever(dataSource.postLogin( API_KEY ,userRequest)).thenReturn(
+        whenever(dataSource.postLogin(API_KEY, userRequest)).thenReturn(
             Response.success(loginResponse)
         )
         val result = preloginRepository.postLogin(userRequest)
         Assert.assertEquals(loginResponse, (result as Result.Success).data)
+    }
+
+    @Test
+    fun postLoginPreloginRepositoryTestError() = runTest {
+        val userRequest = UserRequest()
+        val error = RuntimeException()
+
+        whenever(dataSource.postLogin(API_KEY, userRequest)).thenThrow(error)
+        val result = preloginRepository.postLogin(userRequest)
+        Assert.assertEquals(error, (result as Result.Error).exception)
     }
 }

@@ -29,7 +29,7 @@ class CartViewModelTest {
     @get:Rule
     var mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var repository : CartRepository
+    private lateinit var repository: CartRepository
     private lateinit var cartViewModel: CartViewModel
 
     private val cartEntity = CartEntity(
@@ -55,7 +55,7 @@ class CartViewModelTest {
     val expected = flowOf(listOf(cartEntity))
 
     @Before
-    fun setup(){
+    fun setup() {
         repository = Mockito.mock()
 
         whenever(repository.getAll()).thenReturn(expected)

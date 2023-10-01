@@ -75,6 +75,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         sendRegistrationToServer(token)
     }
+
     private fun scheduleJob() {
         // [START dispatch_job]
         val work = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
@@ -90,7 +91,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "sendRegistrationTokenToServer($token)")
     }
 
-    fun sendNotification(messageBody: MutableMap<String,String>) {
+    fun sendNotification(messageBody: MutableMap<String, String>) {
 
         val requestCode = 0
 
@@ -109,7 +110,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(

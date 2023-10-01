@@ -4,97 +4,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="?attr/materialCardViewElevatedStyle"
     app:cardBackgroundColor="?colorSurfaceContainerLowest"
-    app:cardElevation = "3dp"
+    app:cardElevation="3dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp">
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/iv_product_list"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_image_rouded"
+            app:srcCompat="@drawable/image_thumbnail"
+            tools:layout_editor_absoluteX="63dp"
+            tools:layout_editor_absoluteY="129dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            android:orientation="vertical"
+            android:paddingHorizontal="8dp">
 
-            <ImageView
-                android:id="@+id/iv_product_list"
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/background_image_rouded"
-                app:srcCompat="@drawable/image_thumbnail"
-                tools:layout_editor_absoluteX="63dp"
-                tools:layout_editor_absoluteY="129dp" />
+            <TextView
+                android:id="@+id/tv_product_name_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB Windows 11 QHD IPS"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_product_price_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="Rp23.499.000"
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="8dp">
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="4dp"
+                    app:srcCompat="@drawable/ic_account_circle" />
 
                 <TextView
-                    android:id="@+id/tv_product_name_list"
+                    android:id="@+id/tv_store_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB Windows 11 QHD IPS"
-                    android:textSize="12sp" />
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="ProStoreComputer"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="4dp"
+                    app:srcCompat="@drawable/ic_star" />
 
                 <TextView
-                    android:id="@+id/tv_product_price_list"
+                    android:id="@+id/tv_sale_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Rp23.499.000"
-                    android:textSize="14sp"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="4dp"
-                        app:srcCompat="@drawable/ic_account_circle" />
-
-                    <TextView
-                        android:id="@+id/tv_store_list"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="ProStoreComputer"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="4dp"
-                        app:srcCompat="@drawable/ic_star" />
-
-                    <TextView
-                        android:id="@+id/tv_sale_list"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
-                        android:text="5.0 | Terjual 10"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
+                    android:fontFamily="@font/poppins"
+                    android:text="5.0 | Terjual 10"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
         </LinearLayout>
+
+    </LinearLayout>
 
 
 </com.google.android.material.card.MaterialCardView>

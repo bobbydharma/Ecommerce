@@ -31,14 +31,14 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class WishlistFragment : Fragment() {
 
-    private var _binding : FragmentWishlistBinding? = null
+    private var _binding: FragmentWishlistBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<WishlistViewModel>()
     private lateinit var wishlistAdapter: WishlistAdapter
 
     @Inject
-    lateinit var firebaseAnalytics : FirebaseAnalytics
+    lateinit var firebaseAnalytics: FirebaseAnalytics
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -53,12 +53,12 @@ class WishlistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         wishlistAdapter = WishlistAdapter(
             WishlistAdapter.WishlistEntityDiffCallback,
-            {wishlistEntity -> deleteItemClick(wishlistEntity)},
-            {wishlistEntity -> addItemClick(wishlistEntity) }
-            )
+            { wishlistEntity -> deleteItemClick(wishlistEntity) },
+            { wishlistEntity -> addItemClick(wishlistEntity) }
+        )
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -70,7 +70,7 @@ class WishlistFragment : Fragment() {
         binding.apply {
             rvWishlist.adapter = wishlistAdapter
 
-            btnToggle.setOnCheckedChangeListener{ _ , isChecked ->
+            btnToggle.setOnCheckedChangeListener { _, isChecked ->
 
                 wishlistAdapter.isGridMode = isChecked
                 setLayoutManager(isChecked)
@@ -80,12 +80,13 @@ class WishlistFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.wishlistItem.collectLatest {
-                if (it.isNotEmpty()){
-                    binding.containerErorWishlist.isVisible=false
+                if (it.isNotEmpty()) {
+                    binding.containerErorWishlist.isVisible = false
                     binding.containerWishlist.isVisible = true
                     wishlistAdapter.submitList(it)
-                    binding.tvTotalWishlist.text = getString(R.string.total_barang, it.size.toString())
-                }else{
+                    binding.tvTotalWishlist.text =
+                        getString(R.string.total_barang, it.size.toString())
+                } else {
                     binding.containerErorWishlist.isVisible = true
                     binding.containerWishlist.isVisible = false
                 }
@@ -103,7 +104,10 @@ class WishlistFragment : Fragment() {
             putString(FirebaseAnalytics.Param.ITEM_NAME, wishlistEntity.productName)
             putString(FirebaseAnalytics.Param.ITEM_VARIANT, wishlistEntity.varianName)
             putString(FirebaseAnalytics.Param.ITEM_BRAND, wishlistEntity.brand)
-            putDouble(FirebaseAnalytics.Param.PRICE, (wishlistEntity.productPrice+wishlistEntity.varianPrice).toDouble())
+            putDouble(
+                FirebaseAnalytics.Param.PRICE,
+                (wishlistEntity.productPrice + wishlistEntity.varianPrice).toDouble()
+            )
         }
         val itemProductCart = Bundle(itemProduct).apply {
             putLong(FirebaseAnalytics.Param.QUANTITY, 1)
@@ -115,33 +119,47 @@ class WishlistFragment : Fragment() {
             if (cartItem != null) {
                 if (cartItem.stock > cartItem.quantity) {
                     viewModel.insertOrUpdateItem(wishlistEntity.convertToDetail(), 0)
-                    val snackBar = Snackbar.make(requireView(),
-                        getString(R.string.ditambahkan_kekeranjang), Snackbar.LENGTH_SHORT)
+                    val snackBar = Snackbar.make(
+                        requireView(),
+                        getString(R.string.ditambahkan_kekeranjang), Snackbar.LENGTH_SHORT
+                    )
                     snackBar.setAnchorView(R.id.bnv_child).show()
 
 //                start log event
-                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART){
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART) {
                         param(FirebaseAnalytics.Param.CURRENCY, "IDR")
-                        param(FirebaseAnalytics.Param.VALUE, (cartItem.productPrice+cartItem.variantPrice).toDouble())
+                        param(
+                            FirebaseAnalytics.Param.VALUE,
+                            (cartItem.productPrice + cartItem.variantPrice).toDouble()
+                        )
                         param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemProductCart))
                     }
 //                 end log event
 
                 } else {
-                    val snackBar = Snackbar.make(requireView(),
-                        getString(R.string.stok_habis), Snackbar.LENGTH_SHORT)
+                    val snackBar = Snackbar.make(
+                        requireView(),
+                        getString(R.string.stok_habis), Snackbar.LENGTH_SHORT
+                    )
                     snackBar.setAnchorView(R.id.bnv_child)
                     snackBar.setBackgroundTint(Color.RED).show()
                 }
-            }else{
+            } else {
                 viewModel.insertOrUpdateItem(wishlistEntity.convertToDetail(), 0)
-                val snackBar = Snackbar.make(requireView(), getString(R.string.ditambahkan_kekeranjang), Snackbar.LENGTH_SHORT)
+                val snackBar = Snackbar.make(
+                    requireView(),
+                    getString(R.string.ditambahkan_kekeranjang),
+                    Snackbar.LENGTH_SHORT
+                )
                 snackBar.setAnchorView(R.id.bnv_child).show()
 
 //                start log event
-                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART){
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART) {
                     param(FirebaseAnalytics.Param.CURRENCY, "IDR")
-                    param(FirebaseAnalytics.Param.VALUE, (wishlistEntity.productPrice+wishlistEntity.varianPrice).toDouble())
+                    param(
+                        FirebaseAnalytics.Param.VALUE,
+                        (wishlistEntity.productPrice + wishlistEntity.varianPrice).toDouble()
+                    )
                     param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemProductCart))
                 }
 //                end log event
@@ -150,8 +168,8 @@ class WishlistFragment : Fragment() {
             }
         }
 
-        firebaseAnalytics.logEvent("BUTTON_CLICK"){
-            param("BUTTON_NAME", "Wishlist_AddToCart" )
+        firebaseAnalytics.logEvent("BUTTON_CLICK") {
+            param("BUTTON_NAME", "Wishlist_AddToCart")
         }
 
     }
@@ -160,19 +178,21 @@ class WishlistFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.deleteWishlist(wishlistEntity)
         }
-        firebaseAnalytics.logEvent("BUTTON_CLICK"){
-            param("BUTTON_NAME", "Wishlist_Delete" )
+        firebaseAnalytics.logEvent("BUTTON_CLICK") {
+            param("BUTTON_NAME", "Wishlist_Delete")
         }
     }
 
     private fun setLayoutManager(checked: Boolean) {
-        val firstVisibleItemPosition = (binding.rvWishlist.layoutManager as? GridLayoutManager)?.findFirstVisibleItemPosition() ?: 0
-        if (checked){
+        val firstVisibleItemPosition =
+            (binding.rvWishlist.layoutManager as? GridLayoutManager)?.findFirstVisibleItemPosition()
+                ?: 0
+        if (checked) {
             val layoutManager = GridLayoutManager(requireContext(), 2)
             binding.rvWishlist.layoutManager = layoutManager
             binding.rvWishlist.layoutManager?.scrollToPosition(firstVisibleItemPosition)
 
-        }else{
+        } else {
             binding.rvWishlist.layoutManager = GridLayoutManager(requireContext(), 1)
             binding.rvWishlist.layoutManager?.scrollToPosition(firstVisibleItemPosition)
         }

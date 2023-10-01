@@ -18,17 +18,18 @@ import javax.inject.Inject
 class CheckoutViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val repository: MainRepository
-) :ViewModel() {
+) : ViewModel() {
 
-    private var _itemCheckoutList = MutableStateFlow(savedStateHandle.get<CheckoutList>("CheckoutList"))
+    private var _itemCheckoutList =
+        MutableStateFlow(savedStateHandle.get<CheckoutList>("CheckoutList"))
     val itemCheckoutList: StateFlow<CheckoutList?> = _itemCheckoutList
 
     private val _fulfillment = MutableLiveData<Result<FulfillmentResponse>>()
     val fulfillment: LiveData<Result<FulfillmentResponse>> = _fulfillment
 
-    lateinit var dataItemPayment : Item
+    lateinit var dataItemPayment: Item
 
-    suspend fun postFulfillment(fulfillmentRequest: FulfillmentRequest){
+    suspend fun postFulfillment(fulfillmentRequest: FulfillmentRequest) {
         _fulfillment.value = Result.Loading
         viewModelScope.launch {
             val result = repository.postFulfillment(fulfillmentRequest)

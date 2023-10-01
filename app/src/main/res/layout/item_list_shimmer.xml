@@ -83,7 +83,7 @@
                         android:fontFamily="@font/poppins"
                         android:textSize="10sp"
                         android:background="#DDD"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 

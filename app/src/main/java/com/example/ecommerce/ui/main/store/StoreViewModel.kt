@@ -35,29 +35,29 @@ import javax.inject.Inject
 class StoreViewModel @Inject constructor(
     private val repository: MainRepository,
     private val apiService: APIService
-): ViewModel(){
+) : ViewModel() {
 
     private val _productsData = MutableLiveData<Result<ProductsResponse>>()
     val productsData: LiveData<Result<ProductsResponse>> = _productsData
 
     private val _searchData = MutableLiveData<Result<SearchResponse>>()
-    val searchData : LiveData<Result<SearchResponse>> = _searchData
+    val searchData: LiveData<Result<SearchResponse>> = _searchData
 
     private val _debouncedSearch = MutableSharedFlow<String>()
     val debouncedSearch: SharedFlow<String> = _debouncedSearch
 
     private val _prooductQuery = MutableStateFlow(ProductsRequest())
-    val prooductQuery : StateFlow<ProductsRequest> = _prooductQuery
+    val prooductQuery: StateFlow<ProductsRequest> = _prooductQuery
 
     var search: String? = null
 
     fun updateQuery(
         search: String?,
         brand: String?,
-        sort:String?,
-        lowest:Int?,
-        highest:Int?
-    ){
+        sort: String?,
+        lowest: Int?,
+        highest: Int?
+    ) {
         _prooductQuery.update { it ->
             it.copy(
                 search = search,
@@ -73,7 +73,10 @@ class StoreViewModel @Inject constructor(
         getPagerFlow(apiService, _prooductQuery.value)
     }.cachedIn(viewModelScope)
 
-    fun getPagerFlow(apiService: APIService, productQuery: ProductsRequest): Flow<PagingData<Items>> {
+    fun getPagerFlow(
+        apiService: APIService,
+        productQuery: ProductsRequest
+    ): Flow<PagingData<Items>> {
         return Pager(
             PagingConfig(pageSize = 5, initialLoadSize = 5)
         ) {
@@ -83,7 +86,7 @@ class StoreViewModel @Inject constructor(
             .cachedIn(viewModelScope)
     }
 
-    fun postSearch(search:String){
+    fun postSearch(search: String) {
         _searchData.value = Result.Loading
         viewModelScope.launch {
             val result = repository.postSearch(search)
@@ -92,7 +95,7 @@ class StoreViewModel @Inject constructor(
     }
 
     init {
-        getPagerFlow(apiService,prooductQuery.value)
+        getPagerFlow(apiService, prooductQuery.value)
         viewModelScope.launch {
             _debouncedSearch
                 .debounce(1000) // Wait for 1 second

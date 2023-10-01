@@ -71,5 +71,10 @@
     <string name="terjual_baru">%1$s | Sales %2$s</string>
     <string name="total_barang">%1$s Item</string>
     <string name="terjuall">%1$s | Sales %2$s</string>
+    <string name="home">Home</string>
+    <string name="store">Store</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="transaction">Transaction</string>
+    <string name="beli_langsung">Beli Langsung</string>
 
 </resources>

@@ -12,15 +12,16 @@ import com.example.ecommerce.databinding.ItemTransactionBinding
 import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.utils.formatToIDR
 
-class TransactionAdapter (
+class TransactionAdapter(
     private val reviewClick: (Datum) -> Unit
-) : ListAdapter<Datum, TransactionAdapter.TransactionViewHolder > (
+) : ListAdapter<Datum, TransactionAdapter.TransactionViewHolder>(
     (DatumDiffCallback)
 ) {
 
-    inner class TransactionViewHolder(private val binding : ItemTransactionBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class TransactionViewHolder(private val binding: ItemTransactionBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun bind ( item : Datum){
+        fun bind(item: Datum) {
 
             Glide.with(itemView.context)
                 .load(item.image)
@@ -33,9 +34,9 @@ class TransactionAdapter (
             binding.tvTotalPriceTransaction.text = item.total.formatToIDR()
             binding.tvQuantityTransaction.text = "${item.items.size} barang"
 
-            if (item.review.isNullOrEmpty()){
+            if (item.review.isNullOrEmpty()) {
                 binding.btnReviewTransaction.isVisible = true
-            }else{
+            } else {
                 binding.btnReviewTransaction.isVisible = false
             }
 

@@ -16,21 +16,23 @@ import java.text.NumberFormat
 class CartAdapter(
     diffCallback: DiffUtil.ItemCallback<CartEntity>,
     private val deleteItemClick: (CartEntity) -> Unit,
-    private val addItemClick: (CartEntity)-> Unit,
+    private val addItemClick: (CartEntity) -> Unit,
     private val minItemClick: (CartEntity) -> Unit,
-    private val selectedItem : (CartEntity) -> Unit
-    ) : ListAdapter<CartEntity, CartAdapter.CartViewHolder>(CartEntityDiffCallback) {
+    private val selectedItem: (CartEntity) -> Unit
+) : ListAdapter<CartEntity, CartAdapter.CartViewHolder>(CartEntityDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
         val binding =
             ItemListCartBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CartViewHolder(binding)
     }
+
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val currentItem = getItem(position)
         holder.bind(currentItem)
     }
 
-    inner class CartViewHolder(private val binding: ItemListCartBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class CartViewHolder(private val binding: ItemListCartBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(cartEntity: CartEntity) {
 
             Glide.with(itemView.context)
@@ -39,14 +41,22 @@ class CartAdapter(
                 .error(R.drawable.image_thumbnail)
                 .into(binding.ivCartList)
             binding.tvCartNameList.text = cartEntity.productName
-            binding.tvCartPrice.text = (cartEntity.productPrice + cartEntity.variantPrice).formatToIDR()
+            binding.tvCartPrice.text =
+                (cartEntity.productPrice + cartEntity.variantPrice).formatToIDR()
             binding.tvCartVarianNameList.text = cartEntity.variantName
-            if (cartEntity.stock < 10){
-                binding.tvCartStokList.text = binding.root.context.getString(R.string.stok, cartEntity.stock.toString())
+            if (cartEntity.stock < 10) {
+                binding.tvCartStokList.text =
+                    binding.root.context.getString(R.string.stok, cartEntity.stock.toString())
                 binding.tvCartStokList.setTextColor(Color.RED)
-            }else{
-                binding.tvCartStokList.text = binding.root.context.getString(R.string.stok, cartEntity.stock.toString())
-                binding.tvCartStokList.setTextColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOnSecondaryContainer))
+            } else {
+                binding.tvCartStokList.text =
+                    binding.root.context.getString(R.string.stok, cartEntity.stock.toString())
+                binding.tvCartStokList.setTextColor(
+                    MaterialColors.getColor(
+                        itemView,
+                        com.google.android.material.R.attr.colorOnSecondaryContainer
+                    )
+                )
             }
             binding.tvOrderQuantity.text = cartEntity.quantity.toString()
             binding.checkboxItem.isChecked = cartEntity.isSelected
@@ -82,7 +92,7 @@ class CartAdapter(
     fun Int.formatToIDR(): String {
         val localeID = java.util.Locale("in", "ID")
         val currencyFormatter = NumberFormat.getCurrencyInstance(localeID)
-        return currencyFormatter.format(this).replace(",00","")
+        return currencyFormatter.format(this).replace(",00", "")
     }
 
 }

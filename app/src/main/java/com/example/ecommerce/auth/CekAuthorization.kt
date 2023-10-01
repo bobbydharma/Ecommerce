@@ -14,7 +14,7 @@ class CekAuthorization @Inject constructor() {
         _unAutorization.postValue(true)
     }
 
-    fun resetAuthorization(){
+    fun resetAuthorization() {
         _unAutorization.postValue(null)
     }
 }

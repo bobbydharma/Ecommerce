@@ -26,7 +26,7 @@
     <string name="harga_tertinggi">Tertinggi</string>
     <string name="kategori">Kategori</string>
     <string name="harga">Harga</string>
-    <string name="tampilkan_produk">Tamoilkan Produk</string>
+    <string name="tampilkan_produk">Tampilkan Produk</string>
     <string name="barang">Produk</string>
     <string name="ditambahkan_kekeranjang">Tambahkan ke keranjang</string>
     <string name="stok_habis">Stok Habis</string>
@@ -72,4 +72,9 @@
     <string name="terjual_baru">%1$s | Terjual %2$s</string>
     <string name="total_barang">%1$s Barang</string>
     <string name="terjuall">%1$s | Terjual %2$s</string>
+    <string name="home">Beranda</string>
+    <string name="store">Toko</string>
+    <string name="wishlist">Favorit</string>
+    <string name="transaction">Transaksi</string>
+    <string name="beli_langsung">Beli Langsung</string>
 </resources>

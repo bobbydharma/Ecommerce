@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ecommerce.R
 import com.example.ecommerce.model.user.LoginResponse
 import com.example.ecommerce.model.user.UserRequest
 import com.example.ecommerce.repository.MainRepository
@@ -50,14 +51,16 @@ class PaymentViewModel @Inject constructor(
                     _stringPayment.value = Result.Success(data)
                     Log.d("fetchAndActivateRemoteConfig", "if")
                 } else {
+                    val data = remoteConfig.getString("Payment")
+                    _stringPayment.value = Result.Success(data)
                     Log.d("fetchAndActivateRemoteConfig", "else")
                 }
             }
     }
 
-    fun updateListener(){
+    fun updateListener() {
         remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
-            override fun onUpdate(configUpdate : ConfigUpdate) {
+            override fun onUpdate(configUpdate: ConfigUpdate) {
 
                 if (configUpdate.updatedKeys.contains("Payment")) {
                     remoteConfig.activate().addOnCompleteListener {
@@ -67,7 +70,9 @@ class PaymentViewModel @Inject constructor(
                 }
             }
 
-            override fun onError(error : FirebaseRemoteConfigException) {
+            override fun onError(error: FirebaseRemoteConfigException) {
+                val data = remoteConfig.getString("Payment")
+                _stringPayment.value = Result.Success(data)
                 Log.d("onError", "onError")
             }
         })

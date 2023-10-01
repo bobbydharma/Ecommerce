@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
     app:cardElevation="3dp">
 
     <com.google.android.material.card.MaterialCardView

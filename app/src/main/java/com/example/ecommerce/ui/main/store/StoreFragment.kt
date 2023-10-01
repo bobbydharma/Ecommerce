@@ -48,6 +48,7 @@ class storeFragment : Fragment() {
 
     private var _binding: FragmentStoreBinding? = null
     private val binding get() = _binding!!
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -55,9 +56,10 @@ class storeFragment : Fragment() {
     @Inject
     lateinit var prefHelper: PrefHelper
     private val viewModel by activityViewModels<StoreViewModel>()
-    private val pagingAdapter = ProductsAdapter(ProductsAdapter.ProductComparator){itemClicked ->
+    private val pagingAdapter = ProductsAdapter(ProductsAdapter.ProductComparator) { itemClicked ->
         val bundle = bundleOf("id_product" to itemClicked.productId)
-        val navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
+        val navController =
+            Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
         navController.navigate(R.id.main_to_detail_product, bundle)
 
         //                start log event
@@ -72,7 +74,7 @@ class storeFragment : Fragment() {
         }
 //                end log event
 
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM){
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
             param(FirebaseAnalytics.Param.ITEM_ID, itemClicked.productId)
             param(FirebaseAnalytics.Param.ITEM_NAME, itemClicked.productName)
             param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemProductCart))
@@ -91,7 +93,10 @@ class storeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().supportFragmentManager.setFragmentResultListener("search", viewLifecycleOwner) { requestKey, bundle ->
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            "search",
+            viewLifecycleOwner
+        ) { requestKey, bundle ->
             val search = bundle.getString("searchItem")
             val newQuery = ProductsRequest()
             newQuery.search = search
@@ -103,8 +108,8 @@ class storeFragment : Fragment() {
                 sort = viewModel.prooductQuery.value.sort,
                 lowest = viewModel.prooductQuery.value.lowest,
                 highest = viewModel.prooductQuery.value.highest
-                )
-            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS){
+            )
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS) {
                 search?.let { param(FirebaseAnalytics.Param.SEARCH_TERM, it) }
             }
         }
@@ -140,15 +145,15 @@ class storeFragment : Fragment() {
                 highest = null,
                 lowest = null
             )
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Store_Reset" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Store_Reset")
             }
         }
 
         binding.btnRefreshConnection.setOnClickListener {
             pagingAdapter.refresh()
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Store_Refresh" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Store_Refresh")
             }
         }
 
@@ -158,8 +163,8 @@ class storeFragment : Fragment() {
                 requireActivity().supportFragmentManager,
                 bottomSheetFragment.tag
             )
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Store_Filter" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Store_Filter")
             }
         }
 
@@ -168,7 +173,7 @@ class storeFragment : Fragment() {
             searchFragment.show(requireActivity().supportFragmentManager, "MyDialogFragment")
         }
 
-        binding.btnToggle.setOnCheckedChangeListener{ _ , isChecked ->
+        binding.btnToggle.setOnCheckedChangeListener { _, isChecked ->
             pagingAdapter.isGridMode = isChecked
             setLayoutManager(isChecked)
         }
@@ -183,17 +188,17 @@ class storeFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            pagingAdapter.loadStateFlow.collectLatest {loadStates ->
+            pagingAdapter.loadStateFlow.collectLatest { loadStates ->
 
                 val gridLayoutManager = binding.rvProduct.layoutManager as GridLayoutManager
                 val numberOfColumns = gridLayoutManager.spanCount
-                if(loadStates.refresh is LoadState.Loading){
-                    if (numberOfColumns == 1){
+                if (loadStates.refresh is LoadState.Loading) {
+                    if (numberOfColumns == 1) {
                         binding.shimmerList.isVisible = true
                         binding.rvProduct.isVisible = false
                         binding.errorConnection.isVisible = false
                         binding.containerFilter.isVisible = false
-                    }else{
+                    } else {
                         binding.shimmerGrid.isVisible = true
                         binding.rvProduct.isVisible = false
                         binding.errorConnection.isVisible = false
@@ -201,7 +206,7 @@ class storeFragment : Fragment() {
                     }
                 }
 
-                if (loadStates.refresh is LoadState.NotLoading){
+                if (loadStates.refresh is LoadState.NotLoading) {
                     binding.shimmerList.isVisible = false
                     binding.shimmerGrid.isVisible = false
                     binding.errorConnection.isVisible = false
@@ -209,10 +214,10 @@ class storeFragment : Fragment() {
                     binding.rvProduct.isVisible = true
                 }
 
-                if (loadStates.refresh is LoadState.Error){
-                    when(val error = (loadStates.refresh as LoadState.Error).error){
+                if (loadStates.refresh is LoadState.Error) {
+                    when (val error = (loadStates.refresh as LoadState.Error).error) {
                         is HttpException -> {
-                            if (error.code() == 401){
+                            if (error.code() == 401) {
                                 binding.shimmerGrid.isVisible = true
                                 binding.shimmerList.isVisible = false
                                 binding.containerFilter.isVisible = false
@@ -221,7 +226,7 @@ class storeFragment : Fragment() {
                                 binding.errorConnection.isVisible = true
                                 Log.d("LoadState.Error", "HttpException 401")
                                 pagingAdapter.retry()
-                            }else if (error.code() == 404){
+                            } else if (error.code() == 404) {
                                 binding.shimmerGrid.isVisible = false
                                 binding.shimmerList.isVisible = false
                                 binding.containerFilter.isVisible = false
@@ -230,7 +235,7 @@ class storeFragment : Fragment() {
                                 binding.internalServerError.isVisible = false
                                 binding.errorData.isVisible = true
                                 Log.d("LoadState.Error", "HttpException 404")
-                            }else{
+                            } else {
                                 binding.shimmerGrid.isVisible = false
                                 binding.shimmerList.isVisible = false
                                 binding.containerFilter.isVisible = false
@@ -267,6 +272,7 @@ class storeFragment : Fragment() {
                                         binding.errorData.isVisible = true
                                         Log.d("LoadState.Error", "else 404")
                                     }
+
                                     "401" -> {
                                         binding.shimmerGrid.isVisible = true
                                         binding.shimmerList.isVisible = false
@@ -286,22 +292,27 @@ class storeFragment : Fragment() {
 
     private fun logEventItemView(it: PagingData<Items>) {
 
-        val item = pagingAdapter.snapshot().map{
+        val item = pagingAdapter.snapshot().map {
             Bundle().apply {
-                putString(FirebaseAnalytics.Param.ITEM_ID, it?.productId )
+                putString(FirebaseAnalytics.Param.ITEM_ID, it?.productId)
                 putString(FirebaseAnalytics.Param.ITEM_NAME, it?.productName)
                 putString(FirebaseAnalytics.Param.ITEM_BRAND, it?.brand)
-                it?.productPrice?.let { it1 -> putDouble(FirebaseAnalytics.Param.PRICE, it1.toDouble()) }
+                it?.productPrice?.let { it1 ->
+                    putDouble(
+                        FirebaseAnalytics.Param.PRICE,
+                        it1.toDouble()
+                    )
+                }
             }
         }
 
         val product = item.mapIndexed { index, bundle ->
             Bundle().apply {
-                putString(FirebaseAnalytics.Param.INDEX, index.toString() )
+                putString(FirebaseAnalytics.Param.INDEX, index.toString())
             }
         }
 
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST){
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
             param(FirebaseAnalytics.Param.ITEM_LIST_ID, "Store")
             param(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Store")
             product?.let { param(FirebaseAnalytics.Param.ITEMS, it.toTypedArray()) }
@@ -310,17 +321,19 @@ class storeFragment : Fragment() {
 
 
     private fun setLayoutManager(gridMode: Boolean) {
-        val firstVisibleItemPosition = (binding.rvProduct.layoutManager as? GridLayoutManager)?.findFirstVisibleItemPosition() ?: 0
-        if (gridMode){
+        val firstVisibleItemPosition =
+            (binding.rvProduct.layoutManager as? GridLayoutManager)?.findFirstVisibleItemPosition()
+                ?: 0
+        if (gridMode) {
             val layoutManager = GridLayoutManager(requireContext(), 2)
             binding.rvProduct.layoutManager = layoutManager
 
             val footerAdapter =
                 com.example.ecommerce.ui.main.store.adapter.LoadStateAdapter(pagingAdapter::retry)
             binding.rvProduct.adapter = pagingAdapter.withLoadStateFooter(footer = footerAdapter)
-            layoutManager.spanSizeLookup =  object : GridLayoutManager.SpanSizeLookup() {
+            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return if (position == pagingAdapter.itemCount  && footerAdapter.itemCount > 0) {
+                    return if (position == pagingAdapter.itemCount && footerAdapter.itemCount > 0) {
                         2
                     } else {
                         1
@@ -330,7 +343,7 @@ class storeFragment : Fragment() {
 
             binding.rvProduct.layoutManager?.scrollToPosition(firstVisibleItemPosition)
 
-        }else{
+        } else {
             binding.rvProduct.layoutManager = GridLayoutManager(requireContext(), 1)
             binding.rvProduct.layoutManager?.scrollToPosition(firstVisibleItemPosition)
         }

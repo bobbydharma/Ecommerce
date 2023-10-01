@@ -9,18 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 
-
 @Composable
 fun ThemeCompose(
     content: @Composable () -> Unit
-){
+) {
 
-     val LightColorPalette = lightColorScheme(
+    val LightColorPalette = lightColorScheme(
         surface = Color.White,
         background = Color.White,
     )
 
-     val DarkColorPalette = darkColorScheme(
+    val DarkColorPalette = darkColorScheme(
         surface = Color(android.graphics.Color.parseColor("#1D1B20")),
         background = Color(android.graphics.Color.parseColor("#1D1B20")),
     )
@@ -32,7 +31,7 @@ fun ThemeCompose(
         LightColorPalette
     }
 
-     MaterialTheme(
+    MaterialTheme(
 
         typography = MaterialTheme.typography,
         shapes = MaterialTheme.shapes,

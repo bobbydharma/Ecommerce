@@ -27,11 +27,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class CartFragment : Fragment() {
 
-    private var _binding : FragmentCartBinding? = null
+    private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<CartViewModel>()
-    private lateinit var listViewAdapter : CartAdapter
+    private lateinit var listViewAdapter: CartAdapter
+
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -57,7 +58,7 @@ class CartFragment : Fragment() {
             { cartEntity -> onDeleteItemClick(cartEntity) },
             { cartEntity -> onAddItemClick(cartEntity) },
             { cartEntity -> onMinItemClick(cartEntity) },
-            {cartEntity -> onSelectedItem(cartEntity) }
+            { cartEntity -> onSelectedItem(cartEntity) }
         )
 
         binding.lvCart.adapter = listViewAdapter
@@ -91,26 +92,29 @@ class CartFragment : Fragment() {
     }
 
     private fun logEventViewCart(it: List<CartEntity>) {
-        var totalPrice : Int = 0
+        var totalPrice: Int = 0
         it.forEach {
-            if (it.isSelected){
+            if (it.isSelected) {
                 val productPrice = (it.productPrice + it.variantPrice) * it.quantity
                 totalPrice = totalPrice + productPrice
             }
 
         }
 
-        val item = it.map{
+        val item = it.map {
             Bundle().apply {
-                putString(FirebaseAnalytics.Param.ITEM_ID, it.productId )
+                putString(FirebaseAnalytics.Param.ITEM_ID, it.productId)
                 putString(FirebaseAnalytics.Param.ITEM_NAME, it.productName)
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, it.variantName)
                 putString(FirebaseAnalytics.Param.ITEM_BRAND, it.brand)
-                putDouble(FirebaseAnalytics.Param.PRICE, (it.productPrice+it.variantPrice).toDouble())
+                putDouble(
+                    FirebaseAnalytics.Param.PRICE,
+                    (it.productPrice + it.variantPrice).toDouble()
+                )
             }
         }
 
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_CART){
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_CART) {
             param(FirebaseAnalytics.Param.CURRENCY, "IDR")
             param(FirebaseAnalytics.Param.VALUE, totalPrice.toDouble())
             item?.let { param(FirebaseAnalytics.Param.ITEMS, it.toTypedArray()) }
@@ -119,11 +123,11 @@ class CartFragment : Fragment() {
     }
 
     private fun buyCart(it: List<CartEntity>) {
-        val item = it.filter { it.isSelected ==true }
+        val item = it.filter { it.isSelected == true }
         val checkoutItem = item.toChekoutList()
         binding.btnBuyCart.setOnClickListener {
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Cart_Buy" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Cart_Buy")
             }
             val bundle = bundleOf("CheckoutList" to checkoutItem)
             findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment, bundle)
@@ -136,8 +140,8 @@ class CartFragment : Fragment() {
             val item = cartEntity.filter { item ->
                 item.isSelected
             }
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Cart_delete" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Cart_delete")
             }
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.deleteCart(*item.toTypedArray())
@@ -151,7 +155,7 @@ class CartFragment : Fragment() {
         if (isSelected) {
             binding.btnDelateCart.isVisible = true
             binding.btnBuyCart.isEnabled = true
-        }else{
+        } else {
             binding.btnDelateCart.isVisible = false
             binding.btnBuyCart.isEnabled = false
         }
@@ -159,12 +163,12 @@ class CartFragment : Fragment() {
 
     private fun setCheckAllItem(it: List<CartEntity>) {
         binding.checkboxAllItemCart.isChecked = false
-        if(it != null){
+        if (it != null) {
             val allSelected = it.all { it.isSelected }
             if (allSelected) {
                 binding.checkboxAllItemCart.isChecked = allSelected
 
-            }else{
+            } else {
                 binding.checkboxAllItemCart.isChecked = allSelected
 
             }
@@ -175,14 +179,14 @@ class CartFragment : Fragment() {
 
     private fun checkAllItem() {
         binding.checkboxAllItemCart.setOnClickListener {
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Cart_Select_All" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Cart_Select_All")
             }
-            if (binding.checkboxAllItemCart.isChecked){
+            if (binding.checkboxAllItemCart.isChecked) {
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.updateAllSelectedCart(binding.checkboxAllItemCart.isChecked)
                 }
-            }else{
+            } else {
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.updateAllSelectedCart(binding.checkboxAllItemCart.isChecked)
                 }
@@ -191,7 +195,7 @@ class CartFragment : Fragment() {
     }
 
     private fun onSelectedItem(cartEntity: CartEntity) {
-        var selected : Boolean
+        var selected: Boolean
         selected = cartEntity.isSelected
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.updateSelectedCart(cartEntity.productId, !selected)
@@ -200,9 +204,9 @@ class CartFragment : Fragment() {
     }
 
     private fun totalPrice(it: List<CartEntity>) {
-        var totalPrice : Int = 0
+        var totalPrice: Int = 0
         it.forEach {
-            if (it.isSelected){
+            if (it.isSelected) {
                 val productPrice = (it.productPrice + it.variantPrice) * it.quantity
                 totalPrice = totalPrice + productPrice
             }
@@ -212,20 +216,20 @@ class CartFragment : Fragment() {
     }
 
     private fun onAddItemClick(cartEntity: CartEntity) {
-        firebaseAnalytics.logEvent("BUTTON_CLICK"){
-            param("BUTTON_NAME", "Cart_Add" )
+        firebaseAnalytics.logEvent("BUTTON_CLICK") {
+            param("BUTTON_NAME", "Cart_Add")
         }
-        if (cartEntity.stock > cartEntity.quantity){
-            viewLifecycleOwner.lifecycleScope.launch{
-                viewModel.updateQuantityCart(cartEntity.productId, cartEntity.quantity+1)
+        if (cartEntity.stock > cartEntity.quantity) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.updateQuantityCart(cartEntity.productId, cartEntity.quantity + 1)
             }
         }
 
     }
 
     private fun onDeleteItemClick(cartEntity: CartEntity) {
-        firebaseAnalytics.logEvent("BUTTON_CLICK"){
-            param("BUTTON_NAME", "Cart_Delet" )
+        firebaseAnalytics.logEvent("BUTTON_CLICK") {
+            param("BUTTON_NAME", "Cart_Delet")
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -238,28 +242,34 @@ class CartFragment : Fragment() {
             putString(FirebaseAnalytics.Param.ITEM_NAME, cartEntity.productName)
             putString(FirebaseAnalytics.Param.ITEM_VARIANT, cartEntity.variantName)
             putString(FirebaseAnalytics.Param.ITEM_BRAND, cartEntity.brand)
-            putDouble(FirebaseAnalytics.Param.PRICE, (cartEntity.productPrice+cartEntity.variantPrice).toDouble())
+            putDouble(
+                FirebaseAnalytics.Param.PRICE,
+                (cartEntity.productPrice + cartEntity.variantPrice).toDouble()
+            )
         }
         val itemProductCart = Bundle(itemProduct).apply {
             putLong(FirebaseAnalytics.Param.QUANTITY, 1)
         }
 //                end log event
 
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.REMOVE_FROM_CART){
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.REMOVE_FROM_CART) {
             param(FirebaseAnalytics.Param.CURRENCY, "IDR")
-            param(FirebaseAnalytics.Param.VALUE, (cartEntity.productPrice+cartEntity.variantPrice).toDouble())
+            param(
+                FirebaseAnalytics.Param.VALUE,
+                (cartEntity.productPrice + cartEntity.variantPrice).toDouble()
+            )
             param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemProductCart))
         }
 
     }
 
     private fun onMinItemClick(cartEntity: CartEntity) {
-        if (cartEntity.quantity > 1){
-            viewLifecycleOwner.lifecycleScope.launch{
-                viewModel.updateQuantityCart(cartEntity.productId, cartEntity.quantity-1)
+        if (cartEntity.quantity > 1) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.updateQuantityCart(cartEntity.productId, cartEntity.quantity - 1)
             }
-            firebaseAnalytics.logEvent("BUTTON_CLICK"){
-                param("BUTTON_NAME", "Cart_Min" )
+            firebaseAnalytics.logEvent("BUTTON_CLICK") {
+                param("BUTTON_NAME", "Cart_Min")
             }
         }
 
@@ -268,7 +278,7 @@ class CartFragment : Fragment() {
     fun Int.formatToIDR(): String {
         val localeID = java.util.Locale("in", "ID")
         val currencyFormatter = NumberFormat.getCurrencyInstance(localeID)
-        return currencyFormatter.format(this).replace(",00","")
+        return currencyFormatter.format(this).replace(",00", "")
     }
 
     override fun onDestroy() {

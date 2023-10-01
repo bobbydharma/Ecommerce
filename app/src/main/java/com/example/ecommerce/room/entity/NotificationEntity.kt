@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "notification")
-data class NotificationEntity (
+data class NotificationEntity(
     @PrimaryKey(autoGenerate = true)
     val idNotification: Long = 0,
     var title: String,

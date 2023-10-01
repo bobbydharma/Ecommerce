@@ -21,7 +21,7 @@ class NotificationRepositoryTest {
     private lateinit var notificationRepository: NotificationRepository
 
     @Before
-    fun setup(){
+    fun setup() {
         notificationDAO = Mockito.mock()
         notificationRepository = NotificationRepository(notificationDAO)
     }
@@ -54,7 +54,7 @@ class NotificationRepositoryTest {
 
     @Test
     fun updateReadNotificationRepositoryTest() = runTest {
-        val idNotification : Long = 1
+        val idNotification: Long = 1
         val isRead = true
         whenever(notificationDAO.updateRead(idNotification, isRead)).thenReturn(Unit)
 

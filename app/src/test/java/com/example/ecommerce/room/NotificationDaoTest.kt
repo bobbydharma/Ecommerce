@@ -56,7 +56,7 @@ class NotificationDaoTest {
 
     @Test
     fun updateRead() = runTest {
-        val idNotification : Long = 1
+        val idNotification: Long = 1
         val isRead = true
         notificationDAO.insertNotification(notification)
         notificationDAO.updateRead(idNotification, isRead)
@@ -66,7 +66,7 @@ class NotificationDaoTest {
 
     @Test
     fun cekIsRead() = runTest {
-        val idNotification : Long = 1
+        val idNotification: Long = 1
         val isRead = true
         notificationDAO.insertNotification(notification)
         notificationDAO.updateRead(idNotification, isRead)

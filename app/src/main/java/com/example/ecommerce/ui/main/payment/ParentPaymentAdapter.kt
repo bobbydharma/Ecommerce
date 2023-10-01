@@ -12,13 +12,16 @@ import com.example.ecommerce.databinding.SectionPaymentBinding
 
 class ParentPaymentAdapter constructor(
     private val itemOnClick: (Item) -> Unit
-) : androidx.recyclerview.widget.ListAdapter<Datum, ParentPaymentAdapter.ParentPaymentViewHolder>(itemPaymentDiffCallback) {
+) : androidx.recyclerview.widget.ListAdapter<Datum, ParentPaymentAdapter.ParentPaymentViewHolder>(
+    itemPaymentDiffCallback
+) {
 
-    inner class ParentPaymentViewHolder(private val binding: SectionPaymentBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind (datum: Datum){
+    inner class ParentPaymentViewHolder(private val binding: SectionPaymentBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(datum: Datum) {
 
             binding.tvTitlePayment.text = datum.title
-            val childPaymentAdapter = ChildPaymentAdapter({item ->
+            val childPaymentAdapter = ChildPaymentAdapter({ item ->
                 getItemParentPayment(item)
             })
             childPaymentAdapter.submitList(datum.item)
@@ -30,7 +33,10 @@ class ParentPaymentAdapter constructor(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParentPaymentAdapter.ParentPaymentViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ParentPaymentAdapter.ParentPaymentViewHolder {
         val binding =
             SectionPaymentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ParentPaymentViewHolder(binding)
