@@ -47,6 +47,10 @@
         android:id="@+id/main_to_notification"
         app:destination="@id/notificationFragment" />
 
+    <action
+        android:id="@+id/main_to_screen"
+        app:destination="@id/screenFragment" />
+
     <include app:graph="@navigation/product_navigation" />
 
     <action
@@ -195,6 +199,10 @@
         android:name="com.example.ecommerce.ui.main.notifcation.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
+    <fragment
+        android:id="@+id/screenFragment"
+        android:name="com.example.ecommerce.screen.ScreenFragment"
+        android:label="ScreenFragment" />
 
 
 </navigation>

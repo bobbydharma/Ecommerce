@@ -1,46 +1,47 @@
 package com.example.ecommerce.utils
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.IdRes
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 
-class BaseAdapter<Model : Any, ViewHolder : RecyclerView.ViewHolder>
-    (
-    private val onCreateViewHolder: (parent: ViewGroup, viewType: Int) -> ViewHolder,
-    private val onBindViewHolder: (viewHolder: ViewHolder, position: Int, item: Model) -> Unit,
-    private val differCallback: DiffUtil.ItemCallback<Model>,
-    private val onViewType: ((viewType: Int, item: List<Model>) -> Int)? = null,
-    private val onDetachFromWindow: ((ViewHolder) -> Unit)? = null
-) : RecyclerView.Adapter<ViewHolder>() {
-    var item = listOf<Model>()
-    private var onGetItemViewType: ((position: Int) -> Int)? = null
-    val differ = AsyncListDiffer(this, differCallback)
+abstract class BaseAdapter<T : Any, VB : ViewBinding>(
+    private val inflaterFactory: (LayoutInflater, ViewGroup?, Boolean) -> VB
+) : ListAdapter<T, BaseViewHolder<T, VB>>(BaseItemCallback<T>()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        onCreateViewHolder.invoke(parent, viewType)
+    abstract fun onItemBind(): (T, VB, View) -> Unit
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = differ.currentList[position]
-        onBindViewHolder.invoke(holder, position, item)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, VB> {
+        val binding = inflaterFactory(LayoutInflater.from(parent.context), parent, false)
+        return BaseViewHolder(binding, onItemBind())
     }
 
-    override fun getItemCount(): Int = differ.currentList.size
+    override fun onBindViewHolder(holder: BaseViewHolder<T, VB>, position: Int) {
+        val item = getItem(position)
+        holder.bind(item)
+    }
+}
 
-    override fun getItemViewType(position: Int): Int {
-        return if (onViewType != null) {
-            onViewType.invoke(position, item)
-        } else {
-            val onGetItemViewType = onGetItemViewType
-            onGetItemViewType?.invoke(position) ?: super.getItemViewType(position)
-        }
+class BaseViewHolder<T : Any, VB : ViewBinding>(
+    private val binding: VB,
+    private val onItemBind: (T, VB, View) -> Unit
+) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: T) {
+        onItemBind(item, binding, itemView)
+    }
+}
+
+class BaseItemCallback<T : Any> : DiffUtil.ItemCallback<T>() {
+    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+        return oldItem.toString() == newItem.toString()
     }
 
-    override fun onViewDetachedFromWindow(holder: ViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        onDetachFromWindow?.invoke(holder)
+    @SuppressLint("DiffUtilEquals")
+    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+        return oldItem == newItem
     }
 }

@@ -107,6 +107,13 @@ class MainFragment : Fragment() {
                     true
                 }
 
+                R.id.more -> {
+                    val navController =
+                        Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
+                    navController.navigate(R.id.main_to_screen)
+                    true
+                }
+
                 else -> false
             }
         }

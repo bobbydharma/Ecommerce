@@ -22,8 +22,8 @@
     <string name="urutkan">Urutkan</string>
     <string name="ulasan">Ulasan</string>
     <string name="penjualan">Penjualan</string>
-    <string name="harga_terendah">Terendah</string>
-    <string name="harga_tertinggi">Tertinggi</string>
+    <string name="harga_terendah">Harga Terendah</string>
+    <string name="harga_tertinggi">Harga Tertinggi</string>
     <string name="kategori">Kategori</string>
     <string name="harga">Harga</string>
     <string name="tampilkan_produk">Tampilkan Produk</string>

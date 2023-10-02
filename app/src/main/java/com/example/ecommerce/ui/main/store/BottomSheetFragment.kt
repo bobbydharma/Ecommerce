@@ -58,13 +58,13 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateButtonReset()
+//        updateButtonReset()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.prooductQuery.collectLatest {
-                updateButtonReset()
+//                updateButtonReset()
                 binding.btnResetFilter.isVisible =
-                    !(it.search.isNullOrEmpty() && it.sort.isNullOrEmpty() && it.brand.isNullOrEmpty() && it.highest == null && it.highest == null)
+                    !(it.sort.isNullOrEmpty() && it.brand.isNullOrEmpty() && it.highest == null && it.highest == null)
 
                 it.sort?.let { it1 -> binding.chipGroupUrutkan.selectChipByText(it1) }
                 it.brand?.let { it1 -> binding.chipGroupBrand.selectChipByText(it1) }
@@ -243,6 +243,11 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
                 return
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

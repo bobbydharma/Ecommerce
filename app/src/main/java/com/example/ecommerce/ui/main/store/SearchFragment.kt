@@ -90,7 +90,6 @@ class SearchFragment : DialogFragment() {
                 }
 
                 is Result.Loading -> {
-
                     binding.progressBarSearch.isVisible = true
                     binding.rvSearch.isVisible = false
 
@@ -117,6 +116,7 @@ class SearchFragment : DialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding =  null
 
         // Menyembunyikan keyboard saat DialogFragment ditutup
         val inputMethodManager =

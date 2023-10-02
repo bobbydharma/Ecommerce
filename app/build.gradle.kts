@@ -200,7 +200,13 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
+//    detek
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.0")
+
+//    Modular
+    implementation(project(":screen"))
+//    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+//    implementation(files("libs/screen-debug.aar"))
 }
 
 kapt {
