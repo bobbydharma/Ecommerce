@@ -27,10 +27,6 @@ import retrofit2.http.Query
 
 interface APIService {
 
-    companion object {
-        const val BASE_URL = "http://192.168.153.125:5000/"
-    }
-
     @POST("register")
     suspend fun postRegister(
         @Header("API_KEY") API_KEY: String,

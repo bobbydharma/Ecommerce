@@ -55,6 +55,7 @@ class PaymentFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.rvPayment.adapter = parentPaymentAdapter
+        binding.swipeRefreshPayment.isRefreshing
 
 //        viewModel.postPayment()
 

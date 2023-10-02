@@ -1,12 +1,14 @@
 package com.example.ecommerce.room.entity
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.ecommerce.model.products.DataProductDetail
 import com.example.ecommerce.ui.main.checkout.CheckoutItem
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Entity(tableName = "cart")
 data class CartEntity(
     @PrimaryKey

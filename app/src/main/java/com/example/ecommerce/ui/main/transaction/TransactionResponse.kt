@@ -1,12 +1,13 @@
 package com.example.ecommerce.ui.main.transaction
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.example.ecommerce.model.products.DataProductDetail
 import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.ui.main.checkout.Data
-import com.google.errorprone.annotations.Keep
 import kotlinx.parcelize.Parcelize
 
+@Keep
 data class TransactionResponse(
     val code: Int,
     val message: String,

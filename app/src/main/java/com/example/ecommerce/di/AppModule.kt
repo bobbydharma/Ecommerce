@@ -7,6 +7,7 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.ecommerce.R
 import com.example.ecommerce.auth.AuthAuthenticator
+import com.example.ecommerce.auth.AuthAuthenticator.Companion.BASE_URL
 import com.example.ecommerce.auth.AuthInterceptor
 import com.example.ecommerce.auth.CekAuthorization
 import com.example.ecommerce.network.APIService
@@ -112,7 +113,7 @@ object AppModule {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl(APIService.BASE_URL)
+            .baseUrl(BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

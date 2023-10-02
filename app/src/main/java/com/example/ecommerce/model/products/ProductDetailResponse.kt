@@ -1,16 +1,19 @@
 package com.example.ecommerce.model.products
 
+import androidx.annotation.Keep
 import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.room.entity.WishlistEntity
 import com.example.ecommerce.ui.main.checkout.CheckoutItem
 import com.example.ecommerce.ui.main.checkout.CheckoutList
 
+@Keep
 data class ProductDetailResponse(
     val code: Int,
     val message: String,
     val data: DataProductDetail
 )
 
+@Keep
 data class DataProductDetail(
     val productId: String,
     val productName: String,
@@ -28,6 +31,7 @@ data class DataProductDetail(
     val productVariant: List<ProductVariant>
 )
 
+@Keep
 data class ProductVariant(
     val variantName: String,
     val variantPrice: Int

@@ -1,9 +1,10 @@
 package com.example.ecommerce.room.entity
 
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
+@Keep
 @Entity(tableName = "notification")
 data class NotificationEntity(
     @PrimaryKey(autoGenerate = true)

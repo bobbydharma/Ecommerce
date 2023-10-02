@@ -28,6 +28,8 @@ class CheckoutAdapter(
 
             Glide.with(itemView.context)
                 .load(chekoutItem.image)
+                .placeholder(R.drawable.image_thumbnail_detail)
+                .error(R.drawable.image_thumbnail_detail)
                 .into(binding.ivCheckout)
 
             binding.tvNameProductCheckout.text = chekoutItem.productName

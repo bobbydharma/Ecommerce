@@ -37,6 +37,8 @@ class WishlistAdapter(
 
             Glide.with(itemView.context)
                 .load(wishlistEntity.image)
+                .placeholder(R.drawable.image_thumbnail_detail)
+                .error(R.drawable.image_thumbnail_detail)
                 .into(binding.ivProductList)
 
             binding.tvProductNameList.text = wishlistEntity.productName
@@ -66,6 +68,8 @@ class WishlistAdapter(
 
             Glide.with(itemView.context)
                 .load(wishlistEntity.image)
+                .placeholder(R.drawable.image_thumbnail_detail)
+                .error(R.drawable.image_thumbnail_detail)
                 .into(binding.ivProductGrid)
 
             binding.tvProductNameGrid.text = wishlistEntity.productName

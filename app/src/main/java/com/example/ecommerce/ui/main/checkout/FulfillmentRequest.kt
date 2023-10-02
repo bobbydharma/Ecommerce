@@ -4,11 +4,13 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
+@Keep
 data class FulfillmentRequest(
     var payment: String,
     val items: List<ItemFullfillment>
 )
 
+@Keep
 data class ItemFullfillment(
     val productId: String,
     val variantName: String,

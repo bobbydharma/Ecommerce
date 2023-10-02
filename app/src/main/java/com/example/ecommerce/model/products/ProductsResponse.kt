@@ -1,11 +1,15 @@
 package com.example.ecommerce.model.products
 
+import androidx.annotation.Keep
+
+@Keep
 data class ProductsResponse(
     val code: Int,
     val message: String,
     val data: Data
 )
 
+@Keep
 data class Data(
     val itemsPerPage: Int,
     val currentItemCount: Int,
@@ -14,6 +18,7 @@ data class Data(
     val items: List<Items>
 )
 
+@Keep
 data class Items(
     val productId: String,
     val productName: String,
