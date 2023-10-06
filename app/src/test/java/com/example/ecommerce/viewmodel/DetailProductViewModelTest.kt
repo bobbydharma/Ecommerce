@@ -5,18 +5,14 @@ import androidx.lifecycle.SavedStateHandle
 import com.example.ecommerce.core.model.products.DataProductDetail
 import com.example.ecommerce.core.model.products.ProductDetailResponse
 import com.example.ecommerce.core.model.products.ProductVariant
-import com.example.ecommerce.repository.CartRepository
-import com.example.ecommerce.repository.MainRepository
-import com.example.ecommerce.repository.PreloginRepository
-import com.example.ecommerce.repository.WishlistRepository
 import com.example.ecommerce.core.room.entity.CartEntity
 import com.example.ecommerce.core.room.entity.WishlistEntity
+import com.example.ecommerce.repository.CartRepository
+import com.example.ecommerce.repository.MainRepository
+import com.example.ecommerce.repository.WishlistRepository
 import com.example.ecommerce.ui.main.detail.DetailProductViewModel
-import com.example.ecommerce.ui.prelogin.login.LoginViewModel
 import com.example.ecommerce.utils.Result
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
@@ -27,9 +23,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mockito
-import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import retrofit2.Response
 
 @RunWith(JUnit4::class)
 class DetailProductViewModelTest {
@@ -45,7 +39,7 @@ class DetailProductViewModelTest {
     private lateinit var wishlistRepository: WishlistRepository
     private lateinit var detailProductViewModel: DetailProductViewModel
 
-    private val cartEntity = com.example.ecommerce.core.room.entity.CartEntity(
+    private val cartEntity = CartEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,
@@ -65,10 +59,10 @@ class DetailProductViewModelTest {
         isSelected = false
     )
 
-    val detailResponse = com.example.ecommerce.core.model.products.ProductDetailResponse(
+    val detailResponse = ProductDetailResponse(
         code = 200,
         message = "OK",
-        data = com.example.ecommerce.core.model.products.DataProductDetail(
+        data = DataProductDetail(
             productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
             productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
             productPrice = 24499000,
@@ -83,10 +77,10 @@ class DetailProductViewModelTest {
             totalSatisfaction = 100,
             productRating = 5F,
             productVariant = listOf(
-                com.example.ecommerce.core.model.products.ProductVariant(
+                ProductVariant(
                     variantName = "RAM 16GB",
                     variantPrice = 0
-                ), com.example.ecommerce.core.model.products.ProductVariant(
+                ), ProductVariant(
                     variantName = "RAM 32GB",
                     variantPrice = 1000000
                 )
@@ -94,7 +88,7 @@ class DetailProductViewModelTest {
         )
     )
 
-    private val wishlistEntity = com.example.ecommerce.core.room.entity.WishlistEntity(
+    private val wishlistEntity = WishlistEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,
@@ -112,7 +106,7 @@ class DetailProductViewModelTest {
         varianPrice = 1000,
     )
 
-    val dataProductDetail = com.example.ecommerce.core.model.products.DataProductDetail(
+    val dataProductDetail = DataProductDetail(
         productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
         productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
         productPrice = 24499000,
@@ -127,10 +121,10 @@ class DetailProductViewModelTest {
         totalSatisfaction = 100,
         productRating = 5F,
         productVariant = listOf(
-            com.example.ecommerce.core.model.products.ProductVariant(
+            ProductVariant(
                 variantName = "RAM 16GB",
                 variantPrice = 0
-            ), com.example.ecommerce.core.model.products.ProductVariant(
+            ), ProductVariant(
                 variantName = "RAM 32GB",
                 variantPrice = 1000000
             )
