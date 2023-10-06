@@ -2,23 +2,22 @@ package com.example.ecommerce.ui.main.wishlist
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ecommerce.R
+import com.example.ecommerce.core.room.entity.WishlistEntity
+import com.example.ecommerce.core.room.entity.convertToDetail
 import com.example.ecommerce.databinding.FragmentWishlistBinding
-import com.example.ecommerce.room.entity.WishlistEntity
-import com.example.ecommerce.room.entity.convertToDetail
-import com.example.ecommerce.ui.main.cart.CartAdapter
 import com.example.ecommerce.ui.main.cart.WishlistAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -57,7 +56,8 @@ class WishlistFragment : Fragment() {
         wishlistAdapter = WishlistAdapter(
             WishlistAdapter.WishlistEntityDiffCallback,
             { wishlistEntity -> deleteItemClick(wishlistEntity) },
-            { wishlistEntity -> addItemClick(wishlistEntity) }
+            { wishlistEntity -> addItemClick(wishlistEntity) },
+            {wishlistEntity -> onitemclick(wishlistEntity) }
         )
 
         val callback = object : OnBackPressedCallback(true) {
@@ -94,6 +94,13 @@ class WishlistFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun onitemclick(wishlistEntity: WishlistEntity) {
+        val bundle = bundleOf("id_product" to wishlistEntity.productId)
+        val navController =
+            Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
+        navController.navigate(R.id.main_to_detail_product, bundle)
     }
 
     private fun addItemClick(wishlistEntity: WishlistEntity) {

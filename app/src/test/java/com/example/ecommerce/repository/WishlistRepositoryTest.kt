@@ -1,8 +1,8 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.room.dao.NotificationDAO
-import com.example.ecommerce.room.dao.WishlistDAO
-import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.core.room.dao.NotificationDAO
+import com.example.ecommerce.core.room.dao.WishlistDAO
+import com.example.ecommerce.core.room.entity.WishlistEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -16,7 +16,7 @@ import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class WishlistRepositoryTest {
-    private lateinit var wishlistDAO: WishlistDAO
+    private lateinit var wishlistDAO: com.example.ecommerce.core.room.dao.WishlistDAO
     private lateinit var wishlistRepository: WishlistRepository
 
     @Before
@@ -25,7 +25,7 @@ class WishlistRepositoryTest {
         wishlistRepository = WishlistRepository(wishlistDAO)
     }
 
-    private val wishlistEntity = WishlistEntity(
+    private val wishlistEntity = com.example.ecommerce.core.room.entity.WishlistEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,

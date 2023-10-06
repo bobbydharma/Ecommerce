@@ -3,13 +3,11 @@ package com.example.ecommerce.ui.main.store
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.ecommerce.model.products.Items
-import com.example.ecommerce.model.products.ProductsRequest
-import com.example.ecommerce.network.APIService
-import com.example.ecommerce.utils.Result
+import com.example.ecommerce.core.model.products.Items
+import com.example.ecommerce.core.model.products.ProductsRequest
+import com.example.ecommerce.core.network.APIService
 import retrofit2.HttpException
 import java.io.IOException
-import javax.inject.Inject
 
 class PagingSource(
     private val apiService: APIService,

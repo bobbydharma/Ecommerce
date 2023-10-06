@@ -10,15 +10,15 @@ import com.bumptech.glide.Glide
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.ItemSearchBinding
 import com.example.ecommerce.databinding.ListReviewBinding
-import com.example.ecommerce.model.products.DataReview
+import com.example.ecommerce.core.model.products.DataReview
 
-class ReviewAdapter(private val dataReview: List<DataReview>) :
+class ReviewAdapter(private val dataReview: List<com.example.ecommerce.core.model.products.DataReview>) :
     RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
 
     inner class ReviewViewHolder(private val binding: ListReviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(dataReview: DataReview) {
+        fun bind(dataReview: com.example.ecommerce.core.model.products.DataReview) {
             Glide.with(itemView.context)
                 .load(dataReview.userImage)
                 .placeholder(R.drawable.image_thumbnail_detail)

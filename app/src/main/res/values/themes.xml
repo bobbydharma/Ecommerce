@@ -18,9 +18,9 @@
         <item name="postSplashScreenTheme">@style/Theme.Ecommerce</item>
     </style>
 
-    <style name="FullScreenDialog" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="FullScreenDialog" parent="Base.Theme.Ecommerce">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowFullscreen">false</item>
         <item name="android:windowIsFloating">false</item>
     </style>
 
@@ -31,6 +31,10 @@
 
     <style name="Widget.App.Chip" parent="Widget.Material3.Chip.Assist">
         <item name="android:textAppearance">@style/TextAppearance.App.BodyMedium</item>
+    </style>
+
+    <style name="CardBackgroundColor" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">?attr/colorSurfaceContainerLowest</item>
     </style>
 
 </resources>

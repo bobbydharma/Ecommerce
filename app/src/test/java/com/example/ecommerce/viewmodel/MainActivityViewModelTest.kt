@@ -3,7 +3,7 @@ package com.example.ecommerce.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.example.ecommerce.MainViewModel
-import com.example.ecommerce.auth.CekAuthorization
+import com.example.ecommerce.core.auth.CekAuthorization
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
@@ -23,7 +23,7 @@ class MainActivityViewModelTest {
     @get:Rule
     var mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var cekAuthorization: CekAuthorization
+    private lateinit var cekAuthorization: com.example.ecommerce.core.auth.CekAuthorization
     private lateinit var mainActivityViewModel: MainViewModel
 
     val expected = MutableLiveData(true)

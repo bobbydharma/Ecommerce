@@ -1,7 +1,7 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.room.dao.CartDAO
-import com.example.ecommerce.room.entity.CartEntity
+import com.example.ecommerce.core.room.dao.CartDAO
+import com.example.ecommerce.core.room.entity.CartEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

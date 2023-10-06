@@ -1,12 +1,18 @@
 package com.example.ecommerce
 
+import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
+import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,11 +20,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.ecommerce.preference.PrefHelper
-import com.example.ecommerce.room.AppDatabase
+import com.example.ecommerce.core.preference.PrefHelper
+import com.example.ecommerce.core.room.AppDatabase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
@@ -53,7 +57,6 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
         if (isGranted) {
-        } else {
         }
     }
 
@@ -63,6 +66,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         cekTheme()
+//        requestWriteExternalStoragePermission(this)
+        askNotificationPermission()
 
         viewModel.test.observe(this) {
             if (it == true) {
@@ -87,13 +92,22 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channelId = "channelId"
             val channelName = "Channel human readable title"
+
+            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val audioAttributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build()
+
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager?.createNotificationChannel(
                 NotificationChannel(
                     channelId,
                     channelName,
                     NotificationManager.IMPORTANCE_LOW,
-                ),
+                ).apply {
+                    setSound(defaultSoundUri, audioAttributes)
+                }
             )
         }
 
@@ -104,15 +118,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+
+    }
+
+    private fun askNotificationPermission() {
+        // This is only necessary for API Level > 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this, android.Manifest.permission.POST_NOTIFICATIONS
-                )
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED
             ) {
-                // Tampilkan penjelasan kepada pengguna mengapa izin diperlukan
-                // Misalnya, dengan menggunakan dialog atau pesan lainnya
-            } else {
-                // Minta izin secara langsung
+                // FCM SDK (and your app) can post notifications.
                 requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
             }
         }
@@ -131,8 +147,25 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.main_to_prelogin)
     }
 
+    private fun requestWriteExternalStoragePermission(activity: Activity) {
+        if (ContextCompat.checkSelfPermission(
+                activity,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Jika izin belum diberikan, minta izin kepada pengguna
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_WRITE_EXTERNAL_STORAGE
+            )
+        } else {
+        }
+    }
+
     companion object {
 
         private const val TAG = "MainActivity"
+        private val REQUEST_WRITE_EXTERNAL_STORAGE = 1
     }
 }

@@ -3,7 +3,7 @@ package com.example.ecommerce.ui.main.cart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerce.repository.CartRepository
-import com.example.ecommerce.room.entity.CartEntity
+import com.example.ecommerce.core.room.entity.CartEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

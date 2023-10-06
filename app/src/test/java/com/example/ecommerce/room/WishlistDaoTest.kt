@@ -3,9 +3,9 @@ package com.example.ecommerce.room
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.example.ecommerce.room.dao.WishlistDAO
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.core.room.dao.WishlistDAO
+import com.example.ecommerce.core.room.entity.CartEntity
+import com.example.ecommerce.core.room.entity.WishlistEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -19,13 +19,16 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class WishlistDaoTest {
-    private lateinit var database: AppDatabase
-    private lateinit var wishlistDAO: WishlistDAO
+    private lateinit var database: com.example.ecommerce.core.room.AppDatabase
+    private lateinit var wishlistDAO: com.example.ecommerce.core.room.dao.WishlistDAO
 
     @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
+        database = Room.inMemoryDatabaseBuilder(
+            context,
+            com.example.ecommerce.core.room.AppDatabase::class.java
+        ).build()
         wishlistDAO = database.wishlistDAO()
     }
 
@@ -34,7 +37,7 @@ class WishlistDaoTest {
         database.close()
     }
 
-    private val wishlistEntity = WishlistEntity(
+    private val wishlistEntity = com.example.ecommerce.core.room.entity.WishlistEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,

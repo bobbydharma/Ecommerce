@@ -1,8 +1,8 @@
 package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.ecommerce.model.products.SearchResponse
-import com.example.ecommerce.network.APIService
+import com.example.ecommerce.core.model.products.SearchResponse
+import com.example.ecommerce.core.network.APIService
 import com.example.ecommerce.repository.MainRepository
 import com.example.ecommerce.ui.main.store.StoreViewModel
 import com.example.ecommerce.utils.Result
@@ -28,7 +28,7 @@ class StoreViewModelTest {
     var mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var repository: MainRepository
-    private lateinit var apiService: APIService
+    private lateinit var apiService: com.example.ecommerce.core.network.APIService
     private lateinit var storeViewModel: StoreViewModel
 
     @Before
@@ -40,7 +40,7 @@ class StoreViewModelTest {
     @Test
     fun `post search store viewmodel test success`() = runTest {
         val search = "Lenovo"
-        val searchResponse = SearchResponse(
+        val searchResponse = com.example.ecommerce.core.model.products.SearchResponse(
             code = 200,
             message = "OK",
             data = listOf(

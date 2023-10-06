@@ -3,15 +3,13 @@ package com.example.ecommerce.ui.main.checkout
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.checkout.CheckoutItem
 import com.example.ecommerce.databinding.ItemCheckoutBinding
-import com.example.ecommerce.databinding.ItemListCartBinding
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.ui.main.cart.CartAdapter
+import com.google.android.material.color.MaterialColors
 import java.text.NumberFormat
 
 class CheckoutAdapter(
@@ -34,10 +32,24 @@ class CheckoutAdapter(
 
             binding.tvNameProductCheckout.text = chekoutItem.productName
             binding.tvVarianNameCheckout.text = chekoutItem.varianName
-            binding.tvStokCheckout.text = "${chekoutItem.stock} Stok"
             binding.tvPriceProductCheckout.text =
                 (chekoutItem.productPrice + chekoutItem.varianPrice).formatToIDR()
             binding.tvQuantityCheckout.text = chekoutItem.quantity.toString()
+
+            if (chekoutItem.stock < 10) {
+                binding.tvStokCheckout.text =
+                    binding.root.context.getString(R.string.stok, chekoutItem.stock.toString())
+                binding.tvStokCheckout.setTextColor(Color.RED)
+            } else {
+                binding.tvStokCheckout.text =
+                    binding.root.context.getString(R.string.stok, chekoutItem.stock.toString())
+                binding.tvStokCheckout.setTextColor(
+                    MaterialColors.getColor(
+                        itemView,
+                        com.google.android.material.R.attr.colorOnSecondaryContainer
+                    )
+                )
+            }
 
             binding.btnPlusCheckout.setOnClickListener {
                 if (chekoutItem.stock > chekoutItem.quantity) {

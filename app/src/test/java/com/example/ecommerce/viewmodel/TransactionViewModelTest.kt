@@ -2,9 +2,9 @@ package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.ecommerce.repository.MainRepository
-import com.example.ecommerce.ui.main.transaction.Datum
-import com.example.ecommerce.ui.main.transaction.Item
-import com.example.ecommerce.ui.main.transaction.TransactionResponse
+import com.example.ecommerce.core.model.transaction.Datum
+import com.example.ecommerce.core.model.transaction.Item
+import com.example.ecommerce.core.model.transaction.TransactionResponse
 import com.example.ecommerce.ui.main.transaction.TransactionViewModel
 import com.example.ecommerce.utils.Result
 import kotlinx.coroutines.flow.flow
@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert

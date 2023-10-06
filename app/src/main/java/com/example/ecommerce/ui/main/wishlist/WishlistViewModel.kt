@@ -2,12 +2,11 @@ package com.example.ecommerce.ui.main.wishlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ecommerce.model.products.DataProductDetail
-import com.example.ecommerce.model.products.mappingCart
+import com.example.ecommerce.core.model.products.mappingCart
+import com.example.ecommerce.core.room.entity.CartEntity
+import com.example.ecommerce.core.room.entity.WishlistEntity
 import com.example.ecommerce.repository.CartRepository
 import com.example.ecommerce.repository.WishlistRepository
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.room.entity.WishlistEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,7 +25,10 @@ class WishlistViewModel @Inject constructor(
         }
     }
 
-    suspend fun insertOrUpdateItem(product: DataProductDetail, index: Int) {
+    suspend fun insertOrUpdateItem(
+        product: com.example.ecommerce.core.model.products.DataProductDetail,
+        index: Int
+    ) {
         viewModelScope.launch {
             val cartItem = product.mappingCart(index)
             cartRepository.insertOrUpdateItem(cartItem)

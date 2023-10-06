@@ -2,15 +2,15 @@ package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.example.ecommerce.model.products.DataProductDetail
-import com.example.ecommerce.model.products.ProductDetailResponse
-import com.example.ecommerce.model.products.ProductVariant
+import com.example.ecommerce.core.model.products.DataProductDetail
+import com.example.ecommerce.core.model.products.ProductDetailResponse
+import com.example.ecommerce.core.model.products.ProductVariant
 import com.example.ecommerce.repository.CartRepository
 import com.example.ecommerce.repository.MainRepository
 import com.example.ecommerce.repository.PreloginRepository
 import com.example.ecommerce.repository.WishlistRepository
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.core.room.entity.CartEntity
+import com.example.ecommerce.core.room.entity.WishlistEntity
 import com.example.ecommerce.ui.main.detail.DetailProductViewModel
 import com.example.ecommerce.ui.prelogin.login.LoginViewModel
 import com.example.ecommerce.utils.Result
@@ -45,7 +45,7 @@ class DetailProductViewModelTest {
     private lateinit var wishlistRepository: WishlistRepository
     private lateinit var detailProductViewModel: DetailProductViewModel
 
-    private val cartEntity = CartEntity(
+    private val cartEntity = com.example.ecommerce.core.room.entity.CartEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,
@@ -65,10 +65,10 @@ class DetailProductViewModelTest {
         isSelected = false
     )
 
-    val detailResponse = ProductDetailResponse(
+    val detailResponse = com.example.ecommerce.core.model.products.ProductDetailResponse(
         code = 200,
         message = "OK",
-        data = DataProductDetail(
+        data = com.example.ecommerce.core.model.products.DataProductDetail(
             productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
             productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
             productPrice = 24499000,
@@ -83,10 +83,10 @@ class DetailProductViewModelTest {
             totalSatisfaction = 100,
             productRating = 5F,
             productVariant = listOf(
-                ProductVariant(
+                com.example.ecommerce.core.model.products.ProductVariant(
                     variantName = "RAM 16GB",
                     variantPrice = 0
-                ), ProductVariant(
+                ), com.example.ecommerce.core.model.products.ProductVariant(
                     variantName = "RAM 32GB",
                     variantPrice = 1000000
                 )
@@ -94,7 +94,7 @@ class DetailProductViewModelTest {
         )
     )
 
-    private val wishlistEntity = WishlistEntity(
+    private val wishlistEntity = com.example.ecommerce.core.room.entity.WishlistEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,
@@ -112,7 +112,7 @@ class DetailProductViewModelTest {
         varianPrice = 1000,
     )
 
-    val dataProductDetail = DataProductDetail(
+    val dataProductDetail = com.example.ecommerce.core.model.products.DataProductDetail(
         productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
         productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
         productPrice = 24499000,
@@ -127,10 +127,10 @@ class DetailProductViewModelTest {
         totalSatisfaction = 100,
         productRating = 5F,
         productVariant = listOf(
-            ProductVariant(
+            com.example.ecommerce.core.model.products.ProductVariant(
                 variantName = "RAM 16GB",
                 variantPrice = 0
-            ), ProductVariant(
+            ), com.example.ecommerce.core.model.products.ProductVariant(
                 variantName = "RAM 32GB",
                 variantPrice = 1000000
             )
@@ -236,7 +236,7 @@ class DetailProductViewModelTest {
     @Test
     fun `insert to wishlidt detail product viewmodel test`() = runTest {
         whenever(wishlistRepository.insertToWishlist(wishlistEntity)).thenReturn(Unit)
-        val result = detailProductViewModel.insertToWishlist(dataProductDetail)
+        val result = detailProductViewModel.insertToWishlist(dataProductDetail, 0)
         Assert.assertEquals(Unit, result)
     }
 

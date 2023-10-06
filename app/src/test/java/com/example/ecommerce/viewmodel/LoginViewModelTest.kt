@@ -2,11 +2,11 @@ package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.asFlow
-import com.example.ecommerce.model.user.DataLoginResponse
-import com.example.ecommerce.model.user.DataResponse
-import com.example.ecommerce.model.user.LoginResponse
-import com.example.ecommerce.model.user.UserRequest
-import com.example.ecommerce.model.user.UserResponse
+import com.example.ecommerce.core.model.user.DataLoginResponse
+import com.example.ecommerce.core.model.user.DataResponse
+import com.example.ecommerce.core.model.user.LoginResponse
+import com.example.ecommerce.core.model.user.UserRequest
+import com.example.ecommerce.core.model.user.UserResponse
 import com.example.ecommerce.repository.PreloginRepository
 import com.example.ecommerce.repository.WishlistRepository
 import com.example.ecommerce.ui.prelogin.login.LoginViewModel
@@ -49,12 +49,12 @@ class LoginViewModelTest {
 
     @Test
     fun postLoginLoginViewModelTestSuccess() = runTest {
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
 
-        val userResponse = LoginResponse(
+        val userResponse = com.example.ecommerce.core.model.user.LoginResponse(
             code = 200,
             message = "OK",
-            data = DataLoginResponse(
+            data = com.example.ecommerce.core.model.user.DataLoginResponse(
                 userName = "",
                 userImage = "",
                 accessToken = "accessToken",
@@ -74,7 +74,7 @@ class LoginViewModelTest {
 
     @Test
     fun postLoginLoginViewModelTestError() = runTest {
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
 
         val error = RuntimeException()
         whenever(repository.postLogin(userRequest)).thenReturn(Result.Error(error))

@@ -1,6 +1,5 @@
 package com.example.ecommerce.ui.main.cart
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,20 +8,20 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.ecommerce.R
-import com.example.ecommerce.databinding.ItemGridBinding
+import com.example.ecommerce.core.model.products.Items
+import com.example.ecommerce.core.room.entity.WishlistEntity
 import com.example.ecommerce.databinding.ItemGridWishlistBinding
-import com.example.ecommerce.databinding.ItemListBinding
-import com.example.ecommerce.databinding.ItemListCartBinding
 import com.example.ecommerce.databinding.ItemListWishlistBinding
-import com.example.ecommerce.room.entity.WishlistEntity
-import com.example.ecommerce.ui.main.store.adapter.ProductsAdapter
 import java.text.NumberFormat
 
 class WishlistAdapter(
     diffCallback: DiffUtil.ItemCallback<WishlistEntity>,
     private val deleteItemClick: (WishlistEntity) -> Unit,
     private val addItemClick: (WishlistEntity) -> Unit,
-) : ListAdapter<WishlistEntity, ViewHolder>(WishlistEntityDiffCallback) {
+    private val onItemClick: (WishlistEntity) -> Unit
+) : ListAdapter<WishlistEntity, ViewHolder>(
+    WishlistEntityDiffCallback
+) {
 
     var isGridMode = false
 
@@ -59,6 +58,10 @@ class WishlistAdapter(
                 addItemClick(wishlistEntity)
             }
 
+            itemView.setOnClickListener {
+                onItemClick(wishlistEntity)
+            }
+
         }
     }
 
@@ -76,8 +79,11 @@ class WishlistAdapter(
             binding.tvProductPriceGrid.text =
                 (wishlistEntity.productPrice + wishlistEntity.varianPrice).formatToIDR()
             binding.tvStoreGrid.text = wishlistEntity.store
-            binding.tvSaleGrid.text =
-                "${wishlistEntity.productRating} ${R.string.terjual_item} ${wishlistEntity.sale}"
+            binding.tvSaleGrid.text = itemView.context.getString(
+                R.string.terjuall,
+                wishlistEntity.productRating.toString(),
+                wishlistEntity.sale.toString()
+            )
 
             binding.btnDeleteWishlist.setOnClickListener {
                 deleteItemClick(wishlistEntity)
@@ -85,6 +91,10 @@ class WishlistAdapter(
 
             binding.btnAddWishlist.setOnClickListener {
                 addItemClick(wishlistEntity)
+            }
+
+            itemView.setOnClickListener {
+                onItemClick(wishlistEntity)
             }
 
         }
@@ -134,12 +144,19 @@ class WishlistAdapter(
 
     }
 
-    object WishlistEntityDiffCallback : DiffUtil.ItemCallback<WishlistEntity>() {
-        override fun areItemsTheSame(oldItem: WishlistEntity, newItem: WishlistEntity): Boolean {
+    object WishlistEntityDiffCallback :
+        DiffUtil.ItemCallback<WishlistEntity>() {
+        override fun areItemsTheSame(
+            oldItem: WishlistEntity,
+            newItem: WishlistEntity
+        ): Boolean {
             return oldItem.productId == newItem.productId
         }
 
-        override fun areContentsTheSame(oldItem: WishlistEntity, newItem: WishlistEntity): Boolean {
+        override fun areContentsTheSame(
+            oldItem: WishlistEntity,
+            newItem: WishlistEntity
+        ): Boolean {
             return oldItem == newItem
         }
     }

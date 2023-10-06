@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ecommerce.model.products.ReviewProduct
+import com.example.ecommerce.core.model.products.ReviewProduct
 import com.example.ecommerce.repository.MainRepository
 import com.example.ecommerce.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,8 +18,10 @@ class ReviewViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private var _reviewProduct = MutableLiveData<Result<ReviewProduct>>()
-    val reviewProduct: LiveData<Result<ReviewProduct>> = _reviewProduct
+    private var _reviewProduct =
+        MutableLiveData<Result<com.example.ecommerce.core.model.products.ReviewProduct>>()
+    val reviewProduct: LiveData<Result<com.example.ecommerce.core.model.products.ReviewProduct>> =
+        _reviewProduct
 
     val id = savedStateHandle.get<String>("id_product_review") ?: ""
 

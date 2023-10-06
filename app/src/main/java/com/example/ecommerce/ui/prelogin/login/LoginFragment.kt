@@ -9,17 +9,15 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.user.UserRequest
+import com.example.ecommerce.core.preference.PrefHelper
 import com.example.ecommerce.databinding.FragmentLoginBinding
-import com.example.ecommerce.model.user.UserRequest
-import com.example.ecommerce.preference.PrefHelper
 import com.example.ecommerce.utils.Result
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.color.MaterialColors
@@ -107,6 +105,7 @@ class LoginFragment : Fragment() {
             when (result) {
                 is Result.Success -> {
                     binding.prgressBarLogin.isVisible = false
+                    binding.btnMasuk.isVisible = true
                     firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
                         param(FirebaseAnalytics.Param.METHOD, "email")
                     }
@@ -129,8 +128,9 @@ class LoginFragment : Fragment() {
                 }
 
                 is Result.Loading -> {
-
+                    binding.btnMasuk.isVisible = false
                     binding.prgressBarLogin.isVisible = true
+
 
                 }
 

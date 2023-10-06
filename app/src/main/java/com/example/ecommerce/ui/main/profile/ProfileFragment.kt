@@ -10,7 +10,7 @@ import android.provider.MediaStore
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Patterns
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,22 +19,22 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.user.ProfileRequest
+import com.example.ecommerce.core.preference.PrefHelper
 import com.example.ecommerce.databinding.FragmentProfileBinding
-import com.example.ecommerce.model.user.ProfileRequest
-import com.example.ecommerce.preference.PrefHelper
 import com.example.ecommerce.utils.Result
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -59,17 +59,15 @@ class ProfileFragment : Fragment() {
 
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
+    private lateinit var uri: Uri
     private var validName: Boolean = false
-    val timestamp: String = SimpleDateFormat(
-        FILENAME_FORMAT,
-        Locale.US
-    ).format(System.currentTimeMillis())
 
     private val takePictureLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) {
             if (it) {
                 displayCapturedPhoto()
             } else {
+                Toast.makeText(context, "Gagal mengambil gambar", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -88,9 +86,11 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        uri = createTempImageUri()
 
         if (viewModel.imageUri != null) {
-            displayCapturedPhoto()
+            binding.ivProfile.setImageURI(viewModel.imageUri)
+            binding.imageView2.visibility = View.GONE
         }
 
         validationButton()
@@ -102,6 +102,7 @@ class ProfileFragment : Fragment() {
                 "userName",
                 binding.layoutEtName.editText?.text.toString()
             )
+
             if (viewModel.imageUri != null) {
                 val file = uriToFile(viewModel.imageUri!!, requireContext())
                 val part = MultipartBody.Part.createFormData(
@@ -112,9 +113,8 @@ class ProfileFragment : Fragment() {
                 val data = ProfileRequest(userName, part)
                 viewModel.postProfile(data)
             } else {
-                val emptyRequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "")
-                val userImagePart = MultipartBody.Part.createFormData("userImage", "", emptyRequestBody)
-                val data = ProfileRequest(userName, userImagePart)
+                val data =
+                    ProfileRequest(userName, null)
                 viewModel.postProfile(data)
             }
 
@@ -127,6 +127,7 @@ class ProfileFragment : Fragment() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBarProfile.isVisible = false
+                    binding.btnSelesai.isVisible = true
                     findNavController().navigate(R.id.prelogin_to_main)
                 }
 
@@ -138,6 +139,7 @@ class ProfileFragment : Fragment() {
                 }
 
                 is Result.Loading -> {
+                    binding.btnSelesai.isVisible = false
                     binding.progressBarProfile.isVisible = true
                 }
 
@@ -155,8 +157,8 @@ class ProfileFragment : Fragment() {
                 .setItems(item) { _, which ->
                     when (which) {
                         0 -> {
-                            checkCameraPermissionAndTakePicture()
-//                            requestWriteExternalStoragePermission()
+
+                            takePictureLauncher.launch(uri)
                         }
 
                         1 -> {
@@ -176,32 +178,30 @@ class ProfileFragment : Fragment() {
     }
 
     private fun validationButton() {
-        val uri = viewModel.imageUri.toString()
+        val uriCek = viewModel.imageUri.toString()
         binding.btnSelesai.isEnabled =
-            validName && !binding.layoutEtName.editText?.text.isNullOrEmpty() && !uri.isNullOrEmpty()
+            validName && !binding.layoutEtName.editText?.text.isNullOrEmpty() && !uriCek.isNullOrEmpty()
     }
 
     private fun displayCapturedPhoto() {
-        if (viewModel.imageUri != null) {
+        if (uri != null) {
+            viewModel.imageUri = uri
             binding.ivProfile.setImageURI(viewModel.imageUri)
             binding.imageView2.visibility = View.GONE
         } else {
         }
     }
 
-    private fun checkCameraPermissionAndTakePicture() {
-        viewModel.imageUri = createTempImageUri()
-//        requestWriteExternalStoragePermission()
-        takePictureLauncher.launch(viewModel.imageUri)
-
-    }
-
     private fun createTempImageUri(): Uri {
-        val contentResolver = requireContext().contentResolver
-        val contentValues = ContentValues()
-        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, "${timestamp}.jpg")
-        return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)!!
+        val photosDir = File(requireActivity().cacheDir, PHOTOS_DIR)
+        photosDir.mkdirs()
+        val photoFile = File(photosDir, generateFilename())
+        val authority = "${requireActivity().packageName}.$FILE_PROVIDER"
+        return FileProvider.getUriForFile(requireActivity(), authority, photoFile)
+
     }
+
+    private fun generateFilename() = "selfie-${System.currentTimeMillis()}.jpg"
 
     fun uriToFile(uri: Uri, context: Context): File {
         val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
@@ -253,27 +253,6 @@ class ProfileFragment : Fragment() {
         binding.tvSyarat.text = spannableString
     }
 
-    private fun requestWriteExternalStoragePermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Jika izin belum diberikan, minta izin kepada pengguna
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                REQUEST_WRITE_EXTERNAL_STORAGE
-            )
-        } else {
-            // Izin sudah diberikan, lanjutkan dengan operasi yang memerlukan izin tersebut
-            viewModel.imageUri = createTempImageUri()
-            takePictureLauncher.launch(viewModel.imageUri)
-            // Lakukan operasi pengambilan foto dengan menggunakan imageUri
-            // ...
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -282,5 +261,7 @@ class ProfileFragment : Fragment() {
     companion object {
         private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
         private val REQUEST_WRITE_EXTERNAL_STORAGE = 1
+        private const val PHOTOS_DIR = "photos"
+        private const val FILE_PROVIDER = "fileprovider"
     }
 }

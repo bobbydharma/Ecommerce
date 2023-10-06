@@ -1,23 +1,17 @@
 package com.example.ecommerce.ui.main.notifcation
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.ecommerce.R
+import com.example.ecommerce.core.room.entity.NotificationEntity
 import com.example.ecommerce.databinding.FragmentNotificationBinding
-import com.example.ecommerce.room.entity.NotificationEntity
-import com.example.ecommerce.ui.main.cart.WishlistAdapter
-import com.example.ecommerce.ui.main.wishlist.WishlistViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint

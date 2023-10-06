@@ -1,12 +1,13 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.model.user.LoginResponse
-import com.example.ecommerce.model.user.ProfileRequest
-import com.example.ecommerce.model.user.ProfileResponse
-import com.example.ecommerce.model.user.UserRequest
-import com.example.ecommerce.model.user.UserResponse
-import com.example.ecommerce.network.APIService
-import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.core.model.user.LoginResponse
+import com.example.ecommerce.core.model.user.ProfileRequest
+import com.example.ecommerce.core.model.user.ProfileResponse
+import com.example.ecommerce.core.model.user.UserRequest
+import com.example.ecommerce.core.model.user.UserResponse
+import com.example.ecommerce.core.network.APIService
+import com.example.ecommerce.core.preference.PrefHelper
+import com.example.ecommerce.utils.ParsingError.getThrowable
 import com.example.ecommerce.utils.Result
 import javax.inject.Inject
 
@@ -51,7 +52,7 @@ class PreloginRepository @Inject constructor(
                 sharedPreferencesManager.image_url = profileResponse?.data?.userImage
                 Result.Success(response.body()!!)
             } else {
-                Result.Error(Exception("API call failed"))
+                Result.Error(Exception(response.errorBody()?.getThrowable()))
             }
         } catch (e: Exception) {
             Result.Error(e)
@@ -71,11 +72,12 @@ class PreloginRepository @Inject constructor(
                 }
                 Result.Success(response.body()!!)
             } else {
-                if (response.code() == 400) {
-                    Result.Error(Exception("Email or password is not valid"))
-                } else {
-                    Result.Error(Exception("Api key is not valid"))
-                }
+//                if (response.code() == 400) {
+//                    Result.Error(Exception("Email or password is not valid"))
+//                } else {
+//                    Result.Error(Exception("Api key is not valid"))
+//                }
+                Result.Error(Exception(response.errorBody()?.getThrowable()))
             }
         } catch (e: Exception) {
             Result.Error(e)

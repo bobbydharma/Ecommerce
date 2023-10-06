@@ -1,42 +1,25 @@
 package com.example.ecommerce.ui.main.home
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.media.RingtoneManager
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.core.app.ActivityCompat.recreate
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.activityViewModels
 import com.example.ecommerce.MainActivity
-import com.example.ecommerce.R
+import com.example.ecommerce.core.preference.PrefHelper
+import com.example.ecommerce.core.room.AppDatabase
 import com.example.ecommerce.databinding.FragmentHomeBinding
-import com.example.ecommerce.databinding.FragmentProfileBinding
-import com.example.ecommerce.preference.PrefHelper
-import com.example.ecommerce.room.AppDatabase
-import com.google.android.material.badge.BadgeDrawable
-import com.google.android.material.resources.MaterialAttributes
+import com.example.ecommerce.ui.main.store.StoreViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -47,6 +30,8 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var sharedPreferencesManager: PrefHelper
+
+    private val viewModel by activityViewModels<StoreViewModel>()
 
     @Inject
     lateinit var database: AppDatabase
@@ -73,7 +58,7 @@ class HomeFragment : Fragment() {
                     param("BUTTON_NAME", "Home_Logout")
                 }
             }
-
+            clearViewModel()
             sharedPreferencesManager.logout()
             (requireActivity() as MainActivity).logout()
         }
@@ -101,6 +86,17 @@ class HomeFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun clearViewModel() {
+        viewModel.updateQuery(
+            search = null,
+            sort = null,
+            brand = null,
+            lowest = null,
+            highest = null,
+            sortId = null
+        )
     }
 
     override fun onResume() {

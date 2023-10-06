@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ecommerce.databinding.ItemSearchBinding
+import com.example.ecommerce.utils.BaseAdapter
 
 class SearchAdapter(
     private val searchList: List<String>,

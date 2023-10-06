@@ -3,11 +3,9 @@ package com.example.ecommerce.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.example.ecommerce.repository.MainRepository
-import com.example.ecommerce.repository.PreloginRepository
-import com.example.ecommerce.ui.main.sendreview.RatingRequest
-import com.example.ecommerce.ui.main.sendreview.RatingResponse
+import com.example.ecommerce.core.model.rating.RatingRequest
+import com.example.ecommerce.core.model.rating.RatingResponse
 import com.example.ecommerce.ui.main.sendreview.SendReviewViewModel
-import com.example.ecommerce.ui.prelogin.login.LoginViewModel
 import com.example.ecommerce.utils.Result
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest

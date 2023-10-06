@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.ecommerce.R
-import com.example.ecommerce.model.user.LoginResponse
-import com.example.ecommerce.model.user.UserRequest
+import com.example.ecommerce.core.model.checkout.PaymentResponse
 import com.example.ecommerce.repository.MainRepository
 import com.example.ecommerce.utils.Result
 import com.google.firebase.remoteconfig.ConfigUpdate
@@ -15,7 +12,6 @@ import com.google.firebase.remoteconfig.ConfigUpdateListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

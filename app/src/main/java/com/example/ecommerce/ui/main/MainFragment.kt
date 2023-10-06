@@ -15,8 +15,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentMainBinding
-import com.example.ecommerce.preference.PrefHelper
-import com.example.ecommerce.room.AppDatabase
+import com.example.ecommerce.core.preference.PrefHelper
+import com.example.ecommerce.core.room.AppDatabase
 import com.example.ecommerce.ui.main.cart.CartViewModel
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils

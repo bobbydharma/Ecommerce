@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.transaction.Datum
 import com.example.ecommerce.databinding.ItemTransactionBinding
-import com.example.ecommerce.room.entity.CartEntity
 import com.example.ecommerce.utils.formatToIDR
 
 class TransactionAdapter(
@@ -34,7 +34,7 @@ class TransactionAdapter(
             binding.tvTotalPriceTransaction.text = item.total.formatToIDR()
             binding.tvQuantityTransaction.text = "${item.items.size} barang"
 
-            if (item.review.isNullOrEmpty()) {
+            if (item.review.isNullOrEmpty() || item.rating == null) {
                 binding.btnReviewTransaction.isVisible = true
             } else {
                 binding.btnReviewTransaction.isVisible = false

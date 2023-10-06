@@ -7,13 +7,12 @@
     app:cardCornerRadius="10dp">
 
     <com.google.android.material.card.MaterialCardView
-        style="?attr/materialCardViewElevatedStyle"
+        style="@style/CardBackgroundColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         app:cardElevation="3dp"
         app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,6 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:maxLines="2"
+                    android:ellipsize="end"
                     android:text="Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB kskjsdnkjfsndkjfnksjdfnksdfkjn"
                     android:textSize="12sp" />
 

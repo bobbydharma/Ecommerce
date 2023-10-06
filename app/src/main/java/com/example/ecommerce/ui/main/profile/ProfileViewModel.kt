@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ecommerce.model.user.ProfileRequest
-import com.example.ecommerce.model.user.ProfileResponse
+import com.example.ecommerce.core.model.user.ProfileRequest
+import com.example.ecommerce.core.model.user.ProfileResponse
 import com.example.ecommerce.repository.PreloginRepository
 import com.example.ecommerce.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +20,10 @@ class ProfileViewModel @Inject constructor(
 
     var imageUri: Uri? = null
 
-    private val _profileData = MutableLiveData<Result<ProfileResponse>>()
-    val profileData: LiveData<Result<ProfileResponse>> = _profileData
+    private val _profileData =
+        MutableLiveData<Result<ProfileResponse>>()
+    val profileData: LiveData<Result<ProfileResponse>> =
+        _profileData
 
     fun postProfile(profileRequest: ProfileRequest) {
         _profileData.value = Result.Loading

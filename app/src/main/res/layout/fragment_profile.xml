@@ -7,27 +7,14 @@
     android:orientation="vertical"
     tools:context=".ui.main.profile.ProfileFragment">
 
-    <ProgressBar
-        android:id="@+id/progress_bar_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="3dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
-        android:id="@+id/linearLayout6"
+        android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -47,70 +34,106 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+        <LinearLayout
+            android:id="@+id/linearLayout6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="32dp">
+            android:orientation="vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/iv_profile"
-                android:layout_width="128dp"
-                android:layout_height="128dp"
-                android:layout_gravity="center"
-                android:src="@drawable/circle_image"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="32dp">
 
-            <ImageView
-                android:id="@+id/imageView2"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/circle_image"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_person"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/nama"
+
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp">
+
+                <Button
+                    android:id="@+id/btn_selesai"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/selesai" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="3dp"
+                    android:visibility="gone"
+                    android:layout_gravity="center"/>
+
+            </FrameLayout>
+
+
+
+            <TextView
+                android:id="@+id/tv_syarat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_person"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white" />
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:text="Dengan masuk disini, kamu menyetujui Syarat &amp; Ketentuan \nserta Kebijakan Privasi TokoPhincon."
+                android:textAlignment="center" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_et_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:hint="@string/nama"
 
-            >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/btn_selesai"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="24dp"
-            android:text="@string/selesai" />
-
-        <TextView
-            android:id="@+id/tv_syarat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="24dp"
-            android:text="Dengan masuk disini, kamu menyetujui Syarat &amp; Ketentuan \nserta Kebijakan Privasi TokoPhincon."
-            android:textAlignment="center" />
-
-    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

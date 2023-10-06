@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card"
     android:background="?attr/selectableItemBackground"
-    style="?attr/materialCardViewElevatedStyle"
-    app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+    style="@style/CardBackgroundColor"
     app:cardElevation="3dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -37,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:maxLines="2"
+                android:ellipsize="end"
                 android:layout_marginBottom="2dp"
                 android:text="Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GBasdasdasdasdasdasdasd" />
 

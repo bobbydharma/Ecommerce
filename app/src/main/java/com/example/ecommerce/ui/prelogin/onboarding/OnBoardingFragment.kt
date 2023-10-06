@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentOnBoardingBinding
-import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.core.preference.PrefHelper
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent

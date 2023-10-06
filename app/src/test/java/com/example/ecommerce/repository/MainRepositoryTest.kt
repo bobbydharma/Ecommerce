@@ -1,38 +1,26 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.model.products.DataProductDetail
-import com.example.ecommerce.model.products.DataReview
-import com.example.ecommerce.model.products.ProductDetailResponse
-import com.example.ecommerce.model.products.ProductVariant
-import com.example.ecommerce.model.products.ReviewProduct
-import com.example.ecommerce.model.products.SearchResponse
-import com.example.ecommerce.network.APIService
-import com.example.ecommerce.ui.main.checkout.Data
-import com.example.ecommerce.ui.main.checkout.FulfillmentRequest
-import com.example.ecommerce.ui.main.checkout.FulfillmentResponse
-import com.example.ecommerce.ui.main.checkout.ItemFullfillment
-import com.example.ecommerce.ui.main.sendreview.RatingRequest
-import com.example.ecommerce.ui.main.sendreview.RatingResponse
-import com.example.ecommerce.ui.main.transaction.Datum
-import com.example.ecommerce.ui.main.transaction.Item
-import com.example.ecommerce.ui.main.transaction.TransactionResponse
+import com.example.ecommerce.core.model.checkout.Data
+import com.example.ecommerce.core.model.checkout.FulfillmentRequest
+import com.example.ecommerce.core.model.checkout.FulfillmentResponse
+import com.example.ecommerce.core.model.checkout.ItemFullfillment
+import com.example.ecommerce.core.model.rating.RatingRequest
+import com.example.ecommerce.core.model.rating.RatingResponse
+import com.example.ecommerce.core.model.transaction.Datum
+import com.example.ecommerce.core.model.transaction.Item
+import com.example.ecommerce.core.model.transaction.TransactionResponse
 import com.example.ecommerce.utils.Result
 import com.example.ecommerce.viewmodel.FlowDispatcher
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import okhttp3.ResponseBody
 import org.junit.Test
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
-import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.whenever
 import retrofit2.Response
 
@@ -42,7 +30,7 @@ class MainRepositoryTest {
     @get:Rule
     var rule = FlowDispatcher()
 
-    private lateinit var dataSource: APIService
+    private lateinit var dataSource: com.example.ecommerce.core.network.APIService
     private lateinit var mainRepository: MainRepository
 
     @Before
@@ -54,7 +42,7 @@ class MainRepositoryTest {
     @Test
     fun postSearchMainRepositoryTestSuccess() = runTest {
         val search = "Lenovo"
-        val searchResponse = SearchResponse(
+        val searchResponse = com.example.ecommerce.core.model.products.SearchResponse(
             code = 200,
             message = "OK",
             data = listOf(
@@ -86,10 +74,10 @@ class MainRepositoryTest {
     @Test
     fun getProductDetailMainRepositoryTestSuccess() = runTest {
         val productId = ""
-        val detailResponse = ProductDetailResponse(
+        val detailResponse = com.example.ecommerce.core.model.products.ProductDetailResponse(
             code = 200,
             message = "OK",
-            data = DataProductDetail(
+            data = com.example.ecommerce.core.model.products.DataProductDetail(
                 productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
                 productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
                 productPrice = 24499000,
@@ -104,10 +92,10 @@ class MainRepositoryTest {
                 totalSatisfaction = 100,
                 productRating = 5F,
                 productVariant = listOf(
-                    ProductVariant(
+                    com.example.ecommerce.core.model.products.ProductVariant(
                         variantName = "RAM 16GB",
                         variantPrice = 0
-                    ), ProductVariant(
+                    ), com.example.ecommerce.core.model.products.ProductVariant(
                         variantName = "RAM 32GB",
                         variantPrice = 1000000
                     )
@@ -139,16 +127,16 @@ class MainRepositoryTest {
     @Test
     fun getReviewProductMainRepositoryTestSuccess() = runTest {
         val productId = ""
-        val reviewResponse = ReviewProduct(
+        val reviewResponse = com.example.ecommerce.core.model.products.ReviewProduct(
             code = 200,
             message = "OK",
             data = listOf(
-                DataReview(
+                com.example.ecommerce.core.model.products.DataReview(
                     userName = "John",
                     userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQM4VpzpVw8mR2j9_gDajEthwY3KCOWJ1tOhcv47-H9o1a-s9GRPxdb_6G9YZdGfv0HIg&usqp=CAU",
                     userRating = 4,
                     userReview = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-                ), DataReview(
+                ), com.example.ecommerce.core.model.products.DataReview(
                     userName = "Doe",
                     userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR3Z6PN8QNVhH0e7rEINu_XJS0qHIFpDT3nwF5WSkcYmr3znhY7LOTkc8puJ68Bts-TMc&usqp=CAU",
                     userRating = 5,
@@ -198,7 +186,9 @@ class MainRepositoryTest {
                 date = "09 Jun 2023",
                 time = "08:53",
                 payment = "Bank BCA",
-                total = 48998000
+                total = 48998000,
+                rating = 5,
+                review = ""
             )
         )
 

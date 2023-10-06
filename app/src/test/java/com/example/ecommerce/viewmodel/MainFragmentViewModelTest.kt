@@ -4,9 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.ecommerce.repository.CartRepository
 import com.example.ecommerce.repository.NotificationRepository
 import com.example.ecommerce.repository.WishlistRepository
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.room.entity.NotificationEntity
-import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.core.room.entity.CartEntity
+import com.example.ecommerce.core.room.entity.NotificationEntity
+import com.example.ecommerce.core.room.entity.WishlistEntity
 import com.example.ecommerce.ui.main.MainViewModel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -30,7 +30,7 @@ class MainFragmentViewModelTest {
     private lateinit var notificationRepository: NotificationRepository
     private lateinit var mainFragmenViewModel: MainViewModel
 
-    private val cartEntity = CartEntity(
+    private val cartEntity = com.example.ecommerce.core.room.entity.CartEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,
@@ -50,7 +50,7 @@ class MainFragmentViewModelTest {
         isSelected = false
     )
 
-    private val wishlistEntity = WishlistEntity(
+    private val wishlistEntity = com.example.ecommerce.core.room.entity.WishlistEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,
@@ -68,7 +68,7 @@ class MainFragmentViewModelTest {
         varianPrice = 1000,
     )
 
-    private val notification = NotificationEntity(
+    private val notification = com.example.ecommerce.core.room.entity.NotificationEntity(
         idNotification = 1,
         title = "title",
         body = "body",

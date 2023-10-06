@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ecommerce.core.model.checkout.CheckoutList
+import com.example.ecommerce.core.model.checkout.FulfillmentRequest
+import com.example.ecommerce.core.model.checkout.FulfillmentResponse
 import com.example.ecommerce.repository.MainRepository
-import com.example.ecommerce.ui.main.payment.Item
+import com.example.ecommerce.core.model.checkout.ItemPayment
 import com.example.ecommerce.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +30,7 @@ class CheckoutViewModel @Inject constructor(
     private val _fulfillment = MutableLiveData<Result<FulfillmentResponse>>()
     val fulfillment: LiveData<Result<FulfillmentResponse>> = _fulfillment
 
-    lateinit var dataItemPayment: Item
+    lateinit var dataItemPayment: ItemPayment
 
     suspend fun postFulfillment(fulfillmentRequest: FulfillmentRequest) {
         _fulfillment.value = Result.Loading

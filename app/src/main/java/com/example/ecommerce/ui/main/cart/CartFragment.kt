@@ -9,17 +9,16 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentCartBinding
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.ui.main.checkout.toChekoutList
+import com.example.ecommerce.core.model.checkout.toChekoutList
+import com.example.ecommerce.core.room.entity.CartEntity
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import javax.inject.Inject
@@ -58,7 +57,8 @@ class CartFragment : Fragment() {
             { cartEntity -> onDeleteItemClick(cartEntity) },
             { cartEntity -> onAddItemClick(cartEntity) },
             { cartEntity -> onMinItemClick(cartEntity) },
-            { cartEntity -> onSelectedItem(cartEntity) }
+            { cartEntity -> onSelectedItem(cartEntity) },
+            { cartEntity -> onItemClick(cartEntity) }
         )
 
         binding.lvCart.adapter = listViewAdapter
@@ -89,6 +89,13 @@ class CartFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun onItemClick(cartEntity: CartEntity) {
+        val bundle = bundleOf("id_product" to cartEntity.productId)
+        val navController =
+            Navigation.findNavController(requireActivity(), R.id.fragmentContainerView)
+        navController.navigate(R.id.main_to_detail_product, bundle)
     }
 
     private fun logEventViewCart(it: List<CartEntity>) {
@@ -122,7 +129,7 @@ class CartFragment : Fragment() {
 
     }
 
-    private fun buyCart(it: List<CartEntity>) {
+    private fun buyCart(it: List<com.example.ecommerce.core.room.entity.CartEntity>) {
         val item = it.filter { it.isSelected == true }
         val checkoutItem = item.toChekoutList()
         binding.btnBuyCart.setOnClickListener {
@@ -134,7 +141,7 @@ class CartFragment : Fragment() {
         }
     }
 
-    private fun deleteAtOnce(cartEntity: List<CartEntity>) {
+    private fun deleteAtOnce(cartEntity: List<com.example.ecommerce.core.room.entity.CartEntity>) {
 
         binding.btnDelateCart.setOnClickListener {
             val item = cartEntity.filter { item ->
@@ -149,7 +156,7 @@ class CartFragment : Fragment() {
         }
     }
 
-    private fun deleteButton(it: List<CartEntity>) {
+    private fun deleteButton(it: List<com.example.ecommerce.core.room.entity.CartEntity>) {
         val isSelected = it.any { it.isSelected == true }
 
         if (isSelected) {
@@ -161,7 +168,7 @@ class CartFragment : Fragment() {
         }
     }
 
-    private fun setCheckAllItem(it: List<CartEntity>) {
+    private fun setCheckAllItem(it: List<com.example.ecommerce.core.room.entity.CartEntity>) {
         binding.checkboxAllItemCart.isChecked = false
         if (it != null) {
             val allSelected = it.all { it.isSelected }
@@ -194,7 +201,7 @@ class CartFragment : Fragment() {
         }
     }
 
-    private fun onSelectedItem(cartEntity: CartEntity) {
+    private fun onSelectedItem(cartEntity: com.example.ecommerce.core.room.entity.CartEntity) {
         var selected: Boolean
         selected = cartEntity.isSelected
         viewLifecycleOwner.lifecycleScope.launch {
@@ -203,7 +210,7 @@ class CartFragment : Fragment() {
 
     }
 
-    private fun totalPrice(it: List<CartEntity>) {
+    private fun totalPrice(it: List<com.example.ecommerce.core.room.entity.CartEntity>) {
         var totalPrice: Int = 0
         it.forEach {
             if (it.isSelected) {
@@ -215,7 +222,7 @@ class CartFragment : Fragment() {
         binding.tvTotalPriceCart.text = totalPrice.formatToIDR()
     }
 
-    private fun onAddItemClick(cartEntity: CartEntity) {
+    private fun onAddItemClick(cartEntity: com.example.ecommerce.core.room.entity.CartEntity) {
         firebaseAnalytics.logEvent("BUTTON_CLICK") {
             param("BUTTON_NAME", "Cart_Add")
         }
@@ -227,7 +234,7 @@ class CartFragment : Fragment() {
 
     }
 
-    private fun onDeleteItemClick(cartEntity: CartEntity) {
+    private fun onDeleteItemClick(cartEntity: com.example.ecommerce.core.room.entity.CartEntity) {
         firebaseAnalytics.logEvent("BUTTON_CLICK") {
             param("BUTTON_NAME", "Cart_Delet")
         }
@@ -263,7 +270,7 @@ class CartFragment : Fragment() {
 
     }
 
-    private fun onMinItemClick(cartEntity: CartEntity) {
+    private fun onMinItemClick(cartEntity: com.example.ecommerce.core.room.entity.CartEntity) {
         if (cartEntity.quantity > 1) {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.updateQuantityCart(cartEntity.productId, cartEntity.quantity - 1)

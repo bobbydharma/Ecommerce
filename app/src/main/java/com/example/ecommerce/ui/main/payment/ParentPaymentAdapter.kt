@@ -2,23 +2,22 @@ package com.example.ecommerce.ui.main.payment
 
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ecommerce.databinding.ItemPaymentBinding
+import com.example.ecommerce.core.model.checkout.DataPayment
+import com.example.ecommerce.core.model.checkout.ItemPayment
 import com.example.ecommerce.databinding.SectionPaymentBinding
 
 class ParentPaymentAdapter constructor(
-    private val itemOnClick: (Item) -> Unit
-) : androidx.recyclerview.widget.ListAdapter<Datum, ParentPaymentAdapter.ParentPaymentViewHolder>(
+    private val itemOnClick: (ItemPayment) -> Unit
+) : androidx.recyclerview.widget.ListAdapter<DataPayment, ParentPaymentAdapter.ParentPaymentViewHolder>(
     itemPaymentDiffCallback
 ) {
 
     inner class ParentPaymentViewHolder(private val binding: SectionPaymentBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(datum: Datum) {
+        fun bind(datum: DataPayment) {
 
             binding.tvTitlePayment.text = datum.title
             val childPaymentAdapter = ChildPaymentAdapter({ item ->
@@ -28,7 +27,7 @@ class ParentPaymentAdapter constructor(
             binding.rvParentPayment.adapter = childPaymentAdapter
         }
 
-        private fun getItemParentPayment(item: Item) {
+        private fun getItemParentPayment(item: ItemPayment) {
             itemOnClick(item)
         }
     }
@@ -48,12 +47,12 @@ class ParentPaymentAdapter constructor(
     }
 
 
-    object itemPaymentDiffCallback : DiffUtil.ItemCallback<Datum>() {
-        override fun areItemsTheSame(oldItem: Datum, newItem: Datum): Boolean {
+    object itemPaymentDiffCallback : DiffUtil.ItemCallback<DataPayment>() {
+        override fun areItemsTheSame(oldItem: DataPayment, newItem: DataPayment): Boolean {
             return oldItem.title == newItem.title
         }
 
-        override fun areContentsTheSame(oldItem: Datum, newItem: Datum): Boolean {
+        override fun areContentsTheSame(oldItem: DataPayment, newItem: DataPayment): Boolean {
             return oldItem == newItem
         }
     }

@@ -1,19 +1,18 @@
 package com.example.ecommerce.ui.main.sendreview
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.rating.RatingRequest
 import com.example.ecommerce.databinding.FragmentSendReviewBinding
 import com.example.ecommerce.utils.Result
 import com.example.ecommerce.utils.formatToIDR
@@ -45,6 +44,12 @@ class SendReviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (viewModel.invoice?.rating != null && viewModel.invoice?.rating != null){
+            binding.rattingbarSendReview.rating = viewModel.invoice!!.rating!!.toFloat()
+        }
+        if (viewModel.invoice?.review?.isNotEmpty() == true){
+            binding.etReviewSendReview.setText(viewModel.invoice?.review)
+        }
 
 
         viewModel.sourceFragment.apply {
@@ -71,6 +76,7 @@ class SendReviewFragment : Fragment() {
         var dataRating = 0
         binding.rattingbarSendReview.setOnRatingBarChangeListener { _, rating, _ ->
             dataRating = rating.toInt()
+            viewModel.invoice?.rating = rating.toInt()
         }
 
 
@@ -79,17 +85,26 @@ class SendReviewFragment : Fragment() {
                 param("BUTTON_NAME", "Ratting_Done")
             }
             if (viewModel.invoice != null) {
-                if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty() && dataRating == 0) {
+                if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty() && viewModel.invoice?.rating == null) {
                     navigate()
                 } else if (binding.layoutEtReviewSendReview.editText?.text.isNullOrEmpty()) {
-                    val ratingRequest = RatingRequest(viewModel.invoice!!.invoiceId, dataRating, "")
+                    val ratingRequest = RatingRequest(viewModel.invoice!!.invoiceId, viewModel.invoice?.rating, null )
                     viewLifecycleOwner.lifecycleScope.launch {
                         viewModel.postRating(ratingRequest)
                     }
-                } else {
+                } else if (viewModel.invoice?.rating == null) {
                     val ratingRequest = RatingRequest(
                         viewModel.invoice!!.invoiceId,
-                        dataRating,
+                        null,
+                        binding.layoutEtReviewSendReview.editText?.text.toString()
+                    )
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        viewModel.postRating(ratingRequest)
+                    }
+                }else{
+                    val ratingRequest = RatingRequest(
+                        viewModel.invoice!!.invoiceId,
+                        viewModel.invoice?.rating,
                         binding.layoutEtReviewSendReview.editText?.text.toString()
                     )
                     viewLifecycleOwner.lifecycleScope.launch {
@@ -103,6 +118,7 @@ class SendReviewFragment : Fragment() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBarSendReview.isVisible = false
+                    binding.btnDoneSendReview.isVisible = true
                     navigate()
                 }
 
@@ -111,6 +127,7 @@ class SendReviewFragment : Fragment() {
                 }
 
                 is Result.Loading -> {
+                    binding.btnDoneSendReview.isVisible = false
                     binding.progressBarSendReview.isVisible = true
                 }
 

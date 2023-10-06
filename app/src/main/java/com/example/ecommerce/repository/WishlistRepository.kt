@@ -1,7 +1,7 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.room.dao.WishlistDAO
-import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.core.room.dao.WishlistDAO
+import com.example.ecommerce.core.room.entity.WishlistEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

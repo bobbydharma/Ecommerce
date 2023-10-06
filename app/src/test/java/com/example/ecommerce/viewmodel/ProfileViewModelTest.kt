@@ -1,9 +1,9 @@
 package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.ecommerce.model.user.DataProfilResponse
-import com.example.ecommerce.model.user.ProfileRequest
-import com.example.ecommerce.model.user.ProfileResponse
+import com.example.ecommerce.core.model.user.DataProfilResponse
+import com.example.ecommerce.core.model.user.ProfileRequest
+import com.example.ecommerce.core.model.user.ProfileResponse
 import com.example.ecommerce.repository.PreloginRepository
 import com.example.ecommerce.ui.main.profile.ProfileViewModel
 import com.example.ecommerce.ui.prelogin.login.LoginViewModel
@@ -48,16 +48,16 @@ class ProfileViewModelTest {
     val userNamePart =
         MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
 
-    val profileResponse = ProfileResponse(
+    val profileResponse = com.example.ecommerce.core.model.user.ProfileResponse(
         code = 200,
         message = "OK",
-        data = DataProfilResponse(
+        data = com.example.ecommerce.core.model.user.DataProfilResponse(
             userName = "Test",
             userImage = "userImage"
         )
     )
 
-    val profileRequest = ProfileRequest(
+    val profileRequest = com.example.ecommerce.core.model.user.ProfileRequest(
         userName = userNamePart,
         userImage = userImagePart
     )

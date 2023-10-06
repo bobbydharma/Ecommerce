@@ -2,7 +2,7 @@ package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.ecommerce.repository.NotificationRepository
-import com.example.ecommerce.room.entity.NotificationEntity
+import com.example.ecommerce.core.room.entity.NotificationEntity
 import com.example.ecommerce.ui.main.notifcation.NotificationViewModel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -24,7 +24,7 @@ class NotificationViewModelTest {
     private lateinit var repository: NotificationRepository
     private lateinit var notificationViewModel: NotificationViewModel
 
-    private val notification = NotificationEntity(
+    private val notification = com.example.ecommerce.core.room.entity.NotificationEntity(
         idNotification = 1,
         title = "title",
         body = "body",

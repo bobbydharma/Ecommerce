@@ -5,22 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.example.ecommerce.R
+import com.example.ecommerce.core.model.checkout.PaymentResponse
 import com.example.ecommerce.databinding.FragmentPaymentBinding
 import com.example.ecommerce.utils.Result
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -55,7 +48,6 @@ class PaymentFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.rvPayment.adapter = parentPaymentAdapter
-        binding.swipeRefreshPayment.isRefreshing
 
 //        viewModel.postPayment()
 

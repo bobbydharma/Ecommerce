@@ -2,9 +2,7 @@ package com.example.ecommerce.firebase
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -12,13 +10,11 @@ import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import com.example.ecommerce.MainActivity
 import com.example.ecommerce.R
+import com.example.ecommerce.core.room.entity.NotificationEntity
 import com.example.ecommerce.repository.NotificationRepository
-import com.example.ecommerce.room.entity.NotificationEntity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.firebase.quickstart.fcm.kotlin.MyWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

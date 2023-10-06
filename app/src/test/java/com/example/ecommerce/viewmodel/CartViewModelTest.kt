@@ -3,7 +3,7 @@ package com.example.ecommerce.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.ecommerce.repository.CartRepository
 import com.example.ecommerce.repository.PreloginRepository
-import com.example.ecommerce.room.entity.CartEntity
+import com.example.ecommerce.core.room.entity.CartEntity
 import com.example.ecommerce.ui.main.cart.CartViewModel
 import com.example.ecommerce.ui.prelogin.login.LoginViewModel
 import com.example.ecommerce.utils.Result
@@ -32,7 +32,7 @@ class CartViewModelTest {
     private lateinit var repository: CartRepository
     private lateinit var cartViewModel: CartViewModel
 
-    private val cartEntity = CartEntity(
+    private val cartEntity = com.example.ecommerce.core.room.entity.CartEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,

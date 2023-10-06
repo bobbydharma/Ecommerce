@@ -1,32 +1,24 @@
 package com.example.ecommerce.ui.main.store
 
-import com.example.ecommerce.ui.main.store.adapter.SearchAdapter
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentSearchBinding
+import com.example.ecommerce.ui.main.store.adapter.SearchAdapter
+import com.example.ecommerce.ui.main.store.adapter.SearchAdapterGeneric
 import com.example.ecommerce.utils.Result
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchFragment : DialogFragment() {
@@ -35,7 +27,7 @@ class SearchFragment : DialogFragment() {
     private val binding get() = _binding!!
 
     private val viewModel by activityViewModels<StoreViewModel>()
-    private lateinit var searchAdapter: SearchAdapter
+    private lateinit var searchAdapter: SearchAdapterGeneric
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +46,7 @@ class SearchFragment : DialogFragment() {
         val imm =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(binding.etSearchFragment, InputMethodManager.SHOW_IMPLICIT)
+
         binding.etSearchFragment.imeOptions = EditorInfo.IME_ACTION_SEARCH
 
         binding.etSearchFragment.doOnTextChanged { text, actionId, _, _ ->
@@ -82,7 +75,6 @@ class SearchFragment : DialogFragment() {
                     binding.progressBarSearch.isVisible = false
                     binding.rvSearch.isVisible = true
                     setDisplayProducts(result.data.data)
-
                 }
 
                 is Result.Error -> {
@@ -102,7 +94,18 @@ class SearchFragment : DialogFragment() {
     }
 
     private fun setDisplayProducts(result: List<String>) {
-        searchAdapter = SearchAdapter(result) { clickedItem ->
+//        searchAdapter = SearchAdapter(result) { clickedItem ->
+//            viewModel.search = clickedItem
+//            requireActivity().supportFragmentManager.setFragmentResult(
+//                "search",
+//                bundleOf("searchItem" to clickedItem)
+//            )
+//            dismiss()
+//        }
+//        binding.rvSearch.adapter = searchAdapter
+
+        searchAdapter = SearchAdapterGeneric {
+                clickedItem ->
             viewModel.search = clickedItem
             requireActivity().supportFragmentManager.setFragmentResult(
                 "search",
@@ -110,13 +113,20 @@ class SearchFragment : DialogFragment() {
             )
             dismiss()
         }
+
         binding.rvSearch.adapter = searchAdapter
+        searchAdapter.submitList(result)
+
     }
 
+//    override fun onResume() {
+//        super.onResume()
+//        viewModel.postSearch("")
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding =  null
+        _binding = null
 
         // Menyembunyikan keyboard saat DialogFragment ditutup
         val inputMethodManager =

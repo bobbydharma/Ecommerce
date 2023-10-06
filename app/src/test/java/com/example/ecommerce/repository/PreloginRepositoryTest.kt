@@ -1,15 +1,15 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.model.user.DataLoginResponse
-import com.example.ecommerce.model.user.DataProfilResponse
-import com.example.ecommerce.model.user.DataResponse
-import com.example.ecommerce.model.user.LoginResponse
-import com.example.ecommerce.model.user.ProfileRequest
-import com.example.ecommerce.model.user.ProfileResponse
-import com.example.ecommerce.model.user.UserRequest
-import com.example.ecommerce.model.user.UserResponse
-import com.example.ecommerce.network.APIService
-import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.core.model.user.DataLoginResponse
+import com.example.ecommerce.core.model.user.DataProfilResponse
+import com.example.ecommerce.core.model.user.DataResponse
+import com.example.ecommerce.core.model.user.LoginResponse
+import com.example.ecommerce.core.model.user.ProfileRequest
+import com.example.ecommerce.core.model.user.ProfileResponse
+import com.example.ecommerce.core.model.user.UserRequest
+import com.example.ecommerce.core.model.user.UserResponse
+import com.example.ecommerce.core.network.APIService
+import com.example.ecommerce.core.preference.PrefHelper
 import com.example.ecommerce.repository.PreloginRepository
 import com.example.ecommerce.repository.PreloginRepository.Companion.API_KEY
 import com.example.ecommerce.utils.Result
@@ -31,9 +31,9 @@ import retrofit2.Response
 @RunWith(JUnit4::class)
 class PreloginRepositoryTest {
 
-    private lateinit var dataSource: APIService
+    private lateinit var dataSource: com.example.ecommerce.core.network.APIService
     private lateinit var preloginRepository: PreloginRepository
-    private lateinit var prefHelper: PrefHelper
+    private lateinit var prefHelper: com.example.ecommerce.core.preference.PrefHelper
 
     @Before
     fun setup() {
@@ -44,12 +44,12 @@ class PreloginRepositoryTest {
 
     @Test
     fun postRegisterPreloginRepositoryTestSuccess() = runTest {
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
 
-        val userResponse = UserResponse(
+        val userResponse = com.example.ecommerce.core.model.user.UserResponse(
             code = 200,
             message = "OK",
-            data = DataResponse(
+            data = com.example.ecommerce.core.model.user.DataResponse(
                 accessToken = "accessToken",
                 refreshToken = "refreshToken",
                 expiresAt = 600
@@ -65,7 +65,7 @@ class PreloginRepositoryTest {
 
     @Test
     fun postRegisterPreloginRepositoryTestError() = runTest {
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
         val error = RuntimeException()
 
         whenever(dataSource.postRegister(API_KEY, userRequest)).thenThrow(error)
@@ -83,16 +83,16 @@ class PreloginRepositoryTest {
         val userNamePart =
             MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
 
-        val profileResponse = ProfileResponse(
+        val profileResponse = com.example.ecommerce.core.model.user.ProfileResponse(
             code = 200,
             message = "OK",
-            data = DataProfilResponse(
+            data = com.example.ecommerce.core.model.user.DataProfilResponse(
                 userName = "Test",
                 userImage = "userImage"
             )
         )
 
-        val profileRequest = ProfileRequest(
+        val profileRequest = com.example.ecommerce.core.model.user.ProfileRequest(
             userName = userNamePart,
             userImage = userImagePart
         )
@@ -116,7 +116,7 @@ class PreloginRepositoryTest {
 
         val error = RuntimeException()
 
-        val profileRequest = ProfileRequest(
+        val profileRequest = com.example.ecommerce.core.model.user.ProfileRequest(
             userName = userNamePart,
             userImage = userImagePart
         )
@@ -128,12 +128,12 @@ class PreloginRepositoryTest {
 
     @Test
     fun postLoginPreloginRepositoryTestSuccess() = runTest {
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
 
-        val loginResponse = LoginResponse(
+        val loginResponse = com.example.ecommerce.core.model.user.LoginResponse(
             code = 200,
             message = "OK",
-            data = DataLoginResponse(
+            data = com.example.ecommerce.core.model.user.DataLoginResponse(
                 userName = "userName",
                 userImage = "userImage",
                 accessToken = "accessToken",
@@ -151,7 +151,7 @@ class PreloginRepositoryTest {
 
     @Test
     fun postLoginPreloginRepositoryTestError() = runTest {
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
         val error = RuntimeException()
 
         whenever(dataSource.postLogin(API_KEY, userRequest)).thenThrow(error)

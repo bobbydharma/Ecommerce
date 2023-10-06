@@ -30,17 +30,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/layout_top_app_bar_checkout" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar_chekout"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_top_checkout" />
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView3"
         android:layout_width="0dp"
@@ -95,8 +84,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/carf_view_checkout"
-                style="?attr/materialCardViewElevatedStyle"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                style="@style/CardBackgroundColor"
                 app:cardElevation="3dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -183,13 +171,28 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_pay_checkout"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
-            android:text="@string/bayar" />
+            android:layout_marginRight="16dp">
+
+            <Button
+                android:id="@+id/btn_pay_checkout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bayar"
+                android:layout_gravity="center"/>
+
+            <ProgressBar
+                android:id="@+id/progress_bar_chekout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="10dp"
+                android:visibility="gone"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
 
     </LinearLayout>
 

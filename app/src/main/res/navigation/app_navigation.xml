@@ -104,7 +104,7 @@
             app:destination="@id/checkoutFragment" />
         <argument
             android:name="CheckoutList"
-            app:argType="com.example.ecommerce.ui.main.checkout.CheckoutList" />
+            app:argType="com.example.ecommerce.core.model.checkout.CheckoutList" />
     </fragment>
     <fragment
         android:id="@+id/checkoutFragment"
@@ -120,7 +120,7 @@
             app:popUpTo="@navigation/main_navigation" />
         <argument
             android:name="FulfillmentResponse"
-            app:argType="com.example.ecommerce.ui.main.checkout.Data" />
+            app:argType="com.example.ecommerce.core.model.checkout.Data" />
         <argument
             android:name="SourceFragment"
             app:argType="string" />
@@ -135,7 +135,7 @@
             app:destination="@id/checkoutFragment" />
         <argument
             android:name="itemPayment"
-            app:argType="com.example.ecommerce.ui.main.payment.Item" />
+            app:argType="com.example.ecommerce.core.model.transaction.Item" />
     </fragment>
     <fragment
         android:id="@+id/sendReviewFragment"

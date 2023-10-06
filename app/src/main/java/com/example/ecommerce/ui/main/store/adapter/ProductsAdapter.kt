@@ -1,18 +1,16 @@
 package com.example.ecommerce.ui.main.store.adapter
 
 import android.view.LayoutInflater
-import android.view.RoundedCorner
 import android.view.ViewGroup
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.products.Items
 import com.example.ecommerce.databinding.ItemGridBinding
 import com.example.ecommerce.databinding.ItemListBinding
-import com.example.ecommerce.model.products.Items
 import java.text.NumberFormat
 
 class ProductsAdapter(
@@ -36,7 +34,6 @@ class ProductsAdapter(
                 .load(items.image)
                 .placeholder(R.drawable.image_thumbnail_detail)
                 .error(R.drawable.image_thumbnail_detail)
-//                    .transform(RoundedCornerShape(8))
                 .into(binding.ivProductGrid)
 
             binding.tvProductNameGrid.text = items.productName
@@ -49,7 +46,9 @@ class ProductsAdapter(
                     items.productRating.toString(),
                     items.sale.toString()
                 )
-
+            itemView.setOnClickListener {
+                onItemClick(items)
+            }
 
         }
     }
@@ -72,6 +71,9 @@ class ProductsAdapter(
                 items.productRating.toString(),
                 items.sale.toString()
             )
+            itemView.setOnClickListener {
+                onItemClick(items)
+            }
         }
     }
 
@@ -113,12 +115,7 @@ class ProductsAdapter(
                     holder.bind(item)
                 }
             }
-
             else -> throw IllegalArgumentException("Undefined view type")
-        }
-
-        holder.itemView.setOnClickListener {
-            getItem(position)?.let { it1 -> onItemClick(it1) }
         }
     }
 
@@ -129,13 +126,20 @@ class ProductsAdapter(
         return currencyFormatter.format(this).replace(",00", "")
     }
 
-    object ProductComparator : DiffUtil.ItemCallback<Items>() {
-        override fun areItemsTheSame(oldItem: Items, newItem: Items): Boolean {
+    object ProductComparator :
+        DiffUtil.ItemCallback<Items>() {
+        override fun areItemsTheSame(
+            oldItem: Items,
+            newItem: Items
+        ): Boolean {
             // Id is unique.
             return oldItem.productId == newItem.productId
         }
 
-        override fun areContentsTheSame(oldItem: Items, newItem: Items): Boolean {
+        override fun areContentsTheSame(
+            oldItem: Items,
+            newItem: Items
+        ): Boolean {
             return oldItem == newItem
         }
     }

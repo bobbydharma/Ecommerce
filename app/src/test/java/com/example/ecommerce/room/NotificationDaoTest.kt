@@ -3,10 +3,10 @@ package com.example.ecommerce.room
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.example.ecommerce.room.dao.CartDAO
-import com.example.ecommerce.room.dao.NotificationDAO
-import com.example.ecommerce.room.entity.NotificationEntity
-import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.core.room.dao.CartDAO
+import com.example.ecommerce.core.room.dao.NotificationDAO
+import com.example.ecommerce.core.room.entity.NotificationEntity
+import com.example.ecommerce.core.room.entity.WishlistEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -21,13 +21,16 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class NotificationDaoTest {
 
-    private lateinit var database: AppDatabase
-    private lateinit var notificationDAO: NotificationDAO
+    private lateinit var database: com.example.ecommerce.core.room.AppDatabase
+    private lateinit var notificationDAO: com.example.ecommerce.core.room.dao.NotificationDAO
 
     @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
+        database = Room.inMemoryDatabaseBuilder(
+            context,
+            com.example.ecommerce.core.room.AppDatabase::class.java
+        ).build()
         notificationDAO = database.notificationDAO()
     }
 
@@ -36,7 +39,7 @@ class NotificationDaoTest {
         database.close()
     }
 
-    private val notification = NotificationEntity(
+    private val notification = com.example.ecommerce.core.room.entity.NotificationEntity(
         idNotification = 1,
         title = "title",
         body = "body",

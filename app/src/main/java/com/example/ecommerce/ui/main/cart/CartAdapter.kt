@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.ItemListCartBinding
-import com.example.ecommerce.room.entity.CartEntity
+import com.example.ecommerce.core.room.entity.CartEntity
 import com.google.android.material.color.MaterialColors
 import java.text.NumberFormat
 
@@ -18,8 +18,11 @@ class CartAdapter(
     private val deleteItemClick: (CartEntity) -> Unit,
     private val addItemClick: (CartEntity) -> Unit,
     private val minItemClick: (CartEntity) -> Unit,
-    private val selectedItem: (CartEntity) -> Unit
-) : ListAdapter<CartEntity, CartAdapter.CartViewHolder>(CartEntityDiffCallback) {
+    private val selectedItem: (CartEntity) -> Unit,
+    private val onItemClick: (CartEntity) -> Unit
+) : ListAdapter<CartEntity, CartAdapter.CartViewHolder>(
+    CartEntityDiffCallback
+) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
         val binding =
             ItemListCartBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -76,15 +79,26 @@ class CartAdapter(
             binding.checkboxItem.setOnClickListener {
                 selectedItem(cartEntity)
             }
+
+            itemView.setOnClickListener {
+                onItemClick(cartEntity)
+            }
         }
     }
 
-    object CartEntityDiffCallback : DiffUtil.ItemCallback<CartEntity>() {
-        override fun areItemsTheSame(oldItem: CartEntity, newItem: CartEntity): Boolean {
+    object CartEntityDiffCallback :
+        DiffUtil.ItemCallback<CartEntity>() {
+        override fun areItemsTheSame(
+            oldItem: CartEntity,
+            newItem: CartEntity
+        ): Boolean {
             return oldItem.productId == newItem.productId
         }
 
-        override fun areContentsTheSame(oldItem: CartEntity, newItem: CartEntity): Boolean {
+        override fun areContentsTheSame(
+            oldItem: CartEntity,
+            newItem: CartEntity
+        ): Boolean {
             return oldItem == newItem
         }
     }

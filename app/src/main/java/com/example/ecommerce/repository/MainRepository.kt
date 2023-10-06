@@ -1,29 +1,17 @@
 package com.example.ecommerce.repository
 
-import android.util.Log
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
-import com.example.ecommerce.R
-import com.example.ecommerce.model.products.Items
-import com.example.ecommerce.model.products.ProductDetailResponse
-import com.example.ecommerce.model.products.ProductsRequest
-import com.example.ecommerce.model.products.ProductsResponse
-import com.example.ecommerce.model.products.ReviewProduct
-import com.example.ecommerce.model.products.SearchResponse
-import com.example.ecommerce.network.APIService
-import com.example.ecommerce.preference.PrefHelper
-import com.example.ecommerce.ui.main.checkout.FulfillmentRequest
-import com.example.ecommerce.ui.main.checkout.FulfillmentResponse
-import com.example.ecommerce.ui.main.checkout.ItemFullfillment
-import com.example.ecommerce.ui.main.payment.PaymentResponse
-import com.example.ecommerce.ui.main.sendreview.RatingRequest
-import com.example.ecommerce.ui.main.sendreview.RatingResponse
-import com.example.ecommerce.ui.main.transaction.TransactionResponse
+import com.example.ecommerce.core.model.checkout.FulfillmentRequest
+import com.example.ecommerce.core.model.checkout.FulfillmentResponse
+import com.example.ecommerce.core.model.products.ProductDetailResponse
+import com.example.ecommerce.core.model.products.ReviewProduct
+import com.example.ecommerce.core.model.products.SearchResponse
+import com.example.ecommerce.core.model.rating.RatingRequest
+import com.example.ecommerce.core.model.rating.RatingResponse
+import com.example.ecommerce.core.network.APIService
 import com.example.ecommerce.utils.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import retrofit2.HttpException
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(

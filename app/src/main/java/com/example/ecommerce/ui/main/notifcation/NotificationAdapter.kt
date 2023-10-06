@@ -1,7 +1,5 @@
 package com.example.ecommerce.ui.main.notifcation
 
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,10 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.ecommerce.R
-import com.example.ecommerce.databinding.ItemListCartBinding
+import com.example.ecommerce.core.room.entity.NotificationEntity
 import com.example.ecommerce.databinding.ItemNotificationBinding
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.room.entity.NotificationEntity
 import com.google.android.material.color.MaterialColors
 
 class NotificationAdapter(
@@ -71,7 +67,8 @@ class NotificationAdapter(
         holder.bind(currentItem)
     }
 
-    object NotificaitionEntityDiffCallback : DiffUtil.ItemCallback<NotificationEntity>() {
+    object NotificaitionEntityDiffCallback :
+        DiffUtil.ItemCallback<NotificationEntity>() {
         override fun areItemsTheSame(
             oldItem: NotificationEntity,
             newItem: NotificationEntity

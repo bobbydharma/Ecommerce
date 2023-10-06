@@ -1,7 +1,7 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.room.dao.NotificationDAO
-import com.example.ecommerce.room.entity.NotificationEntity
+import com.example.ecommerce.core.room.dao.NotificationDAO
+import com.example.ecommerce.core.room.entity.NotificationEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

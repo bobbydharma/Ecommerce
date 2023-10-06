@@ -65,6 +65,7 @@ android {
 
         val reportTask =
             tasks.register("jacoco${testTaskName.capitalize()}Report", JacocoReport::class) {
+                dependsOn(":core:jacocoTestReport")
                 dependsOn(testTaskName)
 
 
@@ -76,14 +77,21 @@ android {
                 classDirectories.setFrom(
                     fileTree("$buildDir/tmp/kotlin-classes/${variant.name}") {
                         exclude(coverageExclusions)
+                    },
+                    fileTree("../core/build/tmp/kotlin-classes/${variant.name}") {
+                        exclude(coverageExclusions)
                     }
                 )
 
 
                 sourceDirectories.setFrom(
-                    files("$projectDir/src/main/java")
+                    files("$projectDir/src/main/java"),
+                    files("../core/src/main/java")
                 )
-                executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
+                executionData.setFrom(
+                    file("$buildDir/jacoco/$testTaskName.exec"),
+                    file("../core/build/jacoco/$testTaskName.exec")
+                    )
 //                executionData.setFrom(file("$buildDir/outputs/unit_test_code_coverage/${variant.name}UnitTest/$testTaskName.exec"))
             }
 
@@ -142,7 +150,7 @@ dependencies {
 
     implementation("de.hdodenhof:circleimageview:3.1.0")
     debugImplementation("com.github.chuckerteam.chucker:library:4.0.0")
-    releaseImplementation ("com.github.chuckerteam.chucker:library-no-op:4.0.0")
+    releaseImplementation("com.github.chuckerteam.chucker:library-no-op:4.0.0")
 
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
@@ -204,9 +212,10 @@ dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.0")
 
 //    Modular
-    implementation(project(":screen"))
-//    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
-//    implementation(files("libs/screen-debug.aar"))
+//    implementation(project(":screen"))
+    implementation(project(":core"))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+    implementation(files("libs/screen-debug.aar"))
 }
 
 kapt {

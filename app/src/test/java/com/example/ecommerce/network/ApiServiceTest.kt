@@ -1,28 +1,15 @@
 package com.example.ecommerce.network
 
-import com.example.ecommerce.model.products.DataProductDetail
-import com.example.ecommerce.model.products.DataReview
-import com.example.ecommerce.model.products.ProductDetailResponse
-import com.example.ecommerce.model.products.ProductVariant
-import com.example.ecommerce.model.products.ReviewProduct
-import com.example.ecommerce.model.products.SearchResponse
-import com.example.ecommerce.model.user.DataLoginResponse
-import com.example.ecommerce.model.user.DataProfilResponse
-import com.example.ecommerce.model.user.DataResponse
-import com.example.ecommerce.model.user.LoginResponse
-import com.example.ecommerce.model.user.ProfileResponse
-import com.example.ecommerce.model.user.UserRequest
-import com.example.ecommerce.model.user.UserResponse
 import com.example.ecommerce.network.NetworkUtilsTest.createMockResponse
-import com.example.ecommerce.ui.main.checkout.Data
-import com.example.ecommerce.ui.main.checkout.FulfillmentRequest
-import com.example.ecommerce.ui.main.checkout.FulfillmentResponse
-import com.example.ecommerce.ui.main.checkout.ItemFullfillment
-import com.example.ecommerce.ui.main.sendreview.RatingRequest
-import com.example.ecommerce.ui.main.sendreview.RatingResponse
-import com.example.ecommerce.ui.main.transaction.Datum
-import com.example.ecommerce.ui.main.transaction.Item
-import com.example.ecommerce.ui.main.transaction.TransactionResponse
+import com.example.ecommerce.core.model.checkout.Data
+import com.example.ecommerce.core.model.checkout.FulfillmentRequest
+import com.example.ecommerce.core.model.checkout.FulfillmentResponse
+import com.example.ecommerce.core.model.checkout.ItemFullfillment
+import com.example.ecommerce.core.model.rating.RatingRequest
+import com.example.ecommerce.core.model.rating.RatingResponse
+import com.example.ecommerce.core.model.transaction.Datum
+import com.example.ecommerce.core.model.transaction.Item
+import com.example.ecommerce.core.model.transaction.TransactionResponse
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -42,7 +29,7 @@ import org.junit.Assert.assertEquals
 class ApiServiceTest {
 
     private lateinit var mockWebServer: MockWebServer
-    private lateinit var apiService: APIService
+    private lateinit var apiService: com.example.ecommerce.core.network.APIService
 
     @Before
     fun setup() {
@@ -68,12 +55,12 @@ class ApiServiceTest {
         mockWebServer.enqueue(response)
 
         val apiKey = "api_key"
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
 
-        val userResponse = UserResponse(
+        val userResponse = com.example.ecommerce.core.model.user.UserResponse(
             code = 200,
             message = "OK",
-            data = DataResponse(
+            data = com.example.ecommerce.core.model.user.DataResponse(
                 accessToken = "accessToken",
                 refreshToken = "refreshToken",
                 expiresAt = 600
@@ -99,10 +86,10 @@ class ApiServiceTest {
             MultipartBody.Part.createFormData("userName", "John Doe", userNameRequestBody)
 
 
-        val profileResponse = ProfileResponse(
+        val profileResponse = com.example.ecommerce.core.model.user.ProfileResponse(
             code = 200,
             message = "OK",
-            data = DataProfilResponse(
+            data = com.example.ecommerce.core.model.user.DataProfilResponse(
                 userName = "Test",
                 userImage = "userImage"
             )
@@ -118,12 +105,12 @@ class ApiServiceTest {
         mockWebServer.enqueue(response)
 
         val apiKey = "api_key"
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
 
-        val loginResponse = LoginResponse(
+        val loginResponse = com.example.ecommerce.core.model.user.LoginResponse(
             code = 200,
             message = "OK",
-            data = DataLoginResponse(
+            data = com.example.ecommerce.core.model.user.DataLoginResponse(
                 userName = "userName",
                 userImage = "userImage",
                 accessToken = "accessToken",
@@ -143,7 +130,7 @@ class ApiServiceTest {
 
         val query = "query"
 
-        val searchResponse = SearchResponse(
+        val searchResponse = com.example.ecommerce.core.model.products.SearchResponse(
             code = 200,
             message = "OK",
             data = listOf(
@@ -168,10 +155,10 @@ class ApiServiceTest {
         val apiKey = "api_key"
         val query = "query_search"
 
-        val userResponse = UserResponse(
+        val userResponse = com.example.ecommerce.core.model.user.UserResponse(
             code = 200,
             message = "OK",
-            data = DataResponse(
+            data = com.example.ecommerce.core.model.user.DataResponse(
                 accessToken = "accessToken",
                 refreshToken = "refreshToken",
                 expiresAt = 600
@@ -188,10 +175,10 @@ class ApiServiceTest {
         mockWebServer.enqueue(response)
 
         val productId = ""
-        val detailResponse = ProductDetailResponse(
+        val detailResponse = com.example.ecommerce.core.model.products.ProductDetailResponse(
             code = 200,
             message = "OK",
-            data = DataProductDetail(
+            data = com.example.ecommerce.core.model.products.DataProductDetail(
                 productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
                 productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
                 productPrice = 24499000,
@@ -206,10 +193,10 @@ class ApiServiceTest {
                 totalSatisfaction = 100,
                 productRating = 5F,
                 productVariant = listOf(
-                    ProductVariant(
+                    com.example.ecommerce.core.model.products.ProductVariant(
                         variantName = "RAM 16GB",
                         variantPrice = 0
-                    ), ProductVariant(
+                    ), com.example.ecommerce.core.model.products.ProductVariant(
                         variantName = "RAM 32GB",
                         variantPrice = 1000000
                     )
@@ -228,16 +215,16 @@ class ApiServiceTest {
 
         val productId = ""
 
-        val reviewResponse = ReviewProduct(
+        val reviewResponse = com.example.ecommerce.core.model.products.ReviewProduct(
             code = 200,
             message = "OK",
             data = listOf(
-                DataReview(
+                com.example.ecommerce.core.model.products.DataReview(
                     userName = "John",
                     userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQM4VpzpVw8mR2j9_gDajEthwY3KCOWJ1tOhcv47-H9o1a-s9GRPxdb_6G9YZdGfv0HIg&usqp=CAU",
                     userRating = 4,
                     userReview = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-                ), DataReview(
+                ), com.example.ecommerce.core.model.products.DataReview(
                     userName = "Doe",
                     userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR3Z6PN8QNVhH0e7rEINu_XJS0qHIFpDT3nwF5WSkcYmr3znhY7LOTkc8puJ68Bts-TMc&usqp=CAU",
                     userRating = 5,
@@ -275,7 +262,9 @@ class ApiServiceTest {
                 date = "09 Jun 2023",
                 time = "08:53",
                 payment = "Bank BCA",
-                total = 48998000
+                total = 48998000,
+                rating = 5,
+                review = ""
             )
         )
 

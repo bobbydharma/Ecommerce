@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -14,8 +13,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagingSource
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.transaction.convertToDataFulfillment
 import com.example.ecommerce.databinding.FragmentTransactionBinding
 import com.example.ecommerce.utils.Result
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -90,13 +89,21 @@ class TransactionFragment : Fragment() {
                             binding.containerErorTransaction.isVisible = false
                             binding.errorConnection.isVisible = false
                             binding.progressBarTransaction.isVisible = false
-                            transactionAdapter.submitList(result.data.data)
+                            transactionAdapter.submitList(result.data.data.reversed())
+                        }else{
+                            binding.apply {
+                                containerTransaction.isVisible = false
+                                errorConnection.isVisible = false
+                                progressBarTransaction.isVisible = false
+                                containerErorTransaction.isVisible = true
+                            }
                         }
                     }
 
                     is Result.Error -> {
                         when (result.exception) {
                             is HttpException -> {
+
                                 binding.apply {
                                     containerTransaction.isVisible = false
                                     errorConnection.isVisible = false

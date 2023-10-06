@@ -77,4 +77,6 @@
     <string name="wishlist">Favorit</string>
     <string name="transaction">Transaksi</string>
     <string name="beli_langsung">Beli Langsung</string>
+    <string name="gelap">gelap</string>
+    <string name="terang">terang</string>
 </resources>

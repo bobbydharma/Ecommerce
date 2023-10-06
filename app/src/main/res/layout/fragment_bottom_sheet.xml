@@ -59,6 +59,7 @@
             android:layout_height="wrap_content"
             android:checkable="true"
             android:fontFamily="@font/poppins_medium"
+            android:tag="1"
             android:text="@string/ulasan"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
@@ -69,6 +70,7 @@
             android:layout_height="wrap_content"
             android:checkable="true"
             android:fontFamily="@font/poppins_medium"
+            android:tag="2"
             android:text="@string/penjualan"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
@@ -79,6 +81,7 @@
             android:layout_height="wrap_content"
             android:checkable="true"
             android:fontFamily="@font/poppins_medium"
+            android:tag="3"
             android:text="@string/harga_terendah"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 
@@ -89,6 +92,7 @@
             android:layout_height="wrap_content"
             android:checkable="true"
             android:fontFamily="@font/poppins_medium"
+            android:tag="4"
             android:text="@string/harga_tertinggi"
             app:chipBackgroundColor="@drawable/chip_background_selector" />
 

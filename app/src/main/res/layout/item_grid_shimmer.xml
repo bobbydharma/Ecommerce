@@ -6,16 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    app:cardCornerRadius="10dp"
-    android:paddingHorizontal="8dp"
-    android:layout_margin="8dp">
+    app:cardCornerRadius="10dp">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        style="@style/CardBackgroundColor"
+        app:cardElevation="3dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="4dp"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="10dp"
+        android:layout_marginBottom="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -86,12 +89,16 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        style="@style/CardBackgroundColor"
+        app:cardElevation="3dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="16dp"
         android:layout_marginLeft="4dp"
         app:cardCornerRadius="10dp">
 
@@ -168,7 +175,7 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 
 </LinearLayout>

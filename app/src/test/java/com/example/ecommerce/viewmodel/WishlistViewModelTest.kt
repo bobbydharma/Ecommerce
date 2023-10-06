@@ -1,14 +1,14 @@
 package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.ecommerce.model.products.DataProductDetail
-import com.example.ecommerce.model.products.ProductVariant
-import com.example.ecommerce.network.APIService
+import com.example.ecommerce.core.model.products.DataProductDetail
+import com.example.ecommerce.core.model.products.ProductVariant
+import com.example.ecommerce.core.network.APIService
 import com.example.ecommerce.repository.CartRepository
 import com.example.ecommerce.repository.MainRepository
 import com.example.ecommerce.repository.WishlistRepository
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.core.room.entity.CartEntity
+import com.example.ecommerce.core.room.entity.WishlistEntity
 import com.example.ecommerce.ui.main.store.StoreViewModel
 import com.example.ecommerce.ui.main.wishlist.WishlistViewModel
 import kotlinx.coroutines.flow.first
@@ -47,7 +47,7 @@ class WishlistViewModelTest {
         wishlistViewModel = WishlistViewModel(wishlistRepository, cartRepository)
     }
 
-    private val wishlistEntity = WishlistEntity(
+    private val wishlistEntity = com.example.ecommerce.core.room.entity.WishlistEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,
@@ -65,7 +65,7 @@ class WishlistViewModelTest {
         varianPrice = 1000,
     )
 
-    private val cartEntity = CartEntity(
+    private val cartEntity = com.example.ecommerce.core.room.entity.CartEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,
@@ -85,7 +85,7 @@ class WishlistViewModelTest {
         isSelected = false
     )
 
-    private val dataProductDetail = DataProductDetail(
+    private val dataProductDetail = com.example.ecommerce.core.model.products.DataProductDetail(
         productId = "17b4714d-527a-4be2-84e2-e4c37c2b3292",
         productName = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray",
         productPrice = 24499000,
@@ -100,10 +100,10 @@ class WishlistViewModelTest {
         totalSatisfaction = 100,
         productRating = 5F,
         productVariant = listOf(
-            ProductVariant(
+            com.example.ecommerce.core.model.products.ProductVariant(
                 variantName = "RAM 16GB",
                 variantPrice = 0
-            ), ProductVariant(
+            ), com.example.ecommerce.core.model.products.ProductVariant(
                 variantName = "RAM 32GB",
                 variantPrice = 1000000
             )

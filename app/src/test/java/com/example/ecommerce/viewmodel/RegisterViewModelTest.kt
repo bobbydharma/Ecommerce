@@ -1,9 +1,9 @@
 package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.ecommerce.model.user.DataResponse
-import com.example.ecommerce.model.user.UserRequest
-import com.example.ecommerce.model.user.UserResponse
+import com.example.ecommerce.core.model.user.DataResponse
+import com.example.ecommerce.core.model.user.UserRequest
+import com.example.ecommerce.core.model.user.UserResponse
 import com.example.ecommerce.repository.PreloginRepository
 import com.example.ecommerce.ui.prelogin.login.LoginViewModel
 import com.example.ecommerce.ui.prelogin.register.RegisterViewModel
@@ -38,12 +38,12 @@ class RegisterViewModelTest {
 
     @Test
     fun `Post Register Register ViewModel Test Success`() = runTest {
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
 
-        val userResponse = UserResponse(
+        val userResponse = com.example.ecommerce.core.model.user.UserResponse(
             code = 200,
             message = "OK",
-            data = DataResponse(
+            data = com.example.ecommerce.core.model.user.DataResponse(
                 accessToken = "accessToken",
                 refreshToken = "refreshToken",
                 expiresAt = 600
@@ -63,7 +63,7 @@ class RegisterViewModelTest {
 
     @Test
     fun `Post Register Register ViewModel Test Error`() = runTest {
-        val userRequest = UserRequest()
+        val userRequest = com.example.ecommerce.core.model.user.UserRequest()
 
         val error = RuntimeException()
         whenever(repository.postRegister(userRequest)).thenReturn(Result.Error(error))

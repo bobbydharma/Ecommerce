@@ -1,7 +1,7 @@
 package com.example.ecommerce
 
 import androidx.lifecycle.ViewModel
-import com.example.ecommerce.auth.CekAuthorization
+import com.example.ecommerce.core.auth.CekAuthorization
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

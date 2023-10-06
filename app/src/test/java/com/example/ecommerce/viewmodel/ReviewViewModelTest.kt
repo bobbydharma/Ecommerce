@@ -2,8 +2,8 @@ package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.example.ecommerce.model.products.DataReview
-import com.example.ecommerce.model.products.ReviewProduct
+import com.example.ecommerce.core.model.products.DataReview
+import com.example.ecommerce.core.model.products.ReviewProduct
 import com.example.ecommerce.repository.MainRepository
 import com.example.ecommerce.ui.main.detail.ReviewViewModel
 import com.example.ecommerce.utils.Result
@@ -28,16 +28,16 @@ class ReviewViewModelTest {
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var reviewViewModel: ReviewViewModel
     val idProduct = ""
-    val reviewResponse = ReviewProduct(
+    val reviewResponse = com.example.ecommerce.core.model.products.ReviewProduct(
         code = 200,
         message = "OK",
         data = listOf(
-            DataReview(
+            com.example.ecommerce.core.model.products.DataReview(
                 userName = "John",
                 userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQM4VpzpVw8mR2j9_gDajEthwY3KCOWJ1tOhcv47-H9o1a-s9GRPxdb_6G9YZdGfv0HIg&usqp=CAU",
                 userRating = 4,
                 userReview = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-            ), DataReview(
+            ), com.example.ecommerce.core.model.products.DataReview(
                 userName = "Doe",
                 userImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR3Z6PN8QNVhH0e7rEINu_XJS0qHIFpDT3nwF5WSkcYmr3znhY7LOTkc8puJ68Bts-TMc&usqp=CAU",
                 userRating = 5,

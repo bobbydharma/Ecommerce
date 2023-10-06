@@ -2,29 +2,26 @@ package com.example.ecommerce.ui.main.store
 
 import android.os.Bundle
 import android.view.ContextThemeWrapper
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.products.ProductsRequest
 import com.example.ecommerce.databinding.FragmentBottomSheetBinding
-import com.example.ecommerce.databinding.FragmentStoreBinding
-import com.example.ecommerce.model.products.ProductsRequest
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.android.material.color.MaterialColors
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class BottomSheetFragment : BottomSheetDialogFragment() {
 
@@ -36,6 +33,8 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     var cekLowest: Boolean = false
     var cekSort: Boolean = false
     var cekBrand: Boolean = false
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,15 +57,20 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        updateButtonReset()
+
+        val map = mapOf(
+            "1" to getString(R.string.ulasan),
+            "2" to getString(R.string.penjualan),
+            "3" to getString(R.string.harga_terendah),
+            "4" to getString(R.string.harga_tertinggi)
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.prooductQuery.collectLatest {
-//                updateButtonReset()
                 binding.btnResetFilter.isVisible =
                     !(it.sort.isNullOrEmpty() && it.brand.isNullOrEmpty() && it.highest == null && it.highest == null)
 
-                it.sort?.let { it1 -> binding.chipGroupUrutkan.selectChipByText(it1) }
+                map[it.sortId]?.let { it1 -> binding.chipGroupUrutkan.selectChipByText(it1) }
                 it.brand?.let { it1 -> binding.chipGroupBrand.selectChipByText(it1) }
                 if (it.lowest == null) {
                     binding.etLowest.setText("")
@@ -126,18 +130,22 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
                     when (selectedChipSort.id) {
                         R.id.chip_ulasan -> {
                             data.sort = it.text.toString()
+                            data.sortId = it.tag.toString()
                         }
 
                         R.id.chip_penjualan -> {
                             data.sort = it.text.toString()
+                            data.sortId = it.tag.toString()
                         }
 
                         R.id.chip_harga_terendah -> {
                             data.sort = it.text.toString()
+                            data.sortId = it.tag.toString()
                         }
 
                         R.id.chip_harga_tertinggi -> {
                             data.sort = it.text.toString()
+                            data.sortId = it.tag.toString()
                         }
                     }
                 }
@@ -164,6 +172,8 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
                         R.id.chip_lenovo -> {
                             data.brand = it.text.toString()
                         }
+
+                        else -> {}
                     }
                 }
             }
@@ -184,13 +194,16 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
                 sort = data.sort,
                 brand = data.brand,
                 lowest = data.lowest,
-                highest = data.highest
+                highest = data.highest,
+                sortId = data.sortId
             )
-
             requireActivity().supportFragmentManager.setFragmentResult(
                 "filter",
                 bundleOf("filter" to "data")
             )
+
+//            logEventFilter(data)
+
             dismiss()
         }
 
@@ -199,14 +212,17 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             binding.chipGroupBrand.resetSelected()
             binding.etLowest.text = null
             binding.etHighest.text = null
+        }
+    }
 
-//            viewModel.updateQuery(
-//                search = null,
-//                sort = null,
-//                brand = null,
-//                lowest = null,
-//                highest = null)
+    private fun logEventFilter(data: ProductsRequest) {
+        val itemfilter = Bundle().apply {
+            putString(FirebaseAnalytics.Param.ITEMS, "${data.sort}, ${data.brand}, ${data.lowest}, ${data.highest}")
+        }
 
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+            param(FirebaseAnalytics.Param.ITEM_NAME, "FILTER")
+            param(FirebaseAnalytics.Param.ITEMS, itemfilter)
         }
     }
 

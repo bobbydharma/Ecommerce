@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,17 +31,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -51,61 +39,65 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.ecommerce.R
-import com.example.ecommerce.model.products.DataProductDetail
-import com.example.ecommerce.model.products.ProductDetailResponse
-import com.example.ecommerce.model.products.ProductVariant
-import com.example.ecommerce.model.products.convertToCheckoutList
-import com.example.ecommerce.model.products.mappingCart
-import com.example.ecommerce.room.entity.CartEntity
-import com.example.ecommerce.room.entity.WishlistEntity
+import com.example.ecommerce.core.model.products.DataProductDetail
+import com.example.ecommerce.core.model.products.ProductDetailResponse
+import com.example.ecommerce.core.model.products.ProductVariant
+import com.example.ecommerce.core.model.products.convertToCheckoutList
+import com.example.ecommerce.core.model.products.mappingCart
 import com.example.ecommerce.ui.main.detail.DetailProductViewModel
 import com.example.ecommerce.utils.Result
 import com.example.ecommerce.utils.formatToIDR
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -146,7 +138,10 @@ class DetailProductComposeFragment : Fragment() {
         }
     }
 
-    private fun logEventAddToWishlist(dataProductDetail: DataProductDetail, bundle: Bundle) {
+    private fun logEventAddToWishlist(
+        dataProductDetail: DataProductDetail,
+        bundle: Bundle
+    ) {
 
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST) {
             param(FirebaseAnalytics.Param.CURRENCY, "IDR")
@@ -159,7 +154,10 @@ class DetailProductComposeFragment : Fragment() {
 
     }
 
-    private fun sendLogEventAddToCart(cartEntity: CartEntity, bundle: Bundle) {
+    private fun sendLogEventAddToCart(
+        cartEntity: com.example.ecommerce.core.room.entity.CartEntity,
+        bundle: Bundle
+    ) {
         //                start log event
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART) {
             param(FirebaseAnalytics.Param.CURRENCY, "IDR")
@@ -172,7 +170,10 @@ class DetailProductComposeFragment : Fragment() {
 //                 end log event
     }
 
-    private fun sendLogEventViewItem(cartEntity: CartEntity, bundle: Bundle) {
+    private fun sendLogEventViewItem(
+        cartEntity: com.example.ecommerce.core.room.entity.CartEntity,
+        bundle: Bundle
+    ) {
         //                start log event
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM) {
             param(FirebaseAnalytics.Param.CURRENCY, "IDR")
@@ -208,7 +209,10 @@ class DetailProductComposeFragment : Fragment() {
         )
     }
 
-    private fun addToCart(dataProductDetail: DataProductDetail, index: Int) {
+    private fun addToCart(
+        dataProductDetail: DataProductDetail,
+        index: Int
+    ) {
         viewLifecycleOwner.lifecycleScope.launch {
             val cartItem = viewModel.cekItem(dataProductDetail.productId)
             if (cartItem != null) {
@@ -222,7 +226,10 @@ class DetailProductComposeFragment : Fragment() {
         }
     }
 
-    private fun buyNow(dataProductDetail: DataProductDetail, index: Int) {
+    private fun buyNow(
+        dataProductDetail: DataProductDetail,
+        index: Int
+    ) {
         val bundle = bundleOf("CheckoutList" to dataProductDetail.convertToCheckoutList(index))
         findNavController().navigate(R.id.action_detailProductFragment3_to_checkoutFragment, bundle)
     }
@@ -237,8 +244,8 @@ fun DetailProductScreen(
     addToCart: (DataProductDetail, Int) -> Unit,
     onReviewClick: (String) -> Unit,
     shareLink: () -> Unit,
-    sendLogEventAddToCart: (CartEntity, Bundle) -> Unit,
-    sendLogEventViewItem: (CartEntity, Bundle) -> Unit,
+    sendLogEventAddToCart: (com.example.ecommerce.core.room.entity.CartEntity, Bundle) -> Unit,
+    sendLogEventViewItem: (com.example.ecommerce.core.room.entity.CartEntity, Bundle) -> Unit,
     logEventAddToWishlist: (DataProductDetail, Bundle) -> Unit
 ) {
     val detailProduct by viewModel.detailProduct.observeAsState()
@@ -277,12 +284,12 @@ fun DetailProductScreen(
     onReviewClick: (String) -> Unit,
     addToWishList: (DataProductDetail, Int) -> Unit,
     deleteToWishList: (DataProductDetail) -> Unit,
-    itemWishList: WishlistEntity?,
+    itemWishList: com.example.ecommerce.core.room.entity.WishlistEntity?,
     shareLink: () -> Unit,
-    itemCart: CartEntity?,
+    itemCart: com.example.ecommerce.core.room.entity.CartEntity?,
     refresh: () -> Unit,
-    sendLogEventAddToCart: (CartEntity, Bundle) -> Unit,
-    sendLogEventViewItem: (CartEntity, Bundle) -> Unit,
+    sendLogEventAddToCart: (com.example.ecommerce.core.room.entity.CartEntity, Bundle) -> Unit,
+    sendLogEventViewItem: (com.example.ecommerce.core.room.entity.CartEntity, Bundle) -> Unit,
     logEventAddToWishlist: (DataProductDetail, Bundle) -> Unit
 ) {
     val poppins_regular = FontFamily(Font(R.font.poppins_regular))
@@ -384,23 +391,19 @@ fun DetailProductScreen(
                                 if (itemCart != null) {
                                     if (itemCart.stock > itemCart.quantity) {
                                         addToCart(detailProduct.data.data, globalIndex.value)
-                                        Log.d(
-                                            "itemCart.stock > itemCart.quantity",
-                                            "${globalIndex.value}"
-                                        )
                                         scope.launch {
-                                            snackbarHostState.showSnackbar("Item ditambahkan")
+                                            snackbarHostState.showSnackbar("Insert to cart")
                                         }
                                         sendLogEventAddToCart(itemCart, itemProductCart)
                                     } else {
                                         scope.launch {
-                                            snackbarHostState.showSnackbar("Stok Habis")
+                                            snackbarHostState.showSnackbar("out of stock")
                                         }
                                     }
                                 } else {
                                     addToCart(detailProduct.data.data, globalIndex.value)
                                     scope.launch {
-                                        snackbarHostState.showSnackbar("Item ditambahkan")
+                                        snackbarHostState.showSnackbar("Insert to cart")
                                     }
                                     sendLogEventAddToCart(
                                         detailProduct.data.data.mappingCart(
@@ -521,6 +524,9 @@ fun DetailProductScreen(
                             maxLines = 2,
                             fontWeight = FontWeight.SemiBold,
                             fontFamily = poppins_regular,
+                            style = TextStyle(
+                                lineHeight = 20.sp
+                            ),
                             modifier = Modifier
                                 .weight(1f)
                                 .align(Alignment.CenterVertically),
@@ -543,8 +549,14 @@ fun DetailProductScreen(
                             onClick = {
                                 if (isWishlist.value) {
                                     deleteToWishList(detailProduct.data.data)
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("remove to wishlist")
+                                    }
                                 } else {
                                     addToWishList(detailProduct.data.data, globalIndex.value)
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Insert to wishlist")
+                                    }
                                     logEventAddToWishlist(detailProduct.data.data, itemProductCart)
                                 }
 
@@ -558,6 +570,9 @@ fun DetailProductScreen(
                     Text(
                         text = detailProduct.data.data.productName,
                         fontFamily = poppins_regular,
+                        style = TextStyle(
+                            lineHeight = 18.sp // Sesuaikan dengan tinggi baris yang diinginkan
+                        ),
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, top = 6.dp)
                             .fillMaxWidth(),
@@ -617,7 +632,7 @@ fun DetailProductScreen(
                     ) {
                         detailProduct.data.data.productVariant.forEachIndexed { index, productVariant ->
                             InputChip(
-                                modifier = Modifier.padding(4.dp),
+                                modifier = Modifier.padding(horizontal = 4.dp),
                                 label = { Text(productVariant.variantName) },
                                 selected = index == globalIndex.value,
                                 onClick = {
@@ -630,8 +645,7 @@ fun DetailProductScreen(
                             )
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Divider()
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
@@ -645,11 +659,13 @@ fun DetailProductScreen(
                         text = detailProduct.data.data.description,
                         fontSize = 14.sp,
                         fontFamily = poppins_regular,
+                        style = TextStyle(
+                            lineHeight = 18.sp // Sesuaikan dengan tinggi baris yang diinginkan
+                        ),
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Divider()
-                    Spacer(modifier = Modifier.height(10.dp))
                     Row(
                         modifier = Modifier.padding(end = 16.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -833,8 +849,10 @@ fun DetailProductScreen(
 @Preview
 @Composable
 fun GreetingPreview() {
-    val dummyProductVariant1 = ProductVariant("RAM 16GB", 100)
-    val dummyProductVariant2 = ProductVariant("RAM 32GB", 120)
+    val dummyProductVariant1 =
+        ProductVariant("RAM 16GB", 100)
+    val dummyProductVariant2 =
+        ProductVariant("RAM 32GB", 120)
 
     val dummyDataProductDetail = DataProductDetail(
         productId = "Rp23.499.000",
@@ -853,11 +871,12 @@ fun GreetingPreview() {
         productVariant = listOf(dummyProductVariant1, dummyProductVariant2)
     )
 
-    val dummyProductDetailResponse = ProductDetailResponse(
-        code = 200,
-        message = "Product details retrieved successfully",
-        data = dummyDataProductDetail
-    )
+    val dummyProductDetailResponse =
+        ProductDetailResponse(
+            code = 200,
+            message = "Product details retrieved successfully",
+            data = dummyDataProductDetail
+        )
     DetailProductScreen(
         detailProduct = Result.Success(dummyProductDetailResponse),
         onNavigateUp = {},

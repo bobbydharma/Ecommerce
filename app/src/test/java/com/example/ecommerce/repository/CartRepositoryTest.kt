@@ -1,7 +1,7 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.room.dao.CartDAO
-import com.example.ecommerce.room.entity.CartEntity
+import com.example.ecommerce.core.room.dao.CartDAO
+import com.example.ecommerce.core.room.entity.CartEntity
 import com.example.ecommerce.utils.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -17,7 +17,7 @@ import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class CartRepositoryTest {
-    private lateinit var cartDAO: CartDAO
+    private lateinit var cartDAO: com.example.ecommerce.core.room.dao.CartDAO
     private lateinit var cartRepository: CartRepository
 
     @Before
@@ -26,7 +26,7 @@ class CartRepositoryTest {
         cartRepository = CartRepository(cartDAO)
     }
 
-    private val cartEntity = CartEntity(
+    private val cartEntity = com.example.ecommerce.core.room.entity.CartEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,

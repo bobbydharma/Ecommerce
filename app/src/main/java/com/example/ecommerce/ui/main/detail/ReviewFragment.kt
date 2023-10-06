@@ -10,7 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.databinding.FragmentUlasanPembeliBinding
-import com.example.ecommerce.model.products.ReviewProduct
+import com.example.ecommerce.core.model.products.ReviewProduct
 import com.example.ecommerce.utils.Result
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -65,7 +65,7 @@ class ReviewFragment : Fragment() {
 
     }
 
-    private fun setDisplay(result: Result.Success<ReviewProduct>) {
+    private fun setDisplay(result: Result.Success<com.example.ecommerce.core.model.products.ReviewProduct>) {
         reviewAdapter = ReviewAdapter(result.data.data)
         binding.rvReview.adapter = reviewAdapter
     }

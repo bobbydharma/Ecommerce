@@ -3,8 +3,8 @@ package com.example.ecommerce.room
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.example.ecommerce.room.dao.CartDAO
-import com.example.ecommerce.room.entity.CartEntity
+import com.example.ecommerce.core.room.dao.CartDAO
+import com.example.ecommerce.core.room.entity.CartEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -19,13 +19,16 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class CartDaoTest {
 
-    private lateinit var database: AppDatabase
-    private lateinit var cartDao: CartDAO
+    private lateinit var database: com.example.ecommerce.core.room.AppDatabase
+    private lateinit var cartDao: com.example.ecommerce.core.room.dao.CartDAO
 
     @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
+        database = Room.inMemoryDatabaseBuilder(
+            context,
+            com.example.ecommerce.core.room.AppDatabase::class.java
+        ).build()
         cartDao = database.cartDAO()
     }
 
@@ -34,7 +37,7 @@ class CartDaoTest {
         database.close()
     }
 
-    private val cartEntity = CartEntity(
+    private val cartEntity = com.example.ecommerce.core.room.entity.CartEntity(
         productId = "productId",
         productName = "productName",
         productPrice = 2000,

@@ -1,36 +1,28 @@
 package com.example.ecommerce.ui.main.store
 
-import com.example.ecommerce.ui.main.store.adapter.ProductsAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavAction
-import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.ecommerce.MainActivity
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.products.Items
+import com.example.ecommerce.core.preference.PrefHelper
 import com.example.ecommerce.databinding.FragmentStoreBinding
-import com.example.ecommerce.model.products.Items
-import com.example.ecommerce.model.products.ProductsRequest
-import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.ui.main.store.adapter.LoadStateAdapter
+import com.example.ecommerce.ui.main.store.adapter.ProductsAdapter
 import com.example.ecommerce.utils.formatToIDR
 import com.google.android.material.chip.Chip
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -40,7 +32,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
-import java.text.NumberFormat
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -93,12 +84,16 @@ class storeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.etSearchStore.setText(viewModel.prooductQuery.value.search)
+        viewModel.prooductQuery.value.sort?.let { Log.d("sort", it) }
+//        binding.rvProduct.layoutManager = GridLayoutManager(requireContext(), viewModel.spanCount)
+
         requireActivity().supportFragmentManager.setFragmentResultListener(
             "search",
             viewLifecycleOwner
         ) { requestKey, bundle ->
             val search = bundle.getString("searchItem")
-            val newQuery = ProductsRequest()
+            val newQuery = com.example.ecommerce.core.model.products.ProductsRequest()
             newQuery.search = search
             binding.etSearchStore.setText(search)
             setChipFiltered()
@@ -107,15 +102,24 @@ class storeFragment : Fragment() {
                 brand = viewModel.prooductQuery.value.brand,
                 sort = viewModel.prooductQuery.value.sort,
                 lowest = viewModel.prooductQuery.value.lowest,
-                highest = viewModel.prooductQuery.value.highest
+                highest = viewModel.prooductQuery.value.highest,
+                sortId = viewModel.prooductQuery.value.sortId
             )
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS) {
                 search?.let { param(FirebaseAnalytics.Param.SEARCH_TERM, it) }
             }
+
+            binding.rvProduct.layoutManager?.scrollToPosition(0)
+        }
+
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            "filter",viewLifecycleOwner
+        ) { requestKey, bundle ->
+            binding.rvProduct.layoutManager?.scrollToPosition(0)
         }
 
         binding.rvProduct.adapter = pagingAdapter.withLoadStateFooter(
-            footer = com.example.ecommerce.ui.main.store.adapter.LoadStateAdapter(pagingAdapter::retry)
+            footer = LoadStateAdapter(pagingAdapter::retry)
         )
         binding.rvProduct.apply {
             itemAnimator?.changeDuration = 0
@@ -143,7 +147,8 @@ class storeFragment : Fragment() {
                 brand = null,
                 sort = null,
                 highest = null,
-                lowest = null
+                lowest = null,
+                sortId = null
             )
             firebaseAnalytics.logEvent("BUTTON_CLICK") {
                 param("BUTTON_NAME", "Store_Reset")
@@ -186,6 +191,7 @@ class storeFragment : Fragment() {
                 logEventItemView(it)
             }
         }
+
 
         viewLifecycleOwner.lifecycleScope.launch {
             pagingAdapter.loadStateFlow.collectLatest { loadStates ->
@@ -307,7 +313,7 @@ class storeFragment : Fragment() {
         }
 
         val product = item.mapIndexed { index, bundle ->
-            Bundle().apply {
+            bundle.apply {
                 putString(FirebaseAnalytics.Param.INDEX, index.toString())
             }
         }
@@ -315,7 +321,7 @@ class storeFragment : Fragment() {
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
             param(FirebaseAnalytics.Param.ITEM_LIST_ID, "Store")
             param(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Store")
-            product?.let { param(FirebaseAnalytics.Param.ITEMS, it.toTypedArray()) }
+            param(FirebaseAnalytics.Param.ITEMS, product.toTypedArray())
         }
     }
 
@@ -328,19 +334,17 @@ class storeFragment : Fragment() {
             val layoutManager = GridLayoutManager(requireContext(), 2)
             binding.rvProduct.layoutManager = layoutManager
 
-            val footerAdapter =
-                com.example.ecommerce.ui.main.store.adapter.LoadStateAdapter(pagingAdapter::retry)
+            val footerAdapter = LoadStateAdapter(pagingAdapter::retry)
             binding.rvProduct.adapter = pagingAdapter.withLoadStateFooter(footer = footerAdapter)
             layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return if (position == pagingAdapter.itemCount && footerAdapter.itemCount > 0) {
-                        2
+                       2
                     } else {
                         1
                     }
                 }
             }
-
             binding.rvProduct.layoutManager?.scrollToPosition(firstVisibleItemPosition)
 
         } else {
@@ -350,9 +354,18 @@ class storeFragment : Fragment() {
     }
 
     private fun setChipFiltered() {
+        Log.d("Set Chip", "masuk")
+        val map = mapOf(
+            "1" to getString(R.string.ulasan),
+            "2" to getString(R.string.penjualan),
+            "3" to getString(R.string.harga_terendah),
+            "4" to getString(R.string.harga_tertinggi)
+        )
+
         binding.chipFiltered.removeAllViews()
         viewModel.prooductQuery.value.apply {
-            sort?.let { setChip(sort!!) }
+            map[viewModel.prooductQuery.value.sortId]?.let { setChip(it) }
+            viewModel.prooductQuery.value.sortId?.let { Log.d("map", it) }
             brand?.let { setChip(brand!!) }
             lowest?.let { setChip("> ${lowest!!.formatToIDR()}") }
             highest?.let { setChip("< ${highest!!.formatToIDR()}") }
@@ -366,6 +379,12 @@ class storeFragment : Fragment() {
         chip.setTextAppearance(R.style.TextAppearance_App_BodyMedium)
         binding.chipFiltered.addView(chip)
 
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

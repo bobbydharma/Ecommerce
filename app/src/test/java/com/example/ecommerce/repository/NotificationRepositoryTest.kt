@@ -1,8 +1,8 @@
 package com.example.ecommerce.repository
 
-import com.example.ecommerce.room.dao.CartDAO
-import com.example.ecommerce.room.dao.NotificationDAO
-import com.example.ecommerce.room.entity.NotificationEntity
+import com.example.ecommerce.core.room.dao.CartDAO
+import com.example.ecommerce.core.room.dao.NotificationDAO
+import com.example.ecommerce.core.room.entity.NotificationEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -17,7 +17,7 @@ import org.mockito.kotlin.whenever
 @RunWith(JUnit4::class)
 class NotificationRepositoryTest {
 
-    private lateinit var notificationDAO: NotificationDAO
+    private lateinit var notificationDAO: com.example.ecommerce.core.room.dao.NotificationDAO
     private lateinit var notificationRepository: NotificationRepository
 
     @Before
@@ -26,7 +26,7 @@ class NotificationRepositoryTest {
         notificationRepository = NotificationRepository(notificationDAO)
     }
 
-    private val notification = NotificationEntity(
+    private val notification = com.example.ecommerce.core.room.entity.NotificationEntity(
         idNotification = 1,
         title = "title",
         body = "body",

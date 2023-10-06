@@ -2,7 +2,7 @@ package com.example.ecommerce.sharedpreferences
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.example.ecommerce.preference.PrefHelper
+import com.example.ecommerce.core.preference.PrefHelper
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -14,13 +14,13 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class SharedPreferencesTest {
 
-    private lateinit var prefHelper: PrefHelper
+    private lateinit var prefHelper: com.example.ecommerce.core.preference.PrefHelper
 
     @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        prefHelper = PrefHelper(sharedPreferences)
+        prefHelper = com.example.ecommerce.core.preference.PrefHelper(sharedPreferences)
     }
 
     @Test

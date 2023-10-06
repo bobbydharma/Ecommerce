@@ -5,9 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ecommerce.core.model.rating.RatingRequest
+import com.example.ecommerce.core.model.rating.RatingResponse
 import com.example.ecommerce.repository.MainRepository
-import com.example.ecommerce.ui.main.checkout.Data
-import com.example.ecommerce.ui.main.checkout.FulfillmentResponse
+import com.example.ecommerce.core.model.checkout.Data
 import com.example.ecommerce.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

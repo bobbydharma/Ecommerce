@@ -18,10 +18,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.databinding.FragmentDetailProductBinding
-import com.example.ecommerce.model.products.DataProductDetail
-import com.example.ecommerce.model.products.ProductDetailResponse
-import com.example.ecommerce.model.products.convertToCheckoutList
-import com.example.ecommerce.model.products.mappingCart
+import com.example.ecommerce.core.model.products.DataProductDetail
+import com.example.ecommerce.core.model.products.ProductDetailResponse
+import com.example.ecommerce.core.model.products.convertToCheckoutList
+import com.example.ecommerce.core.model.products.mappingCart
 import com.example.ecommerce.ui.prelogin.onboarding.ViewPagerImageAdapter
 import com.example.ecommerce.utils.Result
 import com.google.android.material.chip.Chip
@@ -114,7 +114,7 @@ class DetailProductFragment : Fragment() {
         }
     }
 
-    private fun buyNow(data: DataProductDetail) {
+    private fun buyNow(data: com.example.ecommerce.core.model.products.DataProductDetail) {
         binding.btnBuyDetailProduct.setOnClickListener {
             val bundle = bundleOf("CheckoutList" to data.convertToCheckoutList(globalIndex))
             findNavController().navigate(
@@ -124,7 +124,7 @@ class DetailProductFragment : Fragment() {
         }
     }
 
-    private fun saveToWishlist(data: DataProductDetail) {
+    private fun saveToWishlist(data: com.example.ecommerce.core.model.products.DataProductDetail) {
         binding.btnToggleWishlist.setOnCheckedChangeListener { _, isChecked ->
             viewLifecycleOwner.lifecycleScope.launch {
                 if (isChecked) {
@@ -148,7 +148,7 @@ class DetailProductFragment : Fragment() {
         }
     }
 
-    private fun saveToCart(data: DataProductDetail) {
+    private fun saveToCart(data: com.example.ecommerce.core.model.products.DataProductDetail) {
 
         binding.btnAddCart.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
@@ -181,7 +181,7 @@ class DetailProductFragment : Fragment() {
         }
     }
 
-    private fun setDisplay(result: Result.Success<ProductDetailResponse>) {
+    private fun setDisplay(result: Result.Success<com.example.ecommerce.core.model.products.ProductDetailResponse>) {
 
         result.data.data.apply {
             var totalPrice: Int?

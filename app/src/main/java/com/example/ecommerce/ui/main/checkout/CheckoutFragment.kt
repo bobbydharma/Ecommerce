@@ -1,7 +1,6 @@
 package com.example.ecommerce.ui.main.checkout
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,15 +13,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.ecommerce.R
+import com.example.ecommerce.core.model.checkout.CheckoutItem
+import com.example.ecommerce.core.model.checkout.CheckoutList
+import com.example.ecommerce.core.model.checkout.Data
+import com.example.ecommerce.core.model.checkout.FulfillmentRequest
+import com.example.ecommerce.core.model.checkout.toFulfillmentItem
 import com.example.ecommerce.databinding.FragmentCheckoutBinding
-import com.example.ecommerce.ui.main.payment.Item
 import com.example.ecommerce.utils.Result
 import com.example.ecommerce.utils.formatToIDR
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -144,6 +146,7 @@ class CheckoutFragment : Fragment() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBarChekout.isVisible = false
+                    binding.btnPayCheckout.isVisible = true
                     val bundle = bundleOf(
                         "FulfillmentResponse" to result.data.data,
                         "SourceFragment" to "Checkout"
@@ -162,6 +165,7 @@ class CheckoutFragment : Fragment() {
                 }
 
                 is Result.Loading -> {
+                    binding.btnPayCheckout.isVisible = false
                     binding.progressBarChekout.isVisible = true
                 }
 
