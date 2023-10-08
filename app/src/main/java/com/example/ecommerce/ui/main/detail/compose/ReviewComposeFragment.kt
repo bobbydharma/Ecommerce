@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -100,7 +101,7 @@ class ReviewComposeFragment : Fragment() {
                             TopAppBar(
                                 title = {
                                     Text(
-                                        "Ulasan Pembeli",
+                                        text = stringResource(id = R.string.ulasan_pembeli),
                                         fontFamily = poppins_regular,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
@@ -142,7 +143,7 @@ class ReviewComposeFragment : Fragment() {
                             TopAppBar(
                                 title = {
                                     Text(
-                                        "Ulasan Pembeli",
+                                        text = stringResource(id = R.string.ulasan_pembeli),
                                         fontFamily = poppins_regular,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
@@ -184,7 +185,7 @@ class ReviewComposeFragment : Fragment() {
                             TopAppBar(
                                 title = {
                                     Text(
-                                        "Ulasan Pembeli",
+                                        text = stringResource(id = R.string.ulasan_pembeli),
                                         fontFamily = poppins_regular,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
@@ -223,7 +224,7 @@ class ReviewComposeFragment : Fragment() {
                                 .height(128.dp)
                         )
                         Text(
-                            text = "Connection",
+                            text = stringResource(id = R.string.connection),
                             fontFamily = poppins_medium,
                             fontSize = 32.sp
                         )
@@ -238,7 +239,7 @@ class ReviewComposeFragment : Fragment() {
                                 refresh()
                             },
                         ) {
-                            Text("Refresh")
+                            Text(stringResource(id = R.string.refresh))
                         }
                     }
                 }
