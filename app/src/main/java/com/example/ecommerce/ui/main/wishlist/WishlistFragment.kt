@@ -38,9 +38,6 @@ class WishlistFragment : Fragment() {
 
     @Inject
     lateinit var firebaseAnalytics: FirebaseAnalytics
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -203,6 +200,11 @@ class WishlistFragment : Fragment() {
             binding.rvWishlist.layoutManager = GridLayoutManager(requireContext(), 1)
             binding.rvWishlist.layoutManager?.scrollToPosition(firstVisibleItemPosition)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

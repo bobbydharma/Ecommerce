@@ -160,6 +160,7 @@ class CheckoutFragment : Fragment() {
                 }
 
                 is Result.Error -> {
+                    binding.btnPayCheckout.isVisible = true
                     binding.progressBarChekout.isVisible = false
                     Toast.makeText(context, "Gagal melakukan pembayaran", Toast.LENGTH_SHORT).show()
                 }

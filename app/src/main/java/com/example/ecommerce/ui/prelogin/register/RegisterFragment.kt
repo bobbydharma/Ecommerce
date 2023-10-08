@@ -100,6 +100,7 @@ class RegisterFragment : Fragment() {
                 is Result.Error -> {
                     binding.etEmail.setText("")
                     binding.etPassword.setText("")
+                    binding.btnDaftarDaftar.isVisible = true
                     binding.progressBarRegister.isVisible = false
                     binding.layoutEtEmail.isErrorEnabled = true
                     binding.layoutEtEmail.error = result.exception.message

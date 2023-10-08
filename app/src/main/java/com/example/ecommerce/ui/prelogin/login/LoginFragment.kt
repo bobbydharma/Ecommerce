@@ -122,6 +122,7 @@ class LoginFragment : Fragment() {
                     binding.etPassword.setText("")
                     binding.layoutEtEmailLogin.isErrorEnabled = true
                     binding.prgressBarLogin.isVisible = false
+                    binding.btnMasuk.isVisible = true
                     binding.layoutEtEmailLogin.error = result.exception.message
                     binding.layoutEtEmailLogin.requestFocus()
 

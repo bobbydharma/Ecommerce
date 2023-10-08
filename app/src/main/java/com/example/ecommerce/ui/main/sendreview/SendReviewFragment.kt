@@ -123,6 +123,8 @@ class SendReviewFragment : Fragment() {
                 }
 
                 is Result.Error -> {
+                    binding.progressBarSendReview.isVisible = false
+                    binding.btnDoneSendReview.isVisible = true
                     Toast.makeText(context, "Gagal mengirim review", Toast.LENGTH_SHORT).show()
                 }
 

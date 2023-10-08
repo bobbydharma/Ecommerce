@@ -136,6 +136,7 @@ class ProfileFragment : Fragment() {
                         requireContext(), result.exception.message, Toast.LENGTH_SHORT
                     ).show()
                     binding.progressBarProfile.isVisible = false
+                    binding.btnSelesai.isVisible = true
                 }
 
                 is Result.Loading -> {
