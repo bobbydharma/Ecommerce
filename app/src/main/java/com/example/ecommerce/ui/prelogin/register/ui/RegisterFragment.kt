@@ -1,4 +1,4 @@
-package com.example.ecommerce.ui.prelogin.register
+package com.example.ecommerce.ui.prelogin.register.ui
 
 import android.os.Bundle
 import android.text.Spannable
@@ -13,6 +13,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.core.model.user.UserRequest
@@ -25,6 +28,7 @@ import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -86,30 +90,36 @@ class RegisterFragment : Fragment() {
             }
         }
 
-        viewModel.registerData.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Success -> {
-                    binding.btnDaftarDaftar.isVisible = true
-                    binding.progressBarRegister.isVisible = false
-                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
-                        param(FirebaseAnalytics.Param.METHOD, "email")
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED){
+                viewModel.registerData.collect{ result ->
+                    when (result) {
+                        is Result.Success -> {
+                            binding.btnDaftarDaftar.isVisible = true
+                            binding.progressBarRegister.isVisible = false
+                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
+                                param(FirebaseAnalytics.Param.METHOD, "email")
+                            }
+                            findNavController().navigate(R.id.prelogin_to_main)
+                        }
+
+                        is Result.Error -> {
+                            binding.etEmail.setText("")
+                            binding.etPassword.setText("")
+                            binding.btnDaftarDaftar.isVisible = true
+                            binding.progressBarRegister.isVisible = false
+                            binding.layoutEtEmail.isErrorEnabled = true
+                            binding.layoutEtEmail.error = result.exception.message
+                            binding.layoutEtEmail.requestFocus()
+                        }
+
+                        is Result.Loading -> {
+                            binding.btnDaftarDaftar.isVisible = false
+                            binding.progressBarRegister.isVisible = true
+                        }
+
+                        else -> {}
                     }
-                    findNavController().navigate(R.id.prelogin_to_main)
-                }
-
-                is Result.Error -> {
-                    binding.etEmail.setText("")
-                    binding.etPassword.setText("")
-                    binding.btnDaftarDaftar.isVisible = true
-                    binding.progressBarRegister.isVisible = false
-                    binding.layoutEtEmail.isErrorEnabled = true
-                    binding.layoutEtEmail.error = result.exception.message
-                    binding.layoutEtEmail.requestFocus()
-                }
-
-                is Result.Loading -> {
-                    binding.btnDaftarDaftar.isVisible = false
-                    binding.progressBarRegister.isVisible = true
                 }
             }
         }

@@ -1,12 +1,8 @@
 package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.ecommerce.core.model.user.DataProfilResponse
-import com.example.ecommerce.core.model.user.ProfileRequest
-import com.example.ecommerce.core.model.user.ProfileResponse
 import com.example.ecommerce.repository.PreloginRepository
-import com.example.ecommerce.ui.main.profile.ProfileViewModel
-import com.example.ecommerce.ui.prelogin.login.LoginViewModel
+import com.example.ecommerce.ui.main.profile.ui.ProfileViewModel
 import com.example.ecommerce.utils.Result
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest

@@ -1,4 +1,4 @@
-package com.example.ecommerce.ui.prelogin.login
+package com.example.ecommerce.ui.prelogin.login.ui
 
 import android.os.Bundle
 import android.text.Spannable
@@ -13,6 +13,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.core.model.user.UserRequest
@@ -27,6 +30,7 @@ import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -99,46 +103,43 @@ class LoginFragment : Fragment() {
         validationButton()
         checking()
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.loginData.collect{ state ->
+                    when (state) {
+                        is Result.Success -> {
+                            binding.prgressBarLogin.isVisible = false
+                            binding.btnMasuk.isVisible = true
+                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+                                param(FirebaseAnalytics.Param.METHOD, "email")
+                            }
+                            if (state.data.userName.isEmpty()) {
+                                findNavController().navigate(R.id.main_to_profile)
+                            } else {
+                                findNavController().navigate(R.id.prelogin_to_main)
+                            }
+                        }
 
+                        is Result.Error -> {
+                            binding.etEmail.setText("")
+                            binding.etPassword.setText("")
+                            binding.layoutEtEmailLogin.isErrorEnabled = true
+                            binding.prgressBarLogin.isVisible = false
+                            binding.btnMasuk.isVisible = true
+                            binding.layoutEtEmailLogin.error = state.exception.message
+                            binding.layoutEtEmailLogin.requestFocus()
+                        }
 
-        viewModel.loginData.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Success -> {
-                    binding.prgressBarLogin.isVisible = false
-                    binding.btnMasuk.isVisible = true
-                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
-                        param(FirebaseAnalytics.Param.METHOD, "email")
+                        is Result.Loading -> {
+                            binding.btnMasuk.isVisible = false
+                            binding.prgressBarLogin.isVisible = true
+                        }
+
+                        else -> {}
                     }
-                    if (result.data.data.userName.isNullOrEmpty()) {
-                        findNavController().navigate(R.id.main_to_profile)
-                    } else {
-                        findNavController().navigate(R.id.prelogin_to_main)
-                    }
                 }
-
-                is Result.Error -> {
-
-                    binding.etEmail.setText("")
-                    binding.etPassword.setText("")
-                    binding.layoutEtEmailLogin.isErrorEnabled = true
-                    binding.prgressBarLogin.isVisible = false
-                    binding.btnMasuk.isVisible = true
-                    binding.layoutEtEmailLogin.error = result.exception.message
-                    binding.layoutEtEmailLogin.requestFocus()
-
-                }
-
-                is Result.Loading -> {
-                    binding.btnMasuk.isVisible = false
-                    binding.prgressBarLogin.isVisible = true
-
-
-                }
-
-                else -> {}
             }
         }
-
     }
 
     private fun validationButton() {
