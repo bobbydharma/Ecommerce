@@ -42,17 +42,32 @@ The main focus is on implementing **modern Android architecture** using:
 - 🧪 **Unit Tests** – Repository and ViewModel layers tested
 
 ## 📸 Screenshots
+
 Below are several screenshots captured from the actual running project, showcasing the main features and UI design of the application.
-![Wishlist](https://github.com/user-attachments/assets/e3cf882f-6717-418a-9f29-4c715c01d10b)
-![Review Product](https://github.com/user-attachments/assets/237b7330-514e-4659-b40a-6bce14eed1d0)
-![Register Page](https://github.com/user-attachments/assets/b9408695-5e12-4f5b-9031-8ecebf73d2fb)
-![Payment Status](https://github.com/user-attachments/assets/0c01d8ed-9e75-44c2-9302-6560c4330914)
-![Order Page](https://github.com/user-attachments/assets/1b44cb4e-8e43-4218-b595-7668fcd40864)
-![Onboarding](https://github.com/user-attachments/assets/a22620c3-1aed-4a77-a3b7-387eb7121656)
-![Home](https://github.com/user-attachments/assets/87f16526-9246-40fb-8122-b93e94c55f83)
-![History Transaction](https://github.com/user-attachments/assets/c1065e8f-48d7-41cd-b8d7-b7bc1531a389)
-![Detail Product](https://github.com/user-attachments/assets/e88b2e69-9b0f-4d4c-a940-37407dcc2076)
-![Cart Page](https://github.com/user-attachments/assets/b9f9803c-a47a-4ce9-8d11-96f82dd93511)
+
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/e3cf882f-6717-418a-9f29-4c715c01d10b" width="300" alt="Wishlist"/></td>
+    <td><img src="https://github.com/user-attachments/assets/237b7330-514e-4659-b40a-6bce14eed1d0" width="300" alt="Review Product"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/b9408695-5e12-4f5b-9031-8ecebf73d2fb" width="300" alt="Register Page"/></td>
+    <td><img src="https://github.com/user-attachments/assets/0c01d8ed-9e75-44c2-9302-6560c4330914" width="300" alt="Payment Status"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/1b44cb4e-8e43-4218-b595-7668fcd40864" width="300" alt="Order Page"/></td>
+    <td><img src="https://github.com/user-attachments/assets/a22620c3-1aed-4a77-a3b7-387eb7121656" width="300" alt="Onboarding"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/87f16526-9246-40fb-8122-b93e94c55f83" width="300" alt="Home"/></td>
+    <td><img src="https://github.com/user-attachments/assets/c1065e8f-48d7-41cd-b8d7-b7bc1531a389" width="300" alt="History Transaction"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/e88b2e69-9b0f-4d4c-a940-37407dcc2076" width="300" alt="Detail Product"/></td>
+    <td><img src="https://github.com/user-attachments/assets/b9f9803c-a47a-4ce9-8d11-96f82dd93511" width="300" alt="Cart Page"/></td>
+  </tr>
+</table>
+
 
 
 
