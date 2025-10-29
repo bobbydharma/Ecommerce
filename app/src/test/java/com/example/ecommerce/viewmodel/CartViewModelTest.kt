@@ -2,14 +2,8 @@ package com.example.ecommerce.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.ecommerce.repository.CartRepository
-import com.example.ecommerce.repository.PreloginRepository
-import com.example.ecommerce.core.room.entity.CartEntity
 import com.example.ecommerce.ui.main.cart.CartViewModel
-import com.example.ecommerce.ui.prelogin.login.LoginViewModel
-import com.example.ecommerce.utils.Result
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before

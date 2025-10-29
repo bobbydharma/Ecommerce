@@ -11,8 +11,8 @@ data class UserResponse(
 
 @Keep
 data class DataResponse(
-    var accessToken: String,
-    var refreshToken: String,
-    var expiresAt: Int
+    var accessToken: String?,
+    var refreshToken: String?,
+    var expiresAt: Int?
 )
 

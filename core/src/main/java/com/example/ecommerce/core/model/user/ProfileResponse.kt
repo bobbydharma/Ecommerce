@@ -11,6 +11,6 @@ data class ProfileResponse(
 
 @Keep
 data class DataProfilResponse(
-    val userName: String,
-    val userImage: String
+    val userName: String?,
+    val userImage: String?
 )

@@ -1,6 +1,7 @@
 package com.example.ecommerce.core.model.user
 
 import androidx.annotation.Keep
+import com.google.gson.annotations.SerializedName
 
 @Keep
 data class LoginResponse(
@@ -11,11 +12,11 @@ data class LoginResponse(
 
 @Keep
 data class DataLoginResponse(
-    var userName: String,
-    var userImage: String,
-    var accessToken: String,
-    var refreshToken: String,
-    var expiresAt: Int
+    var userName: String?,
+    var userImage: String?,
+    var accessToken: String?,
+    var refreshToken: String?,
+    var expiresAt: Int?
 )
 
 @Keep

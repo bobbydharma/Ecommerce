@@ -155,7 +155,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.ecommerce.ui.main.profile.ProfileFragment"
+        android:name="com.example.ecommerce.ui.main.profile.ui.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment

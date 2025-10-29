@@ -15,26 +15,26 @@ class CartViewModel @Inject constructor(
 
     val cartItem = repository.getAll()
 
-    suspend fun deleteCart(vararg cartEntity: CartEntity) {
+    fun deleteCart(vararg cartEntity: CartEntity) {
         viewModelScope.launch {
             repository.deleteCart(*cartEntity)
         }
     }
 
-    suspend fun updateQuantityCart(productId: String, quantity: Int) {
+    fun updateQuantityCart(productId: String, quantity: Int) {
         viewModelScope.launch {
             repository.updateQuantityCart(productId, quantity)
         }
     }
 
 
-    suspend fun updateSelectedCart(productId: String, isSelected: Boolean) {
+    fun updateSelectedCart(productId: String, isSelected: Boolean) {
         viewModelScope.launch {
             repository.updateSelectedCart(productId, isSelected)
         }
     }
 
-    suspend fun updateAllSelectedCart(isSelected: Boolean) {
+    fun updateAllSelectedCart(isSelected: Boolean) {
         viewModelScope.launch {
             repository.updateAllSelectedCart(isSelected)
         }

@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.ecommerce.screen"
-    compileSdk = 33
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -21,6 +21,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 

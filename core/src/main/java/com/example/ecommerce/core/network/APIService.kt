@@ -31,20 +31,20 @@ interface APIService {
     suspend fun postRegister(
         @Header("API_KEY") API_KEY: String,
         @Body userRequest: UserRequest
-    ): Response<UserResponse>
+    ): UserResponse
 
     @Multipart
     @POST("profile")
     suspend fun postProfile(
         @Part userImage: MultipartBody.Part?,
         @Part userName: MultipartBody.Part?
-    ): Response<ProfileResponse>
+    ): ProfileResponse
 
     @POST("login")
     suspend fun postLogin(
         @Header("API_KEY") API_KEY: String,
         @Body userRequest: UserRequest
-    ): Response<LoginResponse>
+    ): LoginResponse
 
     @POST("products")
     suspend fun postProducts(

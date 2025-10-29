@@ -1,14 +1,15 @@
 buildscript {
     dependencies {
-        classpath("com.android.tools.build:gradle:3.4.0")
-        classpath("com.google.gms:google-services:4.4.0")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
+        classpath("com.android.tools.build:gradle:8.9.1")
+        classpath("com.google.gms:google-services:4.4.2")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.4")
     }
 }
+
 plugins {
-    id("com.android.application") version "8.1.0" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.0" apply false
-    id("com.google.dagger.hilt.android") version "2.44" apply false
-    id("io.gitlab.arturbosch.detekt") version "1.23.0" apply false
-    id("com.android.library") version "8.1.0" apply false
+    id("com.android.application") version "8.9.1" apply false
+    id("com.android.library") version "8.9.1" apply false
+    id("org.jetbrains.kotlin.android") version "2.0.21" apply false
+    id("com.google.dagger.hilt.android") version "2.51.1" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" apply false
 }

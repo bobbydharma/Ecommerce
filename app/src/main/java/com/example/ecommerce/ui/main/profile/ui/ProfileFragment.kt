@@ -1,29 +1,25 @@
-package com.example.ecommerce.ui.main.profile
+package com.example.ecommerce.ui.main.profile.ui
 
-import android.Manifest
-import android.content.ContentValues
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.ecommerce.R
 import com.example.ecommerce.core.model.user.ProfileRequest
@@ -35,15 +31,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.InputStream
-import java.text.SimpleDateFormat
-import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -123,28 +116,35 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        viewModel.profileData.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Success -> {
-                    binding.progressBarProfile.isVisible = false
-                    binding.btnSelesai.isVisible = true
-                    findNavController().navigate(R.id.prelogin_to_main)
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.profileData.collect { result ->
+                    Toast.makeText(context, "collect", Toast.LENGTH_SHORT).show()
+                    when (result) {
+                        is Result.Success -> {
+                            binding.progressBarProfile.isVisible = false
+                            binding.btnSelesai.isVisible = true
+                            Toast.makeText(context, "success", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.prelogin_to_main)
+                        }
 
-                is Result.Error -> {
-                    Toast.makeText(
-                        requireContext(), result.exception.message, Toast.LENGTH_SHORT
-                    ).show()
-                    binding.progressBarProfile.isVisible = false
-                    binding.btnSelesai.isVisible = true
-                }
+                        is Result.Error -> {
+                            Toast.makeText(
+                                requireContext(), result.exception.message, Toast.LENGTH_SHORT
+                            ).show()
+                            binding.progressBarProfile.isVisible = false
+                            binding.btnSelesai.isVisible = true
+                        }
 
-                is Result.Loading -> {
-                    binding.btnSelesai.isVisible = false
-                    binding.progressBarProfile.isVisible = true
-                }
+                        is Result.Loading -> {
+                            binding.btnSelesai.isVisible = false
+                            binding.progressBarProfile.isVisible = true
+                        }
 
-                else -> {}
+                        else -> {}
+                    }
+
+                }
             }
         }
 

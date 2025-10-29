@@ -471,9 +471,8 @@ fun DetailProductScreen(
                 ) {
                     Box {
                         val pageCount = detailProduct.data.data.image.size
-                        val pagerState = rememberPagerState()
+                        val pagerState = rememberPagerState(pageCount = { pageCount })
                         HorizontalPager(
-                            pageCount = pageCount,
                             state = pagerState,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -484,8 +483,9 @@ fun DetailProductScreen(
                                     .crossfade(true)
                                     .build(),
                                 placeholder = painterResource(R.drawable.image_thumbnail_detail),
-                                contentDescription = "test",
+                                contentDescription = "Product image",
                                 modifier = Modifier
+                                    .fillMaxWidth()
                                     .height(300.dp)
                             )
 
