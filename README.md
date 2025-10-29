@@ -21,8 +21,7 @@ The main focus is on implementing **modern Android architecture** using:
 |-------|-------------|
 | **Language** | Kotlin |
 | **Architecture** | Single Activity + MVVM |
-| **UI Layout** | XML |
-| **Navigation** | Jetpack Navigation Component (NavGraph) |
+| **UI Layout** | XML + Jetpack Compose|
 | **Dependency Injection** | Hilt |
 | **Networking** | Retrofit + OkHttp |
 | **Local Database** | Room |
